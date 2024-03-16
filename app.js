@@ -13,8 +13,20 @@ app.use('*/assets',express.static('public/assets'));
 app.set('views', './views')
 app.set('view engine', 'ejs')
 
-app.get('', (req, res) => {
-    res.render('index', { text: 'This is EJS'})
+app.get('/', (req, res) => {
+    res.render('pages/index', { title: 'Pantry Dashboard'})
+})
+
+app.get('/reports', (req, res) => {
+    res.render('pages/reports', { title: 'Reports'})
+})
+
+app.get('/staff', (req, res) => {
+    res.render('pages/staff', { title: 'Manage Staff'})
+})
+
+app.get('/profile', (req, res) => {
+    res.render('pages/profile', { title: 'Profile'})
 })
 
 // Listen on Port 5000
