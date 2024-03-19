@@ -1,0 +1,60 @@
+<! Header template for every page. Possibly create two headers, one for admin or one for volunteer. 
+OR we could just disable reports and manage staff button and just have one header.
+>
+
+<body>
+  <! Thin black line at top>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
+
+  <! Main navbar>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+    <!Rise photo>
+    <a href="#" class="navbar-brand">
+      <img src="/public/assets/rise_logo.png" alt="" width="55" height="40" style="margin-left:20px">
+    </a>
+
+    <! Nav pills section>
+    <ul class="nav nav-pills ms-auto">
+
+      <! First button is dropdown for pantry dashboard. Contains home, register client(?), and add walk-in client>
+      <li class="nav-item dropdown">
+        <a 
+        class="nav-link dropdown-toggle <%= title === 'Pantry Dashboard' && 'active' %>"
+        href="#" data-bs-toggle="dropdown">Pantry Dashboard</a>
+        <div class="dropdown-menu">
+            <a href="/" class="dropdown-item">Home</a>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item">Register Client</a>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item">Add Walk-in Client</a>
+        </div>
+      </li>
+
+      <!Reports tab>
+      <li class="nav-item">
+          <a 
+          class="nav-link <%= title === 'Reports' && 'active' %>"
+          href="/reports ">Reports</a>
+      </li>
+
+      <! Manage Staff tab>
+      <li class="nav-item">
+          <a 
+          class="nav-link <%= title === 'Manage Staff' && 'active' %>"
+          href="/staff" >Manage Staff</a>
+      </li>
+
+      <! Profile Tab>
+      <li class="nav-item">
+        <a 
+        class="nav-link <%= title === 'Profile' && 'active' %>"
+        href="/profile" style="margin-right:20px">Profile</a>
+    </li>
+      
+    </ul>
+
+  </nav>
+
+
+</body>
