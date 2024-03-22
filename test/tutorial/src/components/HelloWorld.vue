@@ -4,13 +4,17 @@ console.log("hello princeton")
 
 import { ref } from 'vue'
 
+import { reactive } from "vue"
+
+const state = reactive({
+      name: "Por",
+    })
+
 defineProps({
   msg: String,
 })
 
 const count = ref(0);
-
-const name = ref(0);
 
 const incrementCount = () => {
 
@@ -38,15 +42,17 @@ const talker = () => {
   fetch(`/talk/`)
     .then((response) => {
       if (response.ok) {
-        return response.text();
+        return response.json();
       } else {
         throw new Error(`${response.status} ${response.statusText}`);
       }
     })
     .then((val) => {
-      name.value = val;
+      console.log(response["author"])
+      state.name = response["author"];
     })
     .catch((error) => {
+
       console.error(`Error: ${error.message}`);
     });
 
@@ -68,7 +74,7 @@ const talker = () => {
 
 <div class = "talker" @click="talker">
 
-Hello new component here {{ name }}  Por
+Hello new component here {{ state.name }}  Por
 </div>
 
   <p>
