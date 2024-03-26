@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <p>{{ msg }}</p>
+  <div class="container">
+    <button type="button" class="btn btn-primary">{{ msg }}</button>
   </div>
 </template>
 
@@ -11,7 +11,7 @@ export default {
   name: 'Ping',
   data() {
     return {
-      msg: '',
+      msg: 'Hello',
     };
   },
   methods: {
@@ -22,7 +22,6 @@ export default {
           this.msg = res.data;
         })
         .catch((error) => {
-
           console.error(error);
         });
     },

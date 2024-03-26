@@ -74,7 +74,7 @@ const talker = () => {
 
 <div class = "talker" @click="talker">
 
-Hello new component here {{ state.name }}  Por
+Hello new component here {{ state.name }}  
 </div>
 
   <p>
