@@ -54,7 +54,7 @@ def add_row():
 @app.route("/<path:path>")
 def catch_all(path):
     if app.debug:
-        return  requests.get('http://localhost:5173/{}'.format(path)).text
+        return requests.get('http://localhost:5173/{}'.format(path)).text
     return flask.render_template("index.html")
 
 # Run flask server
