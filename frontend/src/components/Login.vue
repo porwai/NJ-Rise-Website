@@ -2,7 +2,7 @@
 
 <template>
   <div class="text-center">
-    <img src="/src/assets/RiseLogo.png" style="max-width: 25%" class="mb-4" alt="NJ Rise logo">
+    <img src="/src/assets/RiseLogo.png" style="max-width: 8%" class="mb-4 mt-5" alt="NJ Rise logo">
     
     <h4 class="mb-5">Log in to Staff Dashboard </h4>    
   </div>
