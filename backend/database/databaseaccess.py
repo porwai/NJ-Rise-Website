@@ -14,7 +14,6 @@ _DATABASE_URL = _DATABASE_URL.replace("postgres://", "postgresql://")
 _engine = sqlalchemy.create_engine(_DATABASE_URL)
 Base = declarative_base()
 
-
 class t_client(Base):
     __tablename__ = "transactional_db"
     first_name = sqlalchemy.Column(sqlalchemy.String)

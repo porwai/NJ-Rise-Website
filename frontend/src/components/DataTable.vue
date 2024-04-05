@@ -1,38 +1,33 @@
 <!-- DataTable.vue -->
 <template>
-    <div class="container-fluid">
       <!-- Inline form using Bootstrap's row and col classes -->
-      <div class="row mb-4">
-        <div class="col">
+      <div class="row">
+        <div class="col-12 mb-2">
           <input type="text" v-model="first_name" placeholder="Firstname" class="form-control" @keyup.enter="handleQueryEvent" />
         </div>
-        <div class="col">
+        <div class="col-12 mb-2">
           <input type="text" v-model="last_name" placeholder="Lastname" class="form-control" @keyup.enter="handleQueryEvent" />
         </div>
-        <div class="col">
+        <div class="col-12 mb-2">
           <input type="text" v-model="client_id" placeholder="Client ID" class="form-control" @keyup.enter="handleQueryEvent" />
         </div>
-        <div class="col">
+        <div class="col-12 mb-2">
           <input type="text" v-model="phone" placeholder="Phone" class="form-control" @keyup.enter="handleQueryEvent" />
         </div>
-        <div class="col">
+        <div class="col-12 mb-2">
           <input type="text" v-model="dob" placeholder="dob" class="form-control" @keyup.enter="handleQueryEvent" />
         </div>
-      </div>
-  
-      <!-- Bootstrap-styled table -->
+      </div>      
+
+
       <table class="table table-striped">
         <thead>
           <tr>
-            <th>Firstname</th>
-            <th>Lastname</th>
-            <th>Client ID</th>
-            <th>Phone</th>
-            <th>dob</th>
+            <th v-if="clients.length > 0" v-for="header in Object.keys(clients[0])" :key="header">{{ header }}</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="client in clients" :key="client.clientid">
+          <tr v-for="client in clients" :key="client.clientid" @click="rowClicked(client)">
             <td>{{ client.first_name }}</td>
             <td>{{ client.last_name }}</td>
             <td>{{ client.client_id }}</td>
@@ -41,7 +36,30 @@
           </tr>
         </tbody>
       </table>
-    </div>
+
+      <!-- 
+      <table class="table table-striped">
+        <thead>
+          <tr v-for="clients in clients[0]" :key="client.clientid">
+            <th>Firstname</th>
+            <th>Lastname</th>
+            <th>Client ID</th>
+            <th>Phone</th>
+            <th>dob</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="client in clients" :key="client.clientid" @click="rowClicked(client)">
+            <td>{{ client.first_name }}</td>
+            <td>{{ client.last_name }}</td>
+            <td>{{ client.client_id }}</td>
+            <td>{{ client.phone }}</td>
+            <td>{{ client.dob }}</td>
+          </tr>
+        </tbody>
+      </table>
+      -->
+
   </template>
   
 <script>
@@ -57,7 +75,7 @@
             client_id: '',
             phone: '',
             dob: '',
-            clients: [],
+            clients: [{name: 'John', phone: '019283', dependents: 'wed'}],
             };
         },
 
@@ -80,7 +98,12 @@
                     dob: this.dob,
                 };
                 this.queryClients(payload);
+                this.handleClientDetailsEvent()
             },
+            
+            handleClientDetailsEvent() {
+              this.$emit('toggle-details')
+            }, 
         }
     }
 </script>
