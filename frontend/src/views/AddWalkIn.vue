@@ -110,31 +110,31 @@
           type="date" 
           v-model="dob" 
           value="Enter your date of birth" 
-        />
+        /><br>
         <span>Phone Number</span><br>
         <input 
-          type="tel" 
           v-model="phonenumber" 
+          type="tel" 
           value="Enter your phone number" 
-        />
+        /><br>
         <span>Email</span><br>
         <input 
           type="email" 
           v-model="email" 
           value="Enter your email" 
-        />
+        /><br>
         <span>Date</span><br>
         <input 
           type="date" 
           v-model="date" 
           value="Enter the date the client walked in." 
-        />
+        /><br>
         <span>Food Bags</span><br>
         <input 
           type="number" 
           v-model="foodbags" 
           value="Enter the number of food bags the client received." 
-        />
+        /><br>
         
         <input 
           class="submit" 
