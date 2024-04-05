@@ -67,19 +67,6 @@ def catch_all(path):
         return requests.get('http://localhost:5173/{}'.format(path)).text
     return flask.render_template("index.html")
 
-
-CREATE TABLE transactional_db (
-    client_type VARCHAR(255),
-    first_name VARCHAR(255),
-    last_name VARCHAR(255),
-    phone BIGINT,
-    DOB DATE,
-    client_id INT,
-    visit_date_list DATE[],
-    special_item_list TEXT[],
-    transactional_id SERIAL PRIMARY KEY
-);
-
 @app.route('/api/add', methods = ['POST'])
 def delete_row():
 
