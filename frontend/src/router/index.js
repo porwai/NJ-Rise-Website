@@ -35,6 +35,11 @@ const router = createRouter({
       path: '/search',
       name: 'search',
       component: () => import('../views/HomeView.vue')
+    },
+    {
+      path: '/addwalkin',
+      name: 'addwalkin',
+      component: AddWalkIn
     }
   ]
 })
