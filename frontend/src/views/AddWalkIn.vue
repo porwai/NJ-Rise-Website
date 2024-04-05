@@ -157,6 +157,7 @@
   </template>
   <script>
     export default {
+      name: 'addwalkin',
       data() {
         return {
           firstname: "",
@@ -207,11 +208,7 @@
   
   </style>
 
-<script>
-export default {
-    name: 'addwalkin'
-}
-</script>
+
 
 <!-- <template>
     <h2>Add Client Information</h2>
