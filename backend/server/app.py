@@ -4,11 +4,9 @@ import requests
 #from flask_cors import CORS
 from database import databaseaccess as db
 
-
 app = Flask(__name__, static_folder="../../frontend/dist/static", template_folder="../../frontend/dist", static_url_path="/static")
 app.config.from_object(__name__)
 #CORS(app, resources={r'/*': {'origins': '*'}})
-
 
 # search for the user 
 @app.route('/api/search', methods=['GET', 'POST'])
@@ -50,6 +48,18 @@ def add_row():
 
     return
 
+# Delete entry for the user
+@app.route('/api/delete', methods = ['POST'])
+def delete_row():
+
+    transactional_id = flask.request.args.get("transactional_id")
+
+    try:
+        db.delete_row(transactional_id)
+
+    except Exception as ex:
+        raise Exception(ex)
+
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
 def catch_all(path):
@@ -60,7 +70,6 @@ def catch_all(path):
 # Run flask server
 if __name__ == '__main__':
     app.run()
-
 
 
 # @app.route('/search/get_query', methods=['GET'])
@@ -86,3 +95,4 @@ if __name__ == '__main__':
 #     response_object = db.update_client(transactional_id, new_visit_date, special_item_list)
 
 #     return flask.jsonify(response_object)
+

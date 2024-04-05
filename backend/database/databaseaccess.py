@@ -77,21 +77,37 @@ def update_client (transactional_id: str, new_visit_date: str, special_item_list
 
         # Select current visit_date_list
         query = session.query(t_client).filter(t_client.transactional_id == transactional_id)
+        query = query.one()
+        query.visit_date_list.insert(new_visit_date)
+        query.commit()
 
-        # Add new visit date
-        visit_date_list = query.all()[0]["visit_date_list"]
-        visit_date_list = visit_date_list.insert(0, new_visit_date)
+        # # Add new visit date
+        # visit_date_list = query.all()[0]["visit_date_list"]
+        # visit_date_list = visit_date_list.insert(0, new_visit_date)
 
-        # Update database value for visit_date_list
-        u = update(t_client)
-        u = u.values({
-            "visit_date_list": visit_date_list,
-            "special_item_list": special_item_list,
-        })
-        u = u.where(t_client.c.transactional_id == transactional_id)
+        # # Update database value for visit_date_list
+        # u = update(t_client)
+        # u = u.values({
+        #     "visit_date_list": visit_date_list,
+        #     "special_item_list": special_item_list,
+        # })
+        # u = u.where(t_client.c.transactional_id == transactional_id)
 
-        # Execute changes
-        _engine.execute(u)
+        # # Execute changes
+        # _engine.execute(u)
+
+
+# Delete client from database
+def delete_client (transactional_id: str):
+
+    with sqlalchemy.orm.Session(_engine) as session:
+
+        # Select relevant row
+        x = session.query(t_client).filter(t_client.transactional_id == transactional_id)
+
+        # Delete and commit
+        session.delete(x)
+        session.commit()    
  
         
 
