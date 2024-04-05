@@ -4,11 +4,9 @@ import requests
 #from flask_cors import CORS
 from database import databaseaccess as db
 
-
 app = Flask(__name__, static_folder="../../frontend/dist/static", template_folder="../../frontend/dist", static_url_path="/static")
 app.config.from_object(__name__)
 #CORS(app, resources={r'/*': {'origins': '*'}})
-
 
 # search for the user 
 @app.route('/api/search', methods=['GET', 'POST'])
@@ -50,6 +48,18 @@ def add_row():
 
     return
 
+# Delete entry for the user
+@app.route('/api/delete', methods = ['POST'])
+def delete_row():
+
+    transactional_id = flask.request.args.get("transactional_id")
+
+    try:
+        db.delete_row(transactional_id)
+
+    except Exception as ex:
+        raise Exception(ex)
+
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
 def catch_all(path):
@@ -57,10 +67,38 @@ def catch_all(path):
         return requests.get('http://localhost:5173/{}'.format(path)).text
     return flask.render_template("index.html")
 
+
+CREATE TABLE transactional_db (
+    client_type VARCHAR(255),
+    first_name VARCHAR(255),
+    last_name VARCHAR(255),
+    phone BIGINT,
+    DOB DATE,
+    client_id INT,
+    visit_date_list DATE[],
+    special_item_list TEXT[],
+    transactional_id SERIAL PRIMARY KEY
+);
+
+@app.route('/api/add', methods = ['POST'])
+def delete_row():
+
+    client_type = flask.request.args.get("client_type")
+    first_name = flask.request.args.get("first_name")
+    last_name = flask.request.args.get("last_name")
+    phone = flask.request.args.get("phone")
+    DOB = flask.request.args.get("DOB")
+    visit_date_list = flask.request.args.get("visit_date_list")
+
+    try:
+        db.add(client_type, first_name, last_name, phone, DOB, visit_date_list)
+
+    except Exception as ex:
+        raise Exception(ex)
+    
 # Run flask server
 if __name__ == '__main__':
     app.run()
-
 
 
 # @app.route('/search/get_query', methods=['GET'])
@@ -86,3 +124,4 @@ if __name__ == '__main__':
 #     response_object = db.update_client(transactional_id, new_visit_date, special_item_list)
 
 #     return flask.jsonify(response_object)
+

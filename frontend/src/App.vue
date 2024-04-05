@@ -6,7 +6,10 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 </script>
 
 <template>
-  <NavBar />
+  <header>
+    <NavBar />
+  </header>
+
   <div class="container-fluid">
     <RouterView />
   </div>

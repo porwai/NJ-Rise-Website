@@ -34,7 +34,7 @@ const router = createRouter({
     {
       path: '/search',
       name: 'search',
-      component: DataTable
+      component: () => import('../views/HomeView.vue')
     }
   ]
 })
