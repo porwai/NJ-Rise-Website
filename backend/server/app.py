@@ -34,17 +34,15 @@ def search():
     return flask.jsonify(response_object)
 
 # add row for the user
-@app.route('/api/add', methods = ['POST'])
-def add_row():
-    client_id = flask.request.args.get('client_id', '')
-    first_name = flask.request.args.get('first_name', '')
-    last_name = flask.request.args.get('last_name', '')
-    phone = flask.request.args.get('phone', '')
-    dob = flask.request.args.get('dob', '')
-    special_item_list = flask.request.args.get('special_item_list', '')
-    new_date = flask.request.args.get('new_date', '')
-
-    error = db.get_client(client_id, first_name, last_name, phone, dob, special_item_list, new_date)
+@app.route('/api/newdate', methods = ['POST'])
+def add_date():
+    transactional_id = flask.request.args.get('transactional_id')
+    special_item_list = flask.request.args.get('special_item_list')
+    new_visit_date = flask.request.args.get('new_visit_date')
+    try:
+        db.update_client(transactional_id, new_visit_date, special_item_list)
+    except Exception as ex:
+        raise Exception (ex)
 
     return
 
@@ -68,7 +66,7 @@ def catch_all(path):
     return flask.render_template("index.html")
 
 @app.route('/api/add', methods = ['POST'])
-def delete_row():
+def add_client():
 
     client_type = flask.request.args.get("client_type")
     first_name = flask.request.args.get("first_name")
