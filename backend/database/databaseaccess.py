@@ -26,7 +26,7 @@ class t_client(Base):
     special_item_list = sqlalchemy.Column(sqlalchemy.ARRAY(sqlalchemy.String))
 
     # PRIMARY KEY to identify instances in transactional_db table
-    transactional_id = sqlalchemy.Column(sqlalchemy.String, primary_key= True)
+    transactional_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key= True, autoincrement=True)
     
 def get_client (client_id: str, first_name: str, last_name: str, phone: str, dob: str):
     # SQL QUERY SCHEMA
@@ -64,7 +64,7 @@ def get_client (client_id: str, first_name: str, last_name: str, phone: str, dob
     return res
 
 # Update Special items or visit_date_list
-def update_client (transactional_id: str, new_visit_date: str, special_item_list: List[str]):
+def update_client (transactional_id: int, new_visit_date: str, special_item_list: List[str]):
     # SQL Query SCHEMA
     '''
     UPDATE transactional_db
@@ -98,7 +98,7 @@ def update_client (transactional_id: str, new_visit_date: str, special_item_list
 
 
 # Delete client from database
-def delete_client (transactional_id: str):
+def delete_client (transactional_id: int):
 
     with sqlalchemy.orm.Session(_engine) as session:
 
@@ -108,6 +108,27 @@ def delete_client (transactional_id: str):
         # Delete and commit
         session.delete(x)
         session.commit()    
+def add_client (c_type: str, f_name: str, l_name:str, p: str, dob: str, v_d_l: str):
+    with sqlalchemy.orm.Session(_engine) as session:
+        if c_type is None:
+            c_type = ''
+        if f_name is None:
+            f_name = ''
+        if l_name is None:
+            l_name = ''
+        if p is None:
+            p = ''
+        if dob is None:
+            dob = ''
+        if v_d_l is None:
+            v_d_l = ''
+        visit_history = [v_d_l]
+        # Select relevant row
+        new_client = t_client(client_type=c_type, first_name=f_name, last_name=l_name, phone=p, DOB=dob, visit_date_list = visit_history)
+        session.add(new_client)
+        session.commit()
+
+        
  
         
 

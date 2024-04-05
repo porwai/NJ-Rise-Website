@@ -67,6 +67,35 @@ def catch_all(path):
         return requests.get('http://localhost:5173/{}'.format(path)).text
     return flask.render_template("index.html")
 
+
+CREATE TABLE transactional_db (
+    client_type VARCHAR(255),
+    first_name VARCHAR(255),
+    last_name VARCHAR(255),
+    phone BIGINT,
+    DOB DATE,
+    client_id INT,
+    visit_date_list DATE[],
+    special_item_list TEXT[],
+    transactional_id SERIAL PRIMARY KEY
+);
+
+@app.route('/api/add', methods = ['POST'])
+def delete_row():
+
+    client_type = flask.request.args.get("client_type")
+    first_name = flask.request.args.get("first_name")
+    last_name = flask.request.args.get("last_name")
+    phone = flask.request.args.get("phone")
+    DOB = flask.request.args.get("DOB")
+    visit_date_list = flask.request.args.get("visit_date_list")
+
+    try:
+        db.add(client_type, first_name, last_name, phone, DOB, visit_date_list)
+
+    except Exception as ex:
+        raise Exception(ex)
+    
 # Run flask server
 if __name__ == '__main__':
     app.run()
