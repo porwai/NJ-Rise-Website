@@ -36,14 +36,16 @@ def search():
 # add row for the user
 @app.route('/api/newdate', methods = ['POST'])
 def add_date():
-    transactional_id = flask.request.args.get('transactional_id')
-    special_item_list = flask.request.args.get('special_item_list')
-    new_visit_date = flask.request.args.get('new_visit_date')
-    try:
-        db.update_client(transactional_id, new_visit_date, special_item_list)
-    except Exception as ex:
-        raise Exception (ex)
-
+    get_data = flask.request.get_json()
+    if flask.request.method == 'POST':
+        transactional_id = get_data.get('transactional_id')
+        special_item_list = get_data.get('special_item_list')
+        new_visit_date = get_data.get('new_visit_date')
+        try:
+            db.update_client(transactional_id, new_visit_date, special_item_list)
+            return flask.jsonify("success")
+        except Exception as ex:
+            raise Exception (ex)
     return
 
 # Delete entry for the user

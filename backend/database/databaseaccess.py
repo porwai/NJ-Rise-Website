@@ -78,8 +78,14 @@ def update_client (transactional_id: int, new_visit_date: str, special_item_list
         # Select current visit_date_list
         query = session.query(t_client).filter(t_client.transactional_id == transactional_id)
         query = query.one()
-        query.visit_date_list.insert(new_visit_date)
-        query.commit()
+        visit_date_copy = list(query.visit_date_list)
+        visit_date_copy.append(new_visit_date)
+        query.visit_date_list = visit_date_copy
+        query = session.query(t_client).filter(t_client.transactional_id == transactional_id)
+        query = query.one()
+        query.special_item_list = special_item_list
+        session.commit()
+        
 
         # # Add new visit date
         # visit_date_list = query.all()[0]["visit_date_list"]
