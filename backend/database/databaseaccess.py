@@ -114,7 +114,8 @@ def delete_client (transactional_id: int):
         # Delete and commit
         session.delete(x)
         session.commit()    
-def add_client (c_type: str, f_name: str, l_name:str, p: str, dob: str, v_d_l: str):
+
+def add_client (c_type: str, f_name: str, l_name:str, p: str, date: str, v_d_l: str):
     with sqlalchemy.orm.Session(_engine) as session:
         if c_type is None:
             c_type = ''
@@ -124,13 +125,13 @@ def add_client (c_type: str, f_name: str, l_name:str, p: str, dob: str, v_d_l: s
             l_name = ''
         if p is None:
             p = ''
-        if dob is None:
-            dob = ''
+        if date is None:
+            date = ''
         if v_d_l is None:
             v_d_l = ''
         visit_history = [v_d_l]
         # Select relevant row
-        new_client = t_client(client_type=c_type, first_name=f_name, last_name=l_name, phone=p, DOB=dob, visit_date_list = visit_history)
+        new_client = t_client(client_type=c_type, first_name=f_name, last_name=l_name, phone=p, dob=date, visit_date_list = visit_history)
         session.add(new_client)
         session.commit()
 

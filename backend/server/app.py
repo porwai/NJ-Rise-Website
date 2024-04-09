@@ -70,16 +70,17 @@ def catch_all(path):
 @app.route('/api/add', methods = ['POST'])
 def add_client():
 
-    client_type = flask.request.args.get("client_type")
-    first_name = flask.request.args.get("first_name")
-    last_name = flask.request.args.get("last_name")
-    phone = flask.request.args.get("phone")
-    DOB = flask.request.args.get("DOB")
-    visit_date_list = flask.request.args.get("visit_date_list")
-
+    get_data = flask.request.get_json()
+    if flask.request.method == 'POST':
+        client_type = get_data.get("client_type")
+        first_name = get_data.get("first_name")
+        last_name = get_data.get("last_name")
+        phone = get_data.get("phone")
+        dob = get_data.get("DOB")
+        visit_date_list = get_data.get("visit_date_list")
     try:
-        db.add(client_type, first_name, last_name, phone, DOB, visit_date_list)
-
+        db.add_client(client_type, first_name, last_name, phone, dob, visit_date_list)
+        return flask.jsonify("success")
     except Exception as ex:
         raise Exception(ex)
     
