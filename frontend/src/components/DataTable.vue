@@ -161,14 +161,14 @@
           <input type="text" v-model="dob" placeholder="Date of Birth" class="form-control" @keyup.enter="handleQueryEvent" />
         </div>
       </div>      
-
+    
   <div class="table-wrapper scrollable-table">
     <div class="table-title">
-        <div class="row ">
+        <div class="row">
             <div class="col-sm-6">
                 <h1 style="padding-left: 15px;">Query Matches: <b>{{clients.length}}</b></h1>
             </div>
-            <div class="col-sm-6 d-flex justify-content-end button-group">
+            <div class="col-sm-6 button-group d-flex justify-content-end">
                 <a href="/search" class="btn btn-warning" data-toggle="modal">
                     <font-awesome-icon :icon="['fas', 'plus']" /> <span>Advanced Search</span>
                 </a>
@@ -179,8 +179,8 @@
             </div>
         </div>
     </div>
-
-    <table class="table table-bordered table-striped table-hover">
+    <br>
+    <table class="table table-bordered table-hover">
         <thead>
             <tr>
                 <th><input type="checkbox" class="checkbox" :checked="allSelected" @click="selectAllClients"/></th>

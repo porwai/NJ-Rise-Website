@@ -14,6 +14,7 @@ function UserDetailScreen() {
   <main>
     <div class="container-fluid">
       <div class="row">
+        
         <!-- Utilize computed classes for column sizes based on showDetails prop -->
         <div :class="showDetails ? 'col' : 'col-sm-12'">
           <DataTable
@@ -22,6 +23,7 @@ function UserDetailScreen() {
             @toggle-details="UserDetailScreen"
           />
         </div>
+
         <!-- Conditional rendering for UserDetails component -->
         <div class="col-sm-6" v-if="showDetails">
           <UserDetails 

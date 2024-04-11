@@ -1,9 +1,6 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import NavBar from './components/navbar.vue'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
-
 import { ref } from 'vue';
 const adminprivlage = ref(false); // Assumes that 
 </script>
