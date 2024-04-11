@@ -20,14 +20,44 @@
 
     <h1>Visit History</h1>
 
-    <table class="table">
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>visit date</th>
+                <th>baby supplies</th>
+                <th>cleaning</th>
+                <th>food bags</th>
+                <th>gift items</th>
+                <th>other</th>
+                <th>personal care</th>
+                <th>pet food</th>
+                <th>pj</th>
+                <th>summer feeding</th>
+                <th>t id</th>
+                <th>visit id</th>
+                <th>winter</th>
+            </tr>
+        </thead>
         <tbody>
-          <tr v-for="(value, key) in curr_details" :key="key">
-            <th>{{ key }}</th>
-            <td>{{ value }}</td>
-          </tr>
+            <tr v-for="visit_date in curr_details.history" :key="visit_date.t_id">
+                <td>{{ visit_date.visit_date }}</td>
+                <td>{{ visit_date.baby_supplies }}</td>
+                <td>{{ visit_date.cleaning }}</td>
+                <td>{{ visit_date.food_bags }}</td>
+                <td>{{ visit_date.gift_items }}</td>
+                <td>{{ visit_date.other }}</td>
+                <td>{{ visit_date.personal_care }}</td>
+                <td>{{ visit_date.pet_food }}</td>
+                <td>{{ visit_date.pj }}</td>
+                <td>{{ visit_date.summer_feeding }}</td>
+                <td>{{ visit_date.t_id }}</td>
+                <td>{{ visit_date.visit_id }}</td>
+                <td>{{ visit_date.winter }}</td>
+            </tr>
         </tbody>
     </table>
+  </div>
 
     <!-- Button to Open the Modal -->
     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#newVisit">
@@ -123,7 +153,7 @@
           </div>
         </form>
       </div>
-
+      
       <!-- Modal footer -->
       <div class="modal-footer">
         <button type="button" class="btn btn-success" data-dismiss="modal">Add New Visit</button>
@@ -132,9 +162,6 @@
     </div>
   </div>
 </div>
-
-    #yyyy-mm-dd
-
 
 	  </div>
 	</div>
@@ -163,7 +190,8 @@
   export default {
     data() {
         return {
-            test_data: {"por" : "sdf"}
+            test_data: [ { "baby_supplies": 1, "cleaning": 0, "food_bags": 5, "gift_items": 0, "other": 0, "personal_care": 0, "pet_food": 1, "pj": 0, "summer_feeding": null, "t_id": 1, "visit_date": "Sat, 06 Jan 2024 00:00:00 GMT", "visit_id": 1, "winter": 0 } ]
+
         };
     },
 	name: 'UserDetails',
