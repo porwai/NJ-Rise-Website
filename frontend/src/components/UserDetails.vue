@@ -1,64 +1,69 @@
-<!-- UserDetails.vue -->
-
 <template>
-    <div class = "container-fluid">
-        <h1>John Doe</h1>
-        <h2>123456789</h2>
-        <div class = "table-responsive" style="max-height: 300px; overflow-y: scroll;">
+	<br>
+	<div class="card h-100 w-100">
+	  <div class="card-header">
+		<button type="button" class="close" aria-label="Close" @click="closeCard">
+		  <span aria-hidden="true">&times;</span>
+		</button>
+	  </div>
+	  <div class="card-body d-flex flex-column">
+		<h1>{{curr_details.first_name + " " + curr_details.last_name}}</h1>
+		<p>Client ID: {{curr_details.client_id}}</p>
 
-<!-- very inefficient - vue is not good with tables with column headers -->
-<b-table class = "table table-striped">
-    <tbody>
-        <tr v-for="detail in details" :key="detail.clientid">
-            <td><b> phone </b></td>
-            <td> {{detail.phone}} </td>
-        </tr>
-        <tr v-for="detail in details" :key="detail.clientid">
-            <td><b> dependents </b></td>
-            <td> {{detail.dependents}} </td>
-        </tr>
-    </tbody>
-</b-table>
-</div>
+        
+		<table class="table">
+        <tbody>
+          <tr v-for="(value, key) in curr_details" :key="key">
+            <th>{{ key }}</th>
+            <td>{{ value }}</td>
+          </tr>
+        </tbody>
+      </table>
 
-<h2>Visitation Log</h2>
-        <div class = "table-responsive" style="max-height: 300px; overflow-y: scroll;">
+      <h1>Visit History</h1>
 
-        <b-table class ="table table-striped">
-            <thead>
-                <tr>
-                    <th>Date/Time</th>
-                    <th>Weekday</th>
-                    <th>Food Bags</th>
-                    <th>Baby Supplies</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="client in clients" :key="client.clientid">
-                    <td> {{ client.date }}</td>
-                    <td> {{ client.weekday }}</td>
-                    <td> {{ client.foodbags }}</td>
-                </tr>
-            </tbody>
-        </b-table>
-    </div>
-    </div>
-</template>
+	  </div>
+	</div>
+  </template>
+  
+  <style scoped>
+  .card {
+	min-height: 87vh; /* Make card at least the height of the viewport */
+	border-radius: 0.25rem; /* Rounded corners */
+  }
 
-<script>
-    export default {
-        name: 'userdetails',
-        data() {
-            return {
-                details: [
-                    {phone: '019283', dependents: 'wed'}
-                ],
-                clients: [
-                    {date: '019283', weekday: 'wed', foodbags: '5'},
-                    {date: '019283', weekday: 'wed', foodbags: '5'},
-                    {date: '019283', weekday: 'wed', foodbags: '5'}
-                ],
-            };
-        },
-    }
-</script>
+  .card-body {
+	padding: 1.25rem; /* Appropriate padding */
+  }
+
+  .card-header {
+  background-color: white;
+  border-bottom: 0; 
+  padding-bottom: 0;
+  margin-bottom: 0;
+  }
+  </style>
+
+  <script>
+  export default {
+    data() {
+        return {
+            test_data: {"por" : "sdf"}
+        };
+    },
+	name: 'UserDetails',
+	props: {
+        curr_details: {
+            type: Object,
+            required: true,
+            default: () => ({})  // Provides an empty object by default
+        }
+    },
+	methods: {
+	  closeCard() {
+		this.$emit('toggle-details')
+	  }
+	}
+  };
+  </script>
+  

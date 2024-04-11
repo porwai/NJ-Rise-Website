@@ -5,28 +5,51 @@ import DataTable from '../components/DataTable.vue'
 
 const showDetails = ref(false);
 
-function receiveDetails() {
-  showDetails.value = !showDetails.value;
-  console.log(showDetails.value)
+function UserDetailScreen() {
+  showDetails.value = !showDetails.value; // Toggle visibility of UserDetails
 }
 </script>
 
 <template>
   <main>
     <div class="container-fluid">
-        <transition name="fade">
-        <div class="row">
-          <div :class="showDetails ? 'col-sm-6' : 'col-sm-12'">
-            <DataTable @toggle-details="receiveDetails" />
-          </div>
-          <transition name="slide-fade">
-            <div class="col-sm-6" v-if="showDetails">
-              <UserDetails />
-            </div>
-          </transition>
+      <div class="row">
+        <!-- Utilize computed classes for column sizes based on showDetails prop -->
+        <div :class="showDetails ? 'col' : 'col-sm-12'">
+          <DataTable
+            @new-client-request="handleNewClient"
+            :show-details="showDetails"
+            @toggle-details="UserDetailScreen"
+          />
         </div>
-      </transition>
+        <!-- Conditional rendering for UserDetails component -->
+        <div class="col-sm-6" v-if="showDetails">
+          <UserDetails 
+            v-bind:curr_details="curr_details"
+            @toggle-details="UserDetailScreen"
+          />
+        </div>
+      </div>
     </div>
   </main>
 </template>
 
+
+<script>
+export default {
+  components: {
+    DataTable, 
+    UserDetails
+  },
+  data() {
+    return {
+      curr_details: {Por : "dfs"}
+    };
+  }, 
+  methods: {
+    handleNewClient(newDetails) {
+      this.curr_details = newDetails; // Updating the prop value based on child's request
+    }
+  }
+}
+</script>
