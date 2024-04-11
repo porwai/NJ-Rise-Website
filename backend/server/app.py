@@ -3,6 +3,7 @@ from flask import Flask
 import requests
 #from flask_cors import CORS
 from database import databaseaccess as db
+from database import user_login as user_db
 
 app = Flask(__name__, static_folder="../../frontend/dist/static", template_folder="../../frontend/dist", static_url_path="/static")
 app.config.from_object(__name__)
@@ -67,6 +68,33 @@ def delete_row():
 
     except Exception as ex:
         raise Exception(ex)
+
+
+# Login reroute
+@app.route('/api/login', methods = ["POST"])
+def login():
+
+    # JSON schema
+    # {
+    #     "username": <username>,
+    #     "password": <password>
+    # }
+    get_data = flask.request.get_json()
+
+    # A matching login will return true in response object
+    try:
+        response_object = user_db.check_user(get_data["username"], get_data["password"])
+
+    except Exception as ex:
+        print("debug: login failed:", ex)
+        response_object = False
+    
+    # Return JSON Schema
+    # {
+    # "status": <True or False>
+    # }
+    return flask.jsonify(response_object)
+
 
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
