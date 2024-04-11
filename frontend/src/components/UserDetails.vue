@@ -1,15 +1,14 @@
 <template>
 	<br>
 	<div class="card h-100 w-100">
-	  <div class="card-header">
-		<button type="button" class="close" aria-label="Close" @click="closeCard">
+	  <div class="card-header d-flex justify-content-end">
+      <button type="button" class="close" aria-label="Close" @click="closeCard" style="border: none; background-color: white;">
 		  <span aria-hidden="true">&times;</span>
 		</button>
 	  </div>
 	  <div class="card-body d-flex flex-column">
 		<h1>{{curr_details.first_name + " " + curr_details.last_name}}</h1>
 		<p>Client ID: {{curr_details.client_id}}</p>
-
         
 		<table class="table">
         <tbody>
@@ -38,6 +37,7 @@
 
   .card-header {
   background-color: white;
+  border: none;
   border-bottom: 0; 
   padding-bottom: 0;
   margin-bottom: 0;
