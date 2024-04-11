@@ -9,6 +9,15 @@ app = Flask(__name__, static_folder="../../frontend/dist/static", template_folde
 app.config.from_object(__name__)
 #CORS(app, resources={r'/*': {'origins': '*'}})
 
+# Set up Flask login manager
+from flask_login import LoginManager
+from flask_login import login_required
+from flask_login import User
+import flask_login
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+
 # search for the user 
 @app.route('/api/search', methods=['GET', 'POST'])
 def search():
@@ -94,6 +103,24 @@ def login():
     # "status": <True or False>
     # }
     return flask.jsonify(response_object)
+
+
+@app.route("/logout")
+@login_required
+def logout():
+    flask_login.logout_user()
+    return flask_login.redirect("/login")
+
+# Flask template code to get user session id
+
+# Instantiate a generic user session Object
+class User(flask_login.UserMixin):
+    def __init__(self):
+        super().__init__()
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.get(user_id)
 
 
 @app.route("/", defaults={"path": ""})
