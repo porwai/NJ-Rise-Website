@@ -88,6 +88,8 @@
 </template>
 
   <script>
+    import axios from 'axios';
+
     export default {
       name: 'addwalkin',
       data() {
@@ -105,7 +107,24 @@
       methods: {
         submitForm: function () {
           this.formSubmitted = true
-        }
+          const payload = {
+                    first_name: this.firstname,
+                    last_name: this.lastname,
+                    phone: this.phonenumber,
+                    dob: this.dob,
+                    date:this.date,
+                    foodbags:this.foodbags
+                };
+          this.addClients(payload);
+        },
+        addClients(payload) {
+                axios.post('http://127.0.0.1:5000/api/add', payload)
+                .then(() => {
+                }).catch((error) => {
+                    console.error(error);
+                    // Consider adding user-facing error handling here
+                });
+            }
       },
     };
   </script>

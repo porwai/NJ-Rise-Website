@@ -74,21 +74,14 @@ def get_client (client_id: str, first_name: str, last_name: str, phone: str, dob
             query = session.query(t_client).filter(t_client.first_name.like(first_name), t_client.last_name.like(last_name), t_client.dob.like(dob), t_client.phone.like(phone))        
     res = []
     for u in query.all():
-        history = session.query(t_history).filter(u.transactional_id == t_history.t_id).all()
-        h = []
-        for visit in history:
-            visit = visit.__dict__
-            del visit["_sa_instance_state"]
-            h.append(visit)
         u = u.__dict__
-        u['history'] = h
         del u["_sa_instance_state"]
         res.append(u)
     return res
 
 # Update Special items or visit_date_list
-def update_client (transactional_id: int, new_visit_date: str, f_bags: int, b_supplies: int, p_food: int, g_items: int, c: int, 
-                   p_care: int, p: int, w: int, o: int ):
+def update_client (transactional_id: int, new_visit_date: str, f_bags=0, b_supplies=0, p_food=0, g_items=0, c=0, 
+                   p_care=0, p=0, w=0, o=0):
     # SQL Query SCHEMA
     '''
     UPDATE transactional_db
@@ -136,25 +129,32 @@ def delete_client (transactional_id: int):
         session.delete(x)
         session.commit()    
 
-def add_client (c_type: str, f_name: str, l_name:str, p: str, date: str):
+def add_client (f_name: str, l_name:str, p: str, dob_date: str, date:str, foodbags: int):
+    id = 0
     with sqlalchemy.orm.Session(_engine) as session:
-        if c_type is None:
-            c_type = ''
         if f_name is None:
             f_name = ''
         if l_name is None:
             l_name = ''
         if p is None:
             p = ''
-        if date is None:
-            date = ''
+        if dob_date is None:
+            dob_date = ''
         # Select relevant row
-        new_client = t_client(client_type=c_type, first_name=f_name, last_name=l_name, phone=p, dob=date)
+        new_client = t_client(first_name=f_name, last_name=l_name, phone=p, dob=dob_date)
         session.add(new_client)
         session.commit()
+        id = new_client.transactional_id
+    update_client(transactional_id=id, new_visit_date=date, f_bags=foodbags)
 
-        
- 
-        
+def get_history (id: int):
+    with sqlalchemy.orm.Session(_engine) as session:
+        history = session.query(t_history).filter(t_history.t_id == id).all()
+    h = []
+    for visit in history:
+        visit = visit.__dict__
+        del visit["_sa_instance_state"]
+        h.append(visit)
+    return h
 
 

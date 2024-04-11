@@ -135,16 +135,28 @@ def add_client():
 
     get_data = flask.request.get_json()
     if flask.request.method == 'POST':
-        client_type = get_data.get("client_type")
         first_name = get_data.get("first_name")
         last_name = get_data.get("last_name")
         phone = get_data.get("phone")
-        dob = get_data.get("DOB")
+        dob = get_data.get("dob")
+        date = get_data.get("date")
+        foodbags = get_data.get("foodbags")
     try:
-        db.add_client(client_type, first_name, last_name, phone, dob)
+        db.add_client(first_name, last_name, phone, dob, date, foodbags)
     except Exception as ex:
         raise Exception(ex)
     
+@app.route('/api/history', methods = ['POST'])
+def get_visit_history():
+    get_data = flask.request.get_json()
+    if flask.request.method == 'POST':
+        id = get_data.get("transactional_id")
+        try:
+            response_object = db.get_history(id)
+        except Exception as ex:
+            raise Exception(ex)
+    return flask.jsonify(response_object)
+
 # Run flask server
 if __name__ == '__main__':
     app.run()
