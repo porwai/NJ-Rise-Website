@@ -91,6 +91,17 @@ def add_client():
     except Exception as ex:
         raise Exception(ex)
     
+@app.route('/api/history', methods = ['POST'])
+def add_client():
+    get_data = flask.request.get_json()
+    if flask.request.method == 'POST':
+        id = get_data.get("transactional_id")
+        try:
+            response_object = db.get_history(id)
+        except Exception as ex:
+            raise Exception(ex)
+    return flask.jsonify(response_object)
+
 # Run flask server
 if __name__ == '__main__':
     app.run()

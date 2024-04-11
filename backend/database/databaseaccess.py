@@ -74,14 +74,7 @@ def get_client (client_id: str, first_name: str, last_name: str, phone: str, dob
             query = session.query(t_client).filter(t_client.first_name.like(first_name), t_client.last_name.like(last_name), t_client.dob.like(dob), t_client.phone.like(phone))        
     res = []
     for u in query.all():
-        history = session.query(t_history).filter(u.transactional_id == t_history.t_id).all()
-        h = []
-        for visit in history:
-            visit = visit.__dict__
-            del visit["_sa_instance_state"]
-            h.append(visit)
         u = u.__dict__
-        u['history'] = h
         del u["_sa_instance_state"]
         res.append(u)
     return res
@@ -154,8 +147,14 @@ def add_client (f_name: str, l_name:str, p: str, dob_date: str, date:str, foodba
         id = new_client.transactional_id
     update_client(transactional_id=id, new_visit_date=date, f_bags=foodbags)
 
-        
- 
-        
+def get_history (id: int):
+    with sqlalchemy.orm.Session(_engine) as session:
+        history = session.query(t_history).filter(t_history.t_id == id).all()
+    h = []
+    for visit in history:
+        visit = visit.__dict__
+        del visit["_sa_instance_state"]
+        h.append(visit)
+    return h
 
 
