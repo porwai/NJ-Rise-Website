@@ -92,7 +92,7 @@ def add_client():
         raise Exception(ex)
     
 @app.route('/api/history', methods = ['POST'])
-def add_client():
+def get_visit_history():
     get_data = flask.request.get_json()
     if flask.request.method == 'POST':
         id = get_data.get("transactional_id")
