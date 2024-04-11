@@ -36,14 +36,24 @@ def search():
 # add row for the user
 @app.route('/api/newdate', methods = ['POST'])
 def add_date():
-    transactional_id = flask.request.args.get('transactional_id')
-    special_item_list = flask.request.args.get('special_item_list')
-    new_visit_date = flask.request.args.get('new_visit_date')
-    try:
-        db.update_client(transactional_id, new_visit_date, special_item_list)
-    except Exception as ex:
-        raise Exception (ex)
-
+    get_data = flask.request.get_json()
+    if flask.request.method == 'POST':
+        transactional_id = get_data.get('transactional_id')
+        new_visit_date = get_data.get('new_visit_date')
+        f_bags = get_data.get('f_bags')
+        b_supplies = get_data.get('b_supplies')
+        p_food = get_data.get('p_food')
+        g_items = get_data.get('g_items')
+        c = get_data.get('c')
+        p_care = get_data.get('p_care')
+        p = get_data.get('p')
+        w = get_data.get('w')
+        o = get_data.get('o')
+        try:
+            db.update_client(transactional_id, new_visit_date, f_bags, b_supplies, p_food, g_items, c, 
+                   p_care, p, w, o )
+        except Exception as ex:
+            raise Exception (ex)
     return
 
 # Delete entry for the user
@@ -68,16 +78,15 @@ def catch_all(path):
 @app.route('/api/add', methods = ['POST'])
 def add_client():
 
-    client_type = flask.request.args.get("client_type")
-    first_name = flask.request.args.get("first_name")
-    last_name = flask.request.args.get("last_name")
-    phone = flask.request.args.get("phone")
-    DOB = flask.request.args.get("DOB")
-    visit_date_list = flask.request.args.get("visit_date_list")
-
+    get_data = flask.request.get_json()
+    if flask.request.method == 'POST':
+        client_type = get_data.get("client_type")
+        first_name = get_data.get("first_name")
+        last_name = get_data.get("last_name")
+        phone = get_data.get("phone")
+        dob = get_data.get("DOB")
     try:
-        db.add(client_type, first_name, last_name, phone, DOB, visit_date_list)
-
+        db.add_client(client_type, first_name, last_name, phone, dob)
     except Exception as ex:
         raise Exception(ex)
     
@@ -109,4 +118,5 @@ if __name__ == '__main__':
 #     response_object = db.update_client(transactional_id, new_visit_date, special_item_list)
 
 #     return flask.jsonify(response_object)
+
 

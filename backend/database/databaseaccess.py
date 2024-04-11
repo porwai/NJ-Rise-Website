@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import sqlalchemy
 from typing import List
 from sqlalchemy import update
-
+from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
 
 load_dotenv()
@@ -22,11 +22,28 @@ class t_client(Base):
     dob = sqlalchemy.Column(sqlalchemy.String)
     client_type = sqlalchemy.Column(sqlalchemy.String)
     client_id = sqlalchemy.Column(sqlalchemy.String)
-    visit_date_list = sqlalchemy.Column(sqlalchemy.ARRAY(sqlalchemy.String))
-    special_item_list = sqlalchemy.Column(sqlalchemy.ARRAY(sqlalchemy.String))
 
     # PRIMARY KEY to identify instances in transactional_db table
     transactional_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key= True, autoincrement=True)
+
+class t_history(Base):
+    __tablename__ = "transactional_history"
+    t_id = sqlalchemy.Column(sqlalchemy.Integer)
+
+    visit_date = sqlalchemy.Column(sqlalchemy.Date)
+    food_bags = sqlalchemy.Column(sqlalchemy.Integer)
+    baby_supplies = sqlalchemy.Column(sqlalchemy.Integer)
+    pet_food = sqlalchemy.Column(sqlalchemy.Integer)
+    gift_items = sqlalchemy.Column(sqlalchemy.Integer)
+    cleaning = sqlalchemy.Column(sqlalchemy.Integer)
+    personal_care = sqlalchemy.Column(sqlalchemy.Integer)
+    summer_feeding = sqlalchemy.Column(sqlalchemy.Integer)
+    pj = sqlalchemy.Column(sqlalchemy.Integer)
+    winter = sqlalchemy.Column(sqlalchemy.Integer)
+    other = sqlalchemy.Column(sqlalchemy.Integer)
+    
+    # PRIMARY KEY to identify instances in transactional_history table
+    visit_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key= True, autoincrement=True)
     
 def get_client (client_id: str, first_name: str, last_name: str, phone: str, dob: str):
     # SQL QUERY SCHEMA
@@ -49,22 +66,29 @@ def get_client (client_id: str, first_name: str, last_name: str, phone: str, dob
             client_id = "%" + client_id + "%"
             query = session.query(t_client).filter(t_client.client_id.like(client_id))
         else:
+            
             first_name = "%" + first_name + "%"
             last_name = "%" + last_name + "%"
             phone = "%" + phone + "%"
             dob = "%" + dob + "%"
-            query = session.query(t_client).filter(t_client.first_name.like(first_name), t_client.last_name.like(last_name), t_client.dob.like(dob), t_client.phone.like(phone))
-             
+            query = session.query(t_client).filter(t_client.first_name.like(first_name), t_client.last_name.like(last_name), t_client.dob.like(dob), t_client.phone.like(phone))        
     res = []
     for u in query.all():
+        history = session.query(t_history).filter(u.transactional_id == t_history.t_id).all()
+        h = []
+        for visit in history:
+            visit = visit.__dict__
+            del visit["_sa_instance_state"]
+            h.append(visit)
         u = u.__dict__
+        u['history'] = h
         del u["_sa_instance_state"]
         res.append(u)
-        
     return res
 
 # Update Special items or visit_date_list
-def update_client (transactional_id: int, new_visit_date: str, special_item_list: List[str]):
+def update_client (transactional_id: int, new_visit_date: str, f_bags: int, b_supplies: int, p_food: int, g_items: int, c: int, 
+                   p_care: int, p: int, w: int, o: int ):
     # SQL Query SCHEMA
     '''
     UPDATE transactional_db
@@ -76,10 +100,13 @@ def update_client (transactional_id: int, new_visit_date: str, special_item_list
     with sqlalchemy.orm.Session(_engine) as session:
 
         # Select current visit_date_list
-        query = session.query(t_client).filter(t_client.transactional_id == transactional_id)
-        query = query.one()
-        query.visit_date_list.insert(new_visit_date)
-        query.commit()
+        date_format = '%Y-%m-%d'
+        date_obj = datetime.strptime(new_visit_date, date_format)
+        new_visit = t_history(t_id=transactional_id, visit_date=date_obj, food_bags=f_bags, baby_supplies=b_supplies,pet_food=p_food,
+                              gift_items=g_items, cleaning=c, personal_care=p_care, pj=p, winter=w, other = o)
+        session.add(new_visit)
+        session.commit()
+        
 
         # # Add new visit date
         # visit_date_list = query.all()[0]["visit_date_list"]
@@ -108,7 +135,8 @@ def delete_client (transactional_id: int):
         # Delete and commit
         session.delete(x)
         session.commit()    
-def add_client (c_type: str, f_name: str, l_name:str, p: str, dob: str, v_d_l: str):
+
+def add_client (c_type: str, f_name: str, l_name:str, p: str, date: str):
     with sqlalchemy.orm.Session(_engine) as session:
         if c_type is None:
             c_type = ''
@@ -118,13 +146,10 @@ def add_client (c_type: str, f_name: str, l_name:str, p: str, dob: str, v_d_l: s
             l_name = ''
         if p is None:
             p = ''
-        if dob is None:
-            dob = ''
-        if v_d_l is None:
-            v_d_l = ''
-        visit_history = [v_d_l]
+        if date is None:
+            date = ''
         # Select relevant row
-        new_client = t_client(client_type=c_type, first_name=f_name, last_name=l_name, phone=p, DOB=dob, visit_date_list = visit_history)
+        new_client = t_client(client_type=c_type, first_name=f_name, last_name=l_name, phone=p, dob=date)
         session.add(new_client)
         session.commit()
 
