@@ -3,19 +3,19 @@ from flask import Flask
 import requests
 #from flask_cors import CORS
 from database import databaseaccess as db
-from database import user_login as user_db
+#from database import user_login as user_db
 
 app = Flask(__name__, static_folder="../../frontend/dist/static", template_folder="../../frontend/dist", static_url_path="/static")
 app.config.from_object(__name__)
 #CORS(app, resources={r'/*': {'origins': '*'}})
 
 # Set up Flask login manager
-from flask_login import LoginManager
-from flask_login import login_required
-from flask_login import User
-import flask_login
-login_manager = LoginManager()
-login_manager.init_app(app)
+# from flask_login import LoginManager
+# from flask_login import login_required
+# from flask_login import User
+# import flask_login
+# login_manager = LoginManager()
+# login_manager.init_app(app)
 
 
 # search for the user 
@@ -80,47 +80,47 @@ def delete_row():
 
 
 # Login reroute
-@app.route('/api/login', methods = ["POST"])
-def login():
+# @app.route('/api/login', methods = ["POST"])
+# def login():
 
-    # JSON schema
-    # {
-    #     "username": <username>,
-    #     "password": <password>
-    # }
-    get_data = flask.request.get_json()
+#     # JSON schema
+#     # {
+#     #     "username": <username>,
+#     #     "password": <password>
+#     # }
+#     get_data = flask.request.get_json()
 
-    # A matching login will return true in response object
-    try:
-        response_object = user_db.check_user(get_data["username"], get_data["password"])
+#     # A matching login will return true in response object
+#     try:
+#         response_object = user_db.check_user(get_data["username"], get_data["password"])
 
-    except Exception as ex:
-        print("debug: login failed:", ex)
-        response_object = False
+#     except Exception as ex:
+#         print("debug: login failed:", ex)
+#         response_object = False
     
-    # Return JSON Schema
-    # {
-    # "status": <True or False>
-    # }
-    return flask.jsonify(response_object)
+#     # Return JSON Schema
+#     # {
+#     # "status": <True or False>
+#     # }
+#     return flask.jsonify(response_object)
 
 
-@app.route("/logout")
-@login_required
-def logout():
-    flask_login.logout_user()
-    return flask_login.redirect("/login")
+# @app.route("/logout")
+# @login_required
+# def logout():
+#     flask_login.logout_user()
+#     return flask_login.redirect("/login")
 
 # Flask template code to get user session id
 
-# Instantiate a generic user session Object
-class User(flask_login.UserMixin):
-    def __init__(self):
-        super().__init__()
+# # Instantiate a generic user session Object
+# class User(flask_login.UserMixin):
+#     def __init__(self):
+#         super().__init__()
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.get(user_id)
+# @login_manager.user_loader
+# def load_user(user_id):
+#     return User.get(user_id)
 
 
 @app.route("/", defaults={"path": ""})
@@ -146,17 +146,6 @@ def add_client():
     except Exception as ex:
         raise Exception(ex)
     
-@app.route('/api/history', methods = ['POST'])
-def get_visit_history():
-    get_data = flask.request.get_json()
-    if flask.request.method == 'POST':
-        id = get_data.get("transactional_id")
-        try:
-            response_object = db.get_history(id)
-        except Exception as ex:
-            raise Exception(ex)
-    return flask.jsonify(response_object)
-
 # Run flask server
 if __name__ == '__main__':
     app.run()
