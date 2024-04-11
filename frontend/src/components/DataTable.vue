@@ -169,13 +169,13 @@
                 <h1 style="padding-left: 15px;">Query Matches: <b>{{clients.length}}</b></h1>
             </div>
             <div class="col button-group d-flex justify-content-end">
-                <a href="/search" class="btn btn-warning" data-toggle="modal">
+                <router-link to="/search" class="btn btn-warning" data-toggle="modal">
                     <font-awesome-icon :icon="['fas', 'plus']" /> <span>Advanced Search</span>
-                </a>
-                
-                <a href="/addwalkin" class="btn btn-success" data-toggle="modal">
-                    <font-awesome-icon :icon="['fas', 'plus']" /> <span>Add New Client</span>
-                </a>
+                </router-link>
+
+                <router-link to="/addwalkin" class="btn btn-success" data-toggle="modal">
+                    <font-awesome-icon :icon="['fas', 'plus']" /> <span>Add Walk-In Client</span>
+                </router-link>
             </div>
         </div>
     </div>
