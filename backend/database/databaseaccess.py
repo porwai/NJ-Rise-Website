@@ -40,6 +40,7 @@ class t_history(Base):
     summer_feeding = sqlalchemy.Column(sqlalchemy.Integer)
     pj = sqlalchemy.Column(sqlalchemy.Integer)
     winter = sqlalchemy.Column(sqlalchemy.Integer)
+    clothing = sqlalchemy.Column(sqlalchemy.Integer)
     other = sqlalchemy.Column(sqlalchemy.Integer)
     
     # PRIMARY KEY to identify instances in transactional_history table
@@ -81,7 +82,7 @@ def get_client (client_id: str, first_name: str, last_name: str, phone: str, dob
 
 # Update Special items or visit_date_list
 def update_client (transactional_id: int, new_visit_date: str, f_bags=0, b_supplies=0, p_food=0, g_items=0, c=0, 
-                   p_care=0, p=0, w=0, o=0):
+                   p_care=0, sf = 0, p=0, cloth=0, w=0, o=0):
     # SQL Query SCHEMA
     '''
     UPDATE transactional_db
@@ -96,7 +97,7 @@ def update_client (transactional_id: int, new_visit_date: str, f_bags=0, b_suppl
         date_format = '%Y-%m-%d'
         date_obj = datetime.strptime(new_visit_date, date_format)
         new_visit = t_history(t_id=transactional_id, visit_date=date_obj, food_bags=f_bags, baby_supplies=b_supplies,pet_food=p_food,
-                              gift_items=g_items, cleaning=c, personal_care=p_care, pj=p, winter=w, other = o)
+                              gift_items=g_items, cleaning=c, personal_care=p_care, summer_feeding = sf, pj=p, clothing = cloth, winter=w, other = o)
         session.add(new_visit)
         session.commit()
         
@@ -144,17 +145,9 @@ def add_client (f_name: str, l_name:str, p: str, dob_date: str, date:str, foodba
         new_client = t_client(first_name=f_name, last_name=l_name, phone=p, dob=dob_date)
         session.add(new_client)
         session.commit()
-        id = new_client.transactional_id
-    update_client(transactional_id=id, new_visit_date=date, f_bags=foodbags)
 
-def get_history (id: int):
-    with sqlalchemy.orm.Session(_engine) as session:
-        history = session.query(t_history).filter(t_history.t_id == id).all()
-    h = []
-    for visit in history:
-        visit = visit.__dict__
-        del visit["_sa_instance_state"]
-        h.append(visit)
-    return h
+        
+ 
+        
 
 

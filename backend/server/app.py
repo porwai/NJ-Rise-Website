@@ -56,12 +56,14 @@ def add_date():
         g_items = get_data.get('g_items')
         c = get_data.get('c')
         p_care = get_data.get('p_care')
+        sf = get_data.get('sf')
         p = get_data.get('p')
+        cloth = get_data.get('cloth')
         w = get_data.get('w')
         o = get_data.get('o')
         try:
             db.update_client(transactional_id, new_visit_date, f_bags, b_supplies, p_food, g_items, c, 
-                   p_care, p, w, o )
+                   p_care, sf, p, cloth, w, o )
         except Exception as ex:
             raise Exception (ex)
     return
