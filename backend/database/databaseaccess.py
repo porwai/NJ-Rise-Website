@@ -145,8 +145,18 @@ def add_client (f_name: str, l_name:str, p: str, dob_date: str, date:str, foodba
         new_client = t_client(first_name=f_name, last_name=l_name, phone=p, dob=dob_date)
         session.add(new_client)
         session.commit()
+        id = new_client.transactional_id
+    update_client(transactional_id=id, new_visit_date=date, f_bags=foodbags)
 
-        
+def get_history (id: int):
+    with sqlalchemy.orm.Session(_engine) as session:
+        history = session.query(t_history).filter(t_history.t_id == id).all()
+    h = []
+    for visit in history:
+        visit = visit.__dict__
+        del visit["_sa_instance_state"]
+        h.append(visit)
+    return h
  
         
 
