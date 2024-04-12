@@ -30,7 +30,6 @@ function UserDetailScreen() {
             v-bind:curr_details="curr_details"
             @toggle-details="UserDetailScreen"
             v-bind:curr_history="curr_history"
-            @get-history="getClientHistory"
           />
         </div>
       </div>
@@ -56,9 +55,9 @@ export default {
   methods: {
     handleNewClient(newDetails) {
       this.curr_details = newDetails; // Updating the prop value based on child's request
-      this.getClientHistory();
+      this.queryClients();
     }, 
-    getClientHistory() {
+    queryClients() {
       const payload = {
         transactional_id: this.curr_details.transactional_id,
       };

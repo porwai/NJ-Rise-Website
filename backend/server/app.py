@@ -95,12 +95,11 @@ def add_date():
         w = get_data.get('w')
         o = get_data.get('o')
         try:
-            response_object = db.update_client(transactional_id, new_visit_date, f_bags, b_supplies, p_food, g_items, c, 
+            db.update_client(transactional_id, new_visit_date, f_bags, b_supplies, p_food, g_items, c, 
                    p_care, sf, p, cloth, w, o )
         except Exception as ex:
             raise Exception (ex)
-    return flask.jsonify(response_object)
-
+    return
 
 # Delete entry for the user
 @app.route('/api/delete', methods = ['POST'])

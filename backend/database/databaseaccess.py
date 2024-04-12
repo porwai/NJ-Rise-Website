@@ -100,7 +100,7 @@ def update_client (transactional_id: int, new_visit_date: str, f_bags=0, b_suppl
                               gift_items=g_items, cleaning=c, personal_care=p_care, summer_feeding = sf, pj=p, clothing = cloth, winter=w, other = o)
         session.add(new_visit)
         session.commit()
-        return get_history(transactional_id)
+        
 
         # # Add new visit date
         # visit_date_list = query.all()[0]["visit_date_list"]
