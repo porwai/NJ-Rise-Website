@@ -193,8 +193,8 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="client in clients" :key="client.client_id"
-            :class="{ 'highlighted': client.client_id === activeRowId }">
+            <tr v-for="client in clients" :key="client.transactional_id"
+            :class="{ 'highlighted': client.transactional_id === activeRowId }">
                 <td><input type="checkbox" class="checkbox" v-model="client.selected"/></td>
                 <td @click="handleClientDetailsEvent(client)">{{ client.first_name }}</td>
                 <td @click="handleClientDetailsEvent(client)">{{ client.last_name }}</td>
@@ -227,7 +227,7 @@
             phone: '',
             dob: '',
             activeRowId: null,
-            clients: [{ first_name: 'John', last_name: 'Smith', client_id:"1232324", phone: '019283', dob: 'wed'}, { first_name: 'Timothan', last_name: 'Grieger', client_id:"1232", phone: '019283', dob: 'wed'}]
+            clients: []
             };
         },
         mounted() {

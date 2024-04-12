@@ -21,8 +21,8 @@
                         Pantry Dashboard
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Add Walk In Client</a>
-                        <a class="dropdown-item" href="#">Register Client</a>
+                        <a class="dropdown-item" href="/addwalkin">Add Walk In Client</a>
+                        <a class="dropdown-item" href="/">Register Client</a>
                         </div>
                     </li>
 

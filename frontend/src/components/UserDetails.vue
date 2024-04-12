@@ -11,7 +11,7 @@
         
 		<table class="table">
         <tbody>
-          <tr v-for="(value, key) in curr_details" :key="key">
+          <tr v-for="(value, key) in curr_details" :key="key" v-if="key !== 'transactional_id'" >
             <th>{{ key }}</th>
             <td>{{ value }}</td>
           </tr>
@@ -25,35 +25,31 @@
         <thead>
             <tr>
                 <th>visit date</th>
+                <th>food bags</th>
                 <th>baby supplies</th>
                 <th>cleaning</th>
-                <th>food bags</th>
                 <th>gift items</th>
-                <th>other</th>
                 <th>personal care</th>
                 <th>pet food</th>
                 <th>pj</th>
                 <th>summer feeding</th>
-                <th>t id</th>
-                <th>visit id</th>
                 <th>winter</th>
+                <th>other</th>
             </tr>
         </thead>
         <tbody>
-            <tr v-for="visit_date in curr_details.history" :key="visit_date.t_id">
+            <tr v-for="visit_date in curr_history" :key="visit_date.transactional_id">
                 <td>{{ visit_date.visit_date }}</td>
+                <td>{{ visit_date.food_bags }}</td>
                 <td>{{ visit_date.baby_supplies }}</td>
                 <td>{{ visit_date.cleaning }}</td>
-                <td>{{ visit_date.food_bags }}</td>
                 <td>{{ visit_date.gift_items }}</td>
-                <td>{{ visit_date.other }}</td>
                 <td>{{ visit_date.personal_care }}</td>
                 <td>{{ visit_date.pet_food }}</td>
                 <td>{{ visit_date.pj }}</td>
                 <td>{{ visit_date.summer_feeding }}</td>
-                <td>{{ visit_date.t_id }}</td>
-                <td>{{ visit_date.visit_id }}</td>
                 <td>{{ visit_date.winter }}</td>
+                <td>{{ visit_date.other }}</td>
             </tr>
         </tbody>
     </table>
@@ -200,6 +196,10 @@
             type: Object,
             required: true,
             default: () => ({})  // Provides an empty object by default
+        }, 
+        curr_history: {
+          type: Array,
+          default: () => []
         }
     },
 	methods: {

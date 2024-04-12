@@ -29,6 +29,7 @@ function UserDetailScreen() {
           <UserDetails 
             v-bind:curr_details="curr_details"
             @toggle-details="UserDetailScreen"
+            v-bind:curr_history="curr_history"
           />
         </div>
       </div>
@@ -38,6 +39,8 @@ function UserDetailScreen() {
 
 
 <script>
+import axios from 'axios';
+
 export default {
   components: {
     DataTable, 
@@ -45,12 +48,26 @@ export default {
   },
   data() {
     return {
-      curr_details: {Por : "dfs"}
+      curr_details: {}, 
+      curr_history: []
     };
   }, 
   methods: {
     handleNewClient(newDetails) {
       this.curr_details = newDetails; // Updating the prop value based on child's request
+      this.queryClients();
+    }, 
+    queryClients() {
+      const payload = {
+        transactional_id: this.curr_details.transactional_id,
+      };
+      axios.post('http://127.0.0.1:5000/api/history', payload)
+      .then((response) => {
+        this.curr_history = response.data;
+      }).catch((error) => {
+        console.error(error);
+        // Consider adding user-facing error handling here
+      });
     }
   }
 }
