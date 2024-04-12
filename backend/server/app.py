@@ -1,13 +1,14 @@
 import flask
 from flask import Flask
 import requests
-#from flask_cors import CORS
+from flask_cors import CORS
 from database import databaseaccess as db
-#from database import user_login as user_db
+from database import user_login as user_db
 
 app = Flask(__name__, static_folder="../../frontend/dist/static", template_folder="../../frontend/dist", static_url_path="/static")
 app.config.from_object(__name__)
-#CORS(app, resources={r'/*': {'origins': '*'}})
+CORS(app, resources={r'/*': {'origins': '*'}})
+
 
 # Set up Flask login manager
 # from flask_login import LoginManager
@@ -17,6 +18,38 @@ app.config.from_object(__name__)
 # login_manager = LoginManager()
 # login_manager.init_app(app)
 
+
+# Login reroute
+@app.route('/api/login', methods = ["POST"])
+def login():
+
+    print("REACHED LOGIN API")
+
+    # JSON schema
+    # {
+    #     "username": <username>,
+    #     "password": <password>
+    # }
+    get_data = flask.request.get_json()
+    print('check inputs in app', get_data)
+
+    # A matching login will return true in response object
+    try:
+        response_object = user_db.check_user(get_data["username"], get_data["password"])
+
+    except Exception as ex:
+        print("debug: login failed:", ex)
+        response_object = {"status": False}
+        # flask.redirect("/login")
+        return flask.jsonify(response_object)
+    
+    # Save user session
+    # if the above check passes, then we know the user has the right credentials
+    # print('redirect now')
+    # flask_login.login_user(response_object, remember= False)
+    # flask.redirect("/")
+    response_object = {"status": True}
+    return flask.jsonify(response_object)
 
 # search for the user 
 @app.route('/api/search', methods=['GET', 'POST'])
