@@ -5,7 +5,7 @@ import requests
 import databaseaccess as db
 #from database import user_login as user_db
 
-app = Flask(__name__, static_folder="./frontend/dist/static", template_folder="./frontend/dist", static_url_path="/static")
+app = Flask(__name__, static_folder="./dist/static", template_folder="./dist", static_url_path="/static")
 app.config.from_object(__name__)
 #CORS(app, resources={r'/*': {'origins': '*'}})
 
