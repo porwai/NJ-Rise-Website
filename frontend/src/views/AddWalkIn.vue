@@ -118,7 +118,7 @@
           this.addClients(payload);
         },
         addClients(payload) {
-                axios.post('http://127.0.0.1:5000/api/add', payload)
+                axios.post('/api/add', payload)
                 .then(() => {
                 }).catch((error) => {
                     console.error(error);

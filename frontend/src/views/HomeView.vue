@@ -62,7 +62,7 @@ export default {
       const payload = {
         transactional_id: this.curr_details.transactional_id,
       };
-      axios.post('http://127.0.0.1:5000/api/history', payload)
+      axios.post('/api/history', payload)
       .then((response) => {
         this.curr_history = response.data;
       }).catch((error) => {

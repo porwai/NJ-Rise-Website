@@ -248,7 +248,7 @@
 
       console.log(payload);
 
-      axios.post('http://127.0.0.1:5000/api/newdate', payload)
+      axios.post('/api/newdate', payload)
       .then(response => {
         // Updates to show new visit
         this.$emit('get-history')

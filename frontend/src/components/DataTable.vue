@@ -235,7 +235,7 @@
         },
         methods: {
             queryClients(payload) {
-                axios.post('http://127.0.0.1:5000/api/search', payload)
+                axios.post('/api/search', payload)
                 .then((response) => {
                     this.clients = response.data;
                 }).catch((error) => {
