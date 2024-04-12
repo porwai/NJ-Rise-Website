@@ -71,40 +71,46 @@
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
 
-      <!-- Modal Body -->
+          <!-- Modal Body -->
       <div class="modal-body">
-        <form>
+        <form id="visitForm">
           <div class="row">
             <!-- Column 1 -->
             <div class="col-md-6">
+              <!-- Date -->
+              <div class="form-group">
+                <label for="new_visit_date">Date (yyyy-mm-dd)</label>
+                <input type="date" class="form-control" id="new_visit_date" v-model="new_visit_date" placeholder="YYYY-MM-DD">
+              </div>
+
               <!-- Food Bags -->
               <div class="form-group">
                 <label for="foodBags">Food Bags</label>
-                <input type="number" class="form-control" id="foodBags" placeholder="Enter quantity">
+                <input type="number" class="form-control" id="foodBags" v-model="f_bags" placeholder="Enter quantity">
               </div>
 
               <!-- Baby Supplies -->
               <div class="form-group">
                 <label for="babySupplies">Baby Supplies</label>
-                <input type="number" class="form-control" id="babySupplies" placeholder="Enter quantity">
+                <input type="number" class="form-control" id="babySupplies" v-model="b_supplies" placeholder="Enter quantity">
               </div>
 
               <!-- Pet Food -->
               <div class="form-group">
                 <label for="petFood">Pet Food</label>
-                <input type="number" class="form-control" id="petFood" placeholder="Enter quantity">
+                <input type="number" class="form-control" id="petFood" v-model="p_food" placeholder="Enter quantity">
               </div>
 
               <!-- Gift Items -->
               <div class="form-group">
                 <label for="giftItems">Gift Items</label>
-                <input type="number" class="form-control" id="giftItems" placeholder="Enter quantity">
+                <input type="number" class="form-control" id="giftItems" v-model="g_items" placeholder="Enter quantity">
               </div>
 
               <!-- Cleaning Supplies -->
               <div class="form-group">
                 <label for="cleaningSupplies">Cleaning Supplies</label>
-                <input type="number" class="form-control" id="cleaningSupplies" placeholder="Enter quantity">
+                <input type="number" class="form-control" id="cleaningSupplies" v-model="c" placeholder="Enter quantity">
               </div>
             </div>
 
@@ -113,37 +119,37 @@
               <!-- Personal Care -->
               <div class="form-group">
                 <label for="personalCare">Personal Care</label>
-                <input type="number" class="form-control" id="personalCare" placeholder="Enter quantity">
+                <input type="number" class="form-control" id="personalCare" v-model="p_care" placeholder="Enter quantity">
               </div>
 
               <!-- Summer Feeding -->
               <div class="form-group">
                 <label for="summerFeeding">Summer Feeding</label>
-                <input type="number" class="form-control" id="summerFeeding" placeholder="Enter quantity">
+                <input type="number" class="form-control" id="summerFeeding" v-model="sf" placeholder="Enter quantity">
               </div>
 
               <!-- Kids Pajamas -->
               <div class="form-group">
                 <label for="kidsPajamas">Kids Pajamas</label>
-                <input type="number" class="form-control" id="kidsPajamas" placeholder="Enter quantity">
+                <input type="number" class="form-control" id="kidsPajamas" v-model="pj" placeholder="Enter quantity">
               </div>
 
               <!-- Clothing -->
               <div class="form-group">
                 <label for="clothing">Clothing</label>
-                <input type="number" class="form-control" id="clothing" placeholder="Enter quantity">
+                <input type="number" class="form-control" id="clothing" v-model="cloth" placeholder="Enter quantity">
               </div>
 
               <!-- Winter Coats -->
               <div class="form-group">
                 <label for="winterCoats">Winter Coats</label>
-                <input type="number" class="form-control" id="winterCoats" placeholder="Enter quantity">
+                <input type="number" class="form-control" id="winterCoats" v-model="w" placeholder="Enter quantity">
               </div>
 
               <!-- Other Items -->
               <div class="form-group">
                 <label for="otherItems">Other Items</label>
-                <input type="text" class="form-control" id="otherItems" placeholder="Describe other items">
+                <input type="text" class="form-control" id="otherItems" v-model="o" placeholder="Describe other items">
               </div>
             </div>
           </div>
@@ -152,14 +158,14 @@
       
       <!-- Modal footer -->
       <div class="modal-footer">
-        <button type="button" class="btn btn-success" data-dismiss="modal">Add New Visit</button>
+        <button type="button" class="btn btn-success" @click="addNewVisit()">Add New Visit</button>
       </div>
 
     </div>
   </div>
 </div>
 
-	  </div>
+</div>
 	</div>
   </template>
   
@@ -183,13 +189,27 @@
   </style>
 
   <script>
+  import axios from 'axios';
+
   export default {
     data() {
-        return {
-            test_data: [ { "baby_supplies": 1, "cleaning": 0, "food_bags": 5, "gift_items": 0, "other": 0, "personal_care": 0, "pet_food": 1, "pj": 0, "summer_feeding": null, "t_id": 1, "visit_date": "Sat, 06 Jan 2024 00:00:00 GMT", "visit_id": 1, "winter": 0 } ]
-
-        };
-    },
+      return {
+        transactional_id: -1,
+        new_visit_date: null,
+        f_bags: 0,
+        b_supplies:0,
+        p_food:0,
+        g_items:0,
+        c: 0,
+        sf: 0,
+        p_care: 0,
+        p: 0,
+        cloth: 0,
+        w: 0,
+        o: 0
+      }
+    }
+  , 
 	name: 'UserDetails',
 	props: {
         curr_details: {
@@ -205,7 +225,39 @@
 	methods: {
 	  closeCard() {
 		this.$emit('toggle-details')
-	  }
+	  }, 
+    addNewVisit() {
+      // Example of collecting form data
+      const form = document.getElementById('visitForm');
+      const formData = new FormData(form);
+      const payload = {
+        transactional_id: this.curr_details.transactional_id,
+        new_visit_date: this.new_visit_date,
+        f_bags: this.f_bags,
+        b_supplies: this.b_supplies,
+        p_food: this.p_food,
+        g_items: this.g_items,
+        c: this.c,
+        sf: this.sf,
+        p_care: this.p_care,
+        p: this.p,
+        cloth: this.cloth,
+        w: this.w,
+        o: this.o
+      };
+
+      console.log(payload);
+
+      axios.post('http://127.0.0.1:5000/api/newdate', payload)
+      .then(response => {
+        // Updates to show new visit
+        this.$emit('get-history')
+        // Optionally close the modal if everything is fine
+      }).catch(error => {
+        console.error(error);
+        alert("Failed to add new visit: " + error.message);  // User-facing error message
+      });
+    }
 	}
   };
   </script>
