@@ -2,10 +2,10 @@ import flask
 from flask import Flask
 import requests
 #from flask_cors import CORS
-from database import databaseaccess as db
+import databaseaccess as db
 #from database import user_login as user_db
 
-app = Flask(__name__, static_folder="../../frontend/dist/static", template_folder="../../frontend/dist", static_url_path="/static")
+app = Flask(__name__, static_folder="./frontend/dist/static", template_folder="./frontend/dist", static_url_path="/static")
 app.config.from_object(__name__)
 #CORS(app, resources={r'/*': {'origins': '*'}})
 
@@ -186,5 +186,4 @@ if __name__ == '__main__':
 #     response_object = db.update_client(transactional_id, new_visit_date, special_item_list)
 
 #     return flask.jsonify(response_object)
-
 
