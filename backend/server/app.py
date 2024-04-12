@@ -126,8 +126,6 @@ def delete_row():
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
 def catch_all(path):
-    if app.debug:
-        return requests.get('http://localhost:5173/{}'.format(path)).text
     return flask.render_template("index.html")
 
 @app.route('/api/add', methods = ['POST'])
