@@ -37,6 +37,10 @@
                     <li class="nav-item">
                         <span class="nav-link disabled">Staff</span> <!-- Changed to span for semantics -->
                     </li>
+
+                    <li class="nav-item">
+                        <router-link class="nav-link" to="/login"> Login</router-link>
+                    </li>
                 </ul>
             </div><!--/.nav-collapse -->
         </div>
