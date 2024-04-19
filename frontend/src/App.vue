@@ -19,7 +19,7 @@ const adminprivlage = ref(false); // Assumes that
     <NavBar />
   </header>
 
-  <div class="container-fluid">
+  <div>
     <RouterView />
   </div>
 

@@ -1,13 +1,14 @@
-<style>
+<style scoped>
 /* Custom checkbox */
 
 	.table-wrapper {
-		min-width: 1000px;
         background: #fff;
         padding: 20px 25px;
 		border-radius: 3px;
         box-shadow: 0 1px 1px rgba(0,0,0,.05);
         margin: 20px 0;
+        overflow-x: auto;
+        overflow-y: auto;
     }
 	.table-title {        
 		background: #435d7d;
@@ -22,26 +23,22 @@
 		vertical-align: middle;
     }
 	table.table tr th:first-child {
-		width: 55px;
+        width: auto
 	}
 	table.table tr th:last-child {
 		width: 100px;
 	}
-    table.table-striped tbody tr:nth-of-type(odd) {
-    	background-color: #fcfcfc;
-	}
-	table.table-striped.table-hover tbody tr:hover {
-		background: #f5f5f5;
-	}
+    
     table.table th i {
-        font-size: 13px;
         margin: 0 5px;
         cursor: pointer;
     }	
-    table.table td:last-child i {
-		opacity: 0.9;
-		font-size: 22px;
+    table.table th:last-child, td:last-child {
+        background-color: white;
         margin: 0 5px;
+        position: sticky;
+        right: 0;
+        z-index: 100;
     }
 	table.table td a {
 		font-weight: bold;
@@ -162,53 +159,56 @@
         </div>
       </div>      
     
-  <div class="table-wrapper scrollable-table">
-    <div class="table-title">
-        <div class="row">
-            <div class="col-auto">
-                <h1 style="padding-left: 15px;">Query Matches: <b>{{clients.length}}</b></h1>
-            </div>
-            <div class="col button-group d-flex justify-content-end">
-                <router-link to="/search" class="btn btn-warning" data-toggle="modal">
-                    <font-awesome-icon :icon="['fas', 'plus']" /> <span>Advanced Search</span>
-                </router-link>
-
-                <router-link to="/addwalkin" class="btn btn-success" data-toggle="modal">
-                    <font-awesome-icon :icon="['fas', 'plus']" /> <span>Add Walk-In Client</span>
-                </router-link>
+    <div class="table-wrapper">
+        <div class="table-title">
+            <div class="row align-items-center justify-content-between">
+                <div class="col-auto">
+                    <h1 style="padding-left: 15px; align-items: center;">Query Matches: <b>{{clients.length}}</b></h1>
+                </div>
+                <div class="col-auto">
+                    <div class="button-group" style="float: right;">
+                        <router-link to="/search" class="btn btn-warning" data-toggle="modal">
+                            <span>Advanced Search</span>
+                        </router-link>
+                        <router-link to="/addwalkin" class="btn btn-success" data-toggle="modal">
+                            <span>Add Walk-In Client</span>
+                        </router-link>
+                    </div>
+                </div>
             </div>
         </div>
+        <br>
+        <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" class="checkbox" :checked="allSelected" @click="selectAllClients"/></th>
+                    <th>Firstname</th>
+                    <th>Lastname</th>
+                    <th>Client ID</th>
+                    <th>Phone</th>
+                    <th>dob</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="client in clients" :key="client.transactional_id"
+                :class="{ 'highlighted': client.transactional_id === activeRowId }">
+                    <td><input type="checkbox" class="checkbox" v-model="client.selected"/></td>
+                    <td @click="handleClientDetailsEvent(client)">{{ client.first_name }}</td>
+                    <td @click="handleClientDetailsEvent(client)">{{ client.last_name }}</td>
+                    <td @click="handleClientDetailsEvent(client)">{{ client.client_id }}</td>
+                    <td @click="handleClientDetailsEvent(client)">{{ client.phone }}</td>
+                    <td @click="handleClientDetailsEvent(client)">{{ client.dob }}</td>
+                    <td>
+                        <a class="edit" title="Edit" data-toggle="tooltip"><i class="fas fa-edit mr-1"></i></a> 
+                        <a class="delete" title="Delete" data-toggle="tooltip"><i class="fas fa-trash mr-1"></i></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
     </div>
-    <br>
-    <table class="table table-bordered table-hover">
-        <thead>
-            <tr>
-                <th><input type="checkbox" class="checkbox" :checked="allSelected" @click="selectAllClients"/></th>
-                <th>Firstname</th>
-                <th>Lastname</th>
-                <th>Client ID</th>
-                <th>Phone</th>
-                <th>dob</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="client in clients" :key="client.transactional_id"
-            :class="{ 'highlighted': client.transactional_id === activeRowId }">
-                <td><input type="checkbox" class="checkbox" v-model="client.selected"/></td>
-                <td @click="handleClientDetailsEvent(client)">{{ client.first_name }}</td>
-                <td @click="handleClientDetailsEvent(client)">{{ client.last_name }}</td>
-                <td @click="handleClientDetailsEvent(client)">{{ client.client_id }}</td>
-                <td @click="handleClientDetailsEvent(client)">{{ client.phone }}</td>
-                <td @click="handleClientDetailsEvent(client)">{{ client.dob }}</td>
-                <td>
-                    <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">e</i></a>
-                    <a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">d</i></a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
 
 
   </template>
@@ -227,7 +227,9 @@
             phone: '',
             dob: '',
             activeRowId: null,
-            clients: []
+            clients: [{first_name: 'John', last_name: 'Doe', client_id: '1234', phone: '123-456-7890', dob: '01/01/2000', selected: false, 
+                       food: "sds", baby_supplies: "sds", cleaning: "sds", gift_items: "sds", personal_care: "sds", pet_food: "sds", pj: "sds", summer_feeding: "sds", winter: "sds", other: "sds"
+                }]
             };
         },
         mounted() {
