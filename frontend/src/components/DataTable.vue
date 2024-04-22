@@ -167,10 +167,13 @@
                 </div>
                 <div class="col-auto">
                     <div class="button-group" style="float: right;">
-                        <router-link to="/search" class="btn btn-warning" data-toggle="modal">
+                        <button to="/search" class="btn btn-warning" @click="openAdvancedSearch">
                             <span>Advanced Search</span>
-                        </router-link>
-                        <router-link to="/addwalkin" class="btn btn-success" data-toggle="modal">
+                        </button>
+                        <!-- Modal Component Here -->
+                        <my-modal :isVisible="showModal" @update:isVisible="showModal = $event">
+                        </my-modal>
+                        <router-link to="/addwalkin" class="btn btn-success">
                             <span>Add Walk-In Client</span>
                         </router-link>
                     </div>
@@ -211,10 +214,11 @@
     </div>
 
 
-  </template>
+</template>
   
 <script>
     import axios from 'axios';
+    import AdvancedSearch from './AdvancedSearch.vue'
 
     export default {
         name: 'search',
@@ -229,7 +233,8 @@
             activeRowId: null,
             clients: [{first_name: 'John', last_name: 'Doe', client_id: '1234', phone: '123-456-7890', dob: '01/01/2000', selected: false, 
                        food: "sds", baby_supplies: "sds", cleaning: "sds", gift_items: "sds", personal_care: "sds", pet_food: "sds", pj: "sds", summer_feeding: "sds", winter: "sds", other: "sds"
-                }]
+                }], 
+            showModal: false
             };
         },
         mounted() {
@@ -270,6 +275,9 @@
             },
             setActiveRow(id) {
                 this.activeRowId = id;
+            },
+            openAdvancedSearch() {
+            this.showModal = true;  // Opens the modal
             }
         },
         computed: {

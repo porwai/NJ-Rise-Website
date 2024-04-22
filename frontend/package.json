@@ -14,7 +14,8 @@
     "bootstrap": "^4.6.2",
     "bootstrap-vue": "^2.23.1",
     "vue": "^3.4.21",
-    "vue-router": "^4.3.0"
+    "vue-router": "^4.3.0",
+    "@vueform/vueform": "1.4.1"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",
