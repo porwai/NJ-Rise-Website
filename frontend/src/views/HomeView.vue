@@ -12,20 +12,19 @@ function UserDetailScreen() {
 
 <template>
   <main>
-    <div class="container-fluid">
+    <!-- Desktop view -->
+    <div class="container-fluid" v-if="!isMobile">
       <div class="row">
-        
         <!-- Utilize computed classes for column sizes based on showDetails prop -->
-        <div :class="showDetails ? 'col' : 'col-sm-12'">
+        <div :class="showDetails ? 'col-6' : 'col-12'">
           <DataTable
             @new-client-request="handleNewClient"
             :show-details="showDetails"
             @toggle-details="UserDetailScreen"
           />
         </div>
-
         <!-- Conditional rendering for UserDetails component -->
-        <div class="col-sm-6" v-if="showDetails">
+        <div class="col-6" v-if="showDetails">
           <UserDetails 
             v-bind:curr_details="curr_details"
             @toggle-details="UserDetailScreen"
@@ -35,7 +34,30 @@ function UserDetailScreen() {
         </div>
       </div>
     </div>
-  </main>
+    <!-- Mobile view -->
+    <div class="container-fluid" v-else>
+      <div class="row">
+
+        <!-- Utilize computed classes for column sizes based on showDetails prop -->
+        <div class="col" v-if="!showDetails">
+          <DataTable
+            @new-client-request="handleNewClient"
+            :show-details="showDetails"
+            @toggle-details="UserDetailScreen"
+          />
+        </div>
+        <!-- Conditional rendering for UserDetails component -->
+        <div class="col" v-if="showDetails">
+          <UserDetails 
+            v-bind:curr_details="curr_details"
+            @toggle-details="UserDetailScreen"
+            v-bind:curr_history="curr_history"
+            @get-history="getClientHistory"
+          />
+        </div>
+      </div>
+    </div>
+  </main> 
 </template>
 
 
@@ -50,9 +72,26 @@ export default {
   data() {
     return {
       curr_details: {}, 
-      curr_history: []
+      curr_history: [{
+    "visit_date": "April 18, 2024",
+    "food_bags": 3,
+    "baby_supplies": 2,
+    "cleaning": 1,
+    "gift_items": 5,
+    "personal_care": 4,
+    "pet_food": 2,
+    "pj": 1,
+    "summer_feeding": 3,
+    "winter": 4,
+    "other": "Various items"
+}], 
+      isMobile: false
     };
   }, 
+  mounted() {
+    this.onResize();
+    window.addEventListener("resize", this.onResize, { passive: true });
+  },
   methods: {
     handleNewClient(newDetails) {
       this.curr_details = newDetails; // Updating the prop value based on child's request
@@ -69,6 +108,14 @@ export default {
         console.error(error);
         // Consider adding user-facing error handling here
       });
+    }, 
+    onResize() { // Dynamic Display dependent on whether user is on mobile device
+      if(window.innerWidth <= 1400) {
+        this.isMobile = true
+      } else {
+        this.isMobile = false
+      }
+      console.log(this.isMobile)
     }
   }
 }

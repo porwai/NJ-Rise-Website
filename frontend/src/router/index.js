@@ -40,6 +40,11 @@ const router = createRouter({
       path: '/addwalkin',
       name: 'addwalkin',
       component: () => import('../views/AddWalkIn.vue')
+    }, 
+    {
+      path: '/registernewclient',
+      name: 'registernewclient',
+      component: () => import('../views/RegisterClient.vue')
     }
   ]
 })
