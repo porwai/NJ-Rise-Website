@@ -1,4 +1,14 @@
 <!-- Login.vue -->
+
+<script setup>
+
+import { ref } from 'vue';
+const userRef = ref("");
+const passRef = ref("")
+// console.log(this.$store.state.count)
+// console.log($testglobal)
+
+</script>
 <template>
   <div class="card">
     <div class="card-body">
@@ -7,13 +17,13 @@
         <h4 class="mb-5">Log in to Staff Dashboard</h4>
       </div>
 
-      <form class="col-lg-4 offset-lg-4">
+      <form class="col-lg-4 offset-lg-4" @submit.prevent="submitData">
         <div class="form-group">
-          <input type="email" class="form-control" id="InputEmail" aria-describedby="emailHelp" placeholder="Email">
+          <input type="username" v-model="formData.username" class="form-control" id="InputUsername" placeholder="Username">
         </div>
 
         <div class="form-group">
-          <input type="password" class="form-control" id="InputPwd" placeholder="Password">
+          <input type="password" v-model="formData.password" class="form-control" id="InputPwd" placeholder="Password">
           <a href="#" class="small float-right" for="InputPwd">Forget your password?</a>
         </div>
 
@@ -33,11 +43,42 @@
   }
 </style>
 
-<script setup>
-defineProps({
-  msg: {
-    type: String,
-    required: true
+<script>
+
+console.log('test 1');
+export default {
+  data() {
+    console.log('test 2');
+    return {
+      formData: {
+        username: "judy_frank",
+        password: "judy123frank",
+      },
+      responseData: null
+    };
+  },
+  methods: {
+    async submitData() {
+      const response = await fetch('http://localhost:5000/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(this.formData)
+      });
+      const responseData = await response.json();
+      console.log(responseData["status"]);
+
+      if (responseData["status"] == true) {
+        
+        console.log("test 3")
+        console.log(this.$store.state.login_status)
+        this.$store.commit('log_in')
+        console.log(this.$store.state.login_status)
+        this.$router.push({ path: '/search'})
+      }
+
+    }
   }
-})
+};
 </script>

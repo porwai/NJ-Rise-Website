@@ -242,6 +242,10 @@
         },
         methods: {
             queryClients(payload) {
+                if (this.$store.state.login_status === false) {
+                    console.log("FALSE LOGIN")
+                    this.$router.push({ path: '/login'})
+                }
                 axios.post('/api/search', payload)
                 .then((response) => {
                     this.clients = response.data;
