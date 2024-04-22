@@ -25,21 +25,20 @@
                         type="date"
                         v-model="field.value" />
                     
-                    <div v-if="field.type === 'checkbox'" class="form-check">
-                        <input :id="key" type="checkbox" class="form-check-input" v-model="field.value">
-                        <label class="form-check-label" :for="key">{{ field.label || 'Check this option' }}</label>
+                    <div class="form-check">
+                        <input v-if="field.type === 'checkbox'"
+                                :id="key"
+                                type="checkbox"
+                                class="form-check-input"
+                                v-model="field.value" />
+                        <label class="form-check-label" :for="key"></label>
                     </div>
                     
                     <select v-if="field.type === 'dropdown'"
                             :id="key"
-                            class="custom-select mr-sm-2"
+                            class="form-control"
                             v-model="field.value">
                     <option v-for="option in field.options" :key="option">{{ option }}</option>
-
-    
-
-                        
-
                     </select>
                     
                 </div>
