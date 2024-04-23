@@ -44,19 +44,51 @@ def check_user (username: str, password: str):
                 print("CHECK DICT:", query.username)
                 return query.user_role
             
-            return "no_role"
- 
-#  callback for flask login get_user function
-def get_user(username: str):
+            return "not_authorized"
+        
+def add_new_user(username: str, password: str, user_role: str):
 
+
+    # Do not allow entry of new user that is empty or non-string value
+    if type(username) != str or type(password) != str or type(user_role) != str:
+        return False
+    if username is "" or password is "" or user_role is "":
+        return False
+    
+    # Create a new user instance
+    new_user = user_client(username=username, password=password, user_role=user_role)
+    # Create a session
     with sqlalchemy.orm.Session(_engine) as session:
-        if username != "":
+        try:
+            # Add the new user to the session
+            session.add(new_user)
+            # Commit the transaction
+            session.commit()
+            print("User added successfully.")
+            return True
+        except Exception as e:
+            # Rollback the transaction if an error occurs
+            session.rollback()
+            print(f"Error occurred while adding user: {e}")
+            return False
+        
+def read_all_users():
+    # Create a session
+    with sqlalchemy.orm.Session(_engine) as session:
+        # query = session.query(user_client)
+        users = session.query(user_client).all()
+        user_list = []
 
-            query = session.query(user_client).filter(user_client.username.like(username)).first()
+        if users == []:
+            return False, []
+        
+        for user in users:
+            user_dict = {
+                "username": user.username,
+                "password": user.password,
+                "user_role": user.user_role
+            }
+            user_list.append(user_dict)
+        return True, user_list
 
-            # Check if the query was found
-            if query:
-                print("CHECK DICT:", query.username)
-                return query
-            
-            return None
+    

@@ -55,6 +55,64 @@ def login():
     }
     return flask.jsonify(response_object)
 
+# Add new volunteers or admins - only accessible for ADMINS
+@app.route('/api/add_new_user', methods = ["POST"])
+def add_new_user():
+
+    # input schema
+    # {
+    #     "sender_role": "role",
+    #     "username": "...",
+    #     "password": "..."
+    #     "user_role": "..."
+    # }
+
+    request = flask.request.get_json()
+
+    # Sender must be admin in order to add new user
+    if request["sender_role"] != "admin":
+        response = {
+            "status": False
+        }
+        return flask.jsonify(response)
+    
+    username = request["username"]
+    password = request["password"]
+    user_role = request["user_role"]
+
+    status = user_db.add_new_user(username= username, password= password, user_role= user_role)
+    response = {
+        "status": status
+    }
+    return flask.jsonify(response)
+
+
+# Add new volunteers or admins - only accessible for ADMINS
+@app.route('/api/read_all_users', methods = ["POST"])
+def read_all_users():
+
+    # input schema
+    # {
+    #     "sender_role": "role",
+    # }
+
+    request = flask.request.get_json()
+
+    # Sender must be admin in order to add new user
+    if request["sender_role"] != "admin":
+        response = {
+            "status": False,
+            "user_list": []
+        }
+        return flask.jsonify(response)
+    
+    status, user_list = user_db.read_all_users()
+    response = {
+        "status": status,
+        "user_list": user_list
+    }
+    return flask.jsonify(response)
+
 # search for the user 
 @app.route('/api/search', methods=['GET', 'POST'])
 def search():

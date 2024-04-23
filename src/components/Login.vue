@@ -2,9 +2,6 @@
 
 <script setup>
 
-import { ref } from 'vue';
-const userRef = ref("");
-const passRef = ref("")
 // console.log(this.$store.state.count)
 // console.log($testglobal)
 
@@ -74,6 +71,7 @@ export default {
           console.log("set to admin privelege")
           console.log(this.$store.state.login_status)
           this.$store.commit('log_in_admin')
+          console.log(this.$store.state.login_status)
         }
         else if (responseData["role"] == "volunteer"){
           console.log("set to volunteer privelege")
