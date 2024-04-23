@@ -70,11 +70,17 @@ export default {
       console.log(responseData["status"]);
 
       if (responseData["status"] == true) {
+        if (responseData["role"] == "admin"){
+          console.log("set to admin privelege")
+          console.log(this.$store.state.login_status)
+          this.$store.commit('log_in_admin')
+        }
+        else if (responseData["role"] == "volunteer"){
+          console.log("set to volunteer privelege")
+          console.log(this.$store.state.login_status)
+          this.$store.commit('log_in_volunteer')
+        }
         
-        console.log("test 3")
-        console.log(this.$store.state.login_status)
-        this.$store.commit('log_in')
-        console.log(this.$store.state.login_status)
         this.$router.push({ path: '/search'})
       }
 

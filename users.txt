@@ -1,0 +1,4 @@
+INSERT INTO users (username, password, user_role) VALUES
+('judy_frank', 'judy123frank', 'admin'),
+('joseph_frank', 'joseph123frank', 'volunteer'),
+('jocelyn_li', 'jocelyn_123_li', 'volunteer');

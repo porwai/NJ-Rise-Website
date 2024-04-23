@@ -22,6 +22,7 @@ class user_client(UserMixin, Base):
     __tablename__ = "users"
     username = sqlalchemy.Column(sqlalchemy.String, primary_key= True)
     password = sqlalchemy.Column(sqlalchemy.String)
+    user_role = sqlalchemy.Column(sqlalchemy.String)
     
 def check_user (username: str, password: str):
     # SQL QUERY SCHEMA
@@ -41,9 +42,9 @@ def check_user (username: str, password: str):
             # Check if the query was found
             if query:
                 print("CHECK DICT:", query.username)
-                return query
+                return query.user_role
             
-            return False
+            return "no_role"
  
 #  callback for flask login get_user function
 def get_user(username: str):

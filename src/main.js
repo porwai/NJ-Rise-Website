@@ -13,12 +13,18 @@ import router from './router'
 const store = createStore({
     state () {
       return {
-        login_status: false
+        login_status: "not_authorized",
+        viewing_status: "not_authorized"
       }
     },
     mutations: {
-      log_in (state) {
-        state.login_status = true
+      log_in_admin (state) {
+        state.login_status = "admin",
+        state.viewing_status = "admin"
+      },
+      log_in_volunteer (state) {
+        state.login_status = "volunteer",
+        state.viewing_status = "volunteer"
       },
       log_out (state) {
         state.login_status = false

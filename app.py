@@ -37,7 +37,10 @@ def login():
 
     except Exception as ex:
         print("debug: login failed:", ex)
-        response_object = {"status": False}
+        response_object = {
+            "status": False,
+            "role" : "not_authorized"
+        }
         # flask.redirect("/login")
         return flask.jsonify(response_object)
     
@@ -46,7 +49,10 @@ def login():
     # print('redirect now')
     # flask_login.login_user(response_object, remember= False)
     # flask.redirect("/")
-    response_object = {"status": True}
+    response_object = {
+        "status": True,
+        "role" : response_object
+    }
     return flask.jsonify(response_object)
 
 # search for the user 
