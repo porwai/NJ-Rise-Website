@@ -1,7 +1,7 @@
 <template>
   <br>
   <div class="card">
-      <div class="card-body">
+      <div class="card-body d-flex flex-column" style="overflow-y: auto;">
           <h1 class="card-title">Add Client Information and First Visit Information</h1>
           <form @submit.prevent="submitForm" v-if="!formSubmitted">
               <div class="mb-3">
