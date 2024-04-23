@@ -236,6 +236,7 @@
             };
         },
         mounted() {
+          this.handleQueryEvent();
           this.clients.forEach( client => client.selected = false);
         },
         methods: {
