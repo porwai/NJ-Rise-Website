@@ -72,19 +72,7 @@ export default {
   data() {
     return {
       curr_details: {}, 
-      curr_history: [{
-    "visit_date": "April 18, 2024",
-    "food_bags": 3,
-    "baby_supplies": 2,
-    "cleaning": 1,
-    "gift_items": 5,
-    "personal_care": 4,
-    "pet_food": 2,
-    "pj": 1,
-    "summer_feeding": 3,
-    "winter": 4,
-    "other": "Various items"
-}], 
+      curr_history: [], 
       isMobile: false
     };
   }, 
