@@ -18,8 +18,9 @@
                 </button>
             </div>
         </div>
-        
-        <div class="table-responsive" style="max-height: 50%; overflow-y: auto;">
+      
+      <div class="row">
+        <div class="table-responsive" style="max-height: 35vh; overflow-y: auto;">
               <table class="table table-striped table-bordered">
                   <tbody>
                       <tr v-for="(value, key) in curr_details" :key="key" v-if="key !== 'transactional_id' && key !== 'selected' ">
@@ -29,25 +30,27 @@
                   </tbody>
               </table>
         </div>
+      </div>
         
+      <div class="row">
       <h1>Visit History</h1>
       <!-- Table -->
       <div class="table-responsive">
       <table class="table table-bordered table-hover">
           <thead>
               <tr>
-                  <th>visit date</th>
-                  <th>food bags</th>
-                  <th>baby supplies</th>
-                  <th>cleaning</th>
-                  <th>gift items</th>
-                  <th>personal care</th>
-                  <th>pet food</th>
-                  <th>pj</th>
-                  <th>summer feeding</th>
-                  <th>winter</th>
-                  <th>other</th>
-              </tr>
+                <th class="rotate visit-date" scope="col"><div><span>visit date</span></div></th>
+                <th class="rotate food-bags" scope="col"><div><span>food bags</span></div></th>
+                <th class="rotate baby-supplies" scope="col"><div><span>baby supplies</span></div></th>
+                <th class="rotate cleaning" scope="col"><div><span>cleaning</span></div></th>
+                <th class="rotate gift-items" scope="col"><div><span>gift items</span></div></th>
+                <th class="rotate personal-care" scope="col"><div><span>personal care</span></div></th>
+                <th class="rotate pet-food" scope="col"><div><span>pet food</span></div></th>
+                <th class="rotate pj" scope="col"><div><span>pj</span></div></th>
+                <th class="rotate summer-feeding" scope="col"><div><span>summer feeding</span></div></th>
+                <th class="rotate winter" scope="col"><div><span>winter</span></div></th>
+                <th class="rotate other" scope="col"><div><span>other</span></div></th>
+                <th class="actions" scope="col"></th>              </tr>
           </thead>
           <tbody>
               <tr v-for="visit_date in curr_history" :key="visit_date.transactional_id">
@@ -62,6 +65,10 @@
                   <td>{{ visit_date.summer_feeding }}</td>
                   <td>{{ visit_date.winter }}</td>
                   <td>{{ visit_date.other }}</td>
+                  <td>
+                    <a class="edit" title="Edit" data-toggle="tooltip"><i class="fas fa-edit mr-1"></i></a> 
+                    <a class="delete" title="Delete" data-toggle="tooltip"><i class="fas fa-trash mr-1"></i></a>
+                  </td>
               </tr>
           </tbody>
       </table>
@@ -71,6 +78,7 @@
       <button type="button" class="btn btn-success" data-toggle="modal" data-target="#newVisit">
         Add New Visit
       </button>
+    </div>
 
       <!-- The Modal -->
       <div class="modal" id="newVisit">
@@ -198,6 +206,26 @@
   .table-responsive {
     padding: 0; /* Optional: Adjusts padding inside the container to fit the table neatly */
   }
+
+  table.table td a.edit {
+        color: #FFC107;
+  }
+  table.table td a.delete {
+        color: #F44336;
+  }
+
+  .visit-date { background-color: #f4cccc; }
+  .food-bags { background-color: #fce5cd; }
+  .baby-supplies { background-color: #fff2cc; }
+  .cleaning { background-color: #d9ead3; }
+  .gift-items { background-color: #d0e0e3; }
+  .personal-care { background-color: #c9daf8; }
+  .pet-food { background-color: #cfe2f3; }
+  .pj { background-color: #d9d2e9; }
+  .summer-feeding { background-color: #ead1dc; }
+  .winter { background-color: #e6b8af; }
+  .other { background-color: #f9cb9c; }
+  .actions { background-color: #fff; } /* Different color or keep as default */
 
   </style>
 
