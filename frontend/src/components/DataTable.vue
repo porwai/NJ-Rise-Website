@@ -186,7 +186,11 @@
             <thead>
                 <tr>
                     <th><input type="checkbox" class="checkbox" :checked="allSelected" @click="selectAllClients"/></th>
-                    <th v-for="(value, key) in clients[0]" :key="key">{{ formatKey(key) }}</th>
+                    <th v-for="(value, key) in clients[0]" :key="key">
+                        <template v-if="key !== 'transactional_id'">
+                            {{ formatKey(key) }}
+                        </template>
+                    </th>
                     <th></th>
                 </tr>
             </thead>
@@ -194,7 +198,11 @@
                 <tr v-for="client in clients" :key="client.transactional_id"
                 :class="{ 'highlighted': client.transactional_id === activeRowId }">
                     <td><input type="checkbox" class="checkbox" v-model="client.selected"/></td>
-                    <td v-for="(value, key) in client" :key="key" @click="handleClientDetailsEvent(client)">{{ value }}</td>
+                    <td v-for="(value, key) in client" :key="key" @click="handleClientDetailsEvent(client)">
+                        <template v-if="key !== 'transactional_id'">
+                            {{ value }}
+                        </template>
+                    </td>
                     <td>
                         <a class="edit" title="Edit" data-toggle="tooltip"><i class="fas fa-edit mr-1"></i></a> 
                         <a class="delete" title="Delete" data-toggle="tooltip"><i class="fas fa-trash mr-1"></i></a>
