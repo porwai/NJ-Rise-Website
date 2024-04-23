@@ -186,11 +186,7 @@
             <thead>
                 <tr>
                     <th><input type="checkbox" class="checkbox" :checked="allSelected" @click="selectAllClients"/></th>
-                    <th>Firstname</th>
-                    <th>Lastname</th>
-                    <th>Client ID</th>
-                    <th>Phone</th>
-                    <th>dob</th>
+                    <th v-for="(value, key) in clients[0]" :key="key">{{ formatKey(key) }}</th>
                     <th></th>
                 </tr>
             </thead>
@@ -198,11 +194,7 @@
                 <tr v-for="client in clients" :key="client.transactional_id"
                 :class="{ 'highlighted': client.transactional_id === activeRowId }">
                     <td><input type="checkbox" class="checkbox" v-model="client.selected"/></td>
-                    <td @click="handleClientDetailsEvent(client)">{{ client.first_name }}</td>
-                    <td @click="handleClientDetailsEvent(client)">{{ client.last_name }}</td>
-                    <td @click="handleClientDetailsEvent(client)">{{ client.client_id }}</td>
-                    <td @click="handleClientDetailsEvent(client)">{{ client.phone }}</td>
-                    <td @click="handleClientDetailsEvent(client)">{{ client.dob }}</td>
+                    <td v-for="(value, key) in client" :key="key" @click="handleClientDetailsEvent(client)">{{ value }}</td>
                     <td>
                         <a class="edit" title="Edit" data-toggle="tooltip"><i class="fas fa-edit mr-1"></i></a> 
                         <a class="delete" title="Delete" data-toggle="tooltip"><i class="fas fa-trash mr-1"></i></a>
@@ -282,6 +274,11 @@
             },
             openAdvancedSearch() {
             this.showModal = true;  // Opens the modal
+            }, 
+            formatKey(key) {
+              return key.split('_')
+                        .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+                        .join(' ');
             }
         },
         computed: {
