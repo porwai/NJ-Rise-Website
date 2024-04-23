@@ -118,10 +118,6 @@
           this.addClients(payload);
         },
         addClients(payload) {
-                if (this.$store.state.login_status === false) {
-                          console.log("FALSE LOGIN")
-                          this.$router.push({ path: '/login'})
-                      }
                 axios.post('/api/add', payload)
                 .then(() => {
                 }).catch((error) => {
