@@ -7,7 +7,7 @@
         </a>
   
         <!-- Sliding toggle button -->
-        <div class="navbar-toggler-toggle" @click="toggleClick">
+        <div v-if = "this.$store.state.login_status === 'admin'" class="navbar-toggler-toggle" @click="toggleClick">
           <transition name="toggle-transition">
             <span v-if="togglePosition === 'left'" class="toggle-off">
               <!-- SVG for toggle off state -->
@@ -54,12 +54,8 @@
               <a class="nav-link" href="/search">Client Search</a>
             </li>
   
-            <li class="nav-item">
+            <li v-if = "this.$store.state.viewing_status === 'admin'" class="nav-item">
               <a class="nav-link" href="/reports">Reports</a>
-            </li>
-  
-            <li class="nav-item">
-              <span class="nav-link disabled">Staff</span> <!-- Changed to span for semantics -->
             </li>
   
             <li v-if="this.$store.state.login_status === 'not_authorized'" class="nav-item">
@@ -70,7 +66,7 @@
               <router-link class="nav-link" to="/login" @click="logoutClick"> Logout</router-link>
             </li>
   
-            <li class="nav-item">
+            <li v-if = "this.$store.state.viewing_status === 'admin'" class="nav-item">
               <router-link class="nav-link" to="/addnewuser"> Add New User </router-link>
             </li>
           </ul>
