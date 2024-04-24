@@ -15,7 +15,7 @@ const router = createRouter({
       name: 'home',
       component: HomeView,
       meta: {
-        requiresAuth: true // Example: Home page requires authentication
+        requiresAuth: "none" // Example: Home page requires authentication
       }
     },
     {
@@ -24,27 +24,30 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
+      component: () => import('../views/AboutView.vue'),
+      meta: {
+        requiresAuth: "none" // Example: Add new user page requires authentication
+      }
     },
     {
       path: '/userdetails',
       name: 'userdetails',
       component: UserDetails,
       meta: {
-        requiresAuth: true // Example: User details page requires authentication
+        requiresAuth: "volunteer" // Example: User details page requires authentication
       }
     },
     {
       path: '/login',
       name: 'login',
-      component: LoginView
+      component: LoginView,
     },
     {
       path: '/addnewuser',
       name: 'addnewuser',
       component: () => import('../views/AddNewUserView.vue'),
       meta: {
-        requiresAuth: true // Example: Add new user page requires authentication
+        requiresAuth: "admin" // Example: Add new user page requires authentication
       }
     },
     {
@@ -52,7 +55,7 @@ const router = createRouter({
       name: 'search',
       component: HomeView,
       meta: {
-        requiresAuth: true // Example: Search page requires authentication
+        requiresAuth: "volunteer" // Example: Search page requires authentication
       }
     },
     {
@@ -60,7 +63,7 @@ const router = createRouter({
       name: 'addwalkin',
       component: () => import('../views/AddWalkIn.vue'),
       meta: {
-        requiresAuth: true // Example: Add walk-in page requires authentication
+        requiresAuth: "volunteer" // Example: Add walk-in page requires authentication
       }
     }, 
     {
@@ -68,23 +71,50 @@ const router = createRouter({
       name: 'registernewclient',
       component: () => import('../views/RegisterClient.vue'),
       meta: {
-        requiresAuth: true // Example: Register new client page requires authentication
+        requiresAuth: "volunteer" // Example: Register new client page requires authentication
       }
     }
   ]
 });
 
 router.beforeEach((to, from, next) => {
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  const requiresAuth = to.meta.requiresAuth;
   const isAuthenticated = store.state.login_status !== 'not_authorized';
 
   console.log("in router:")
   console.log("login status", store.state.login_status)
   console.log("viewing status", store.state.viewing_status)
 
-  if (requiresAuth && !isAuthenticated) {
+  console.log("requireAuth: ", requiresAuth)
+
+  let status = false
+  if (requiresAuth === "none"){
+    status = false
+  }
+  else if (requiresAuth === "admin"){
+    if(store.state.viewing_status === "admin"){
+      status = false
+    } 
+    else {
+      console.log("joseph case")
+      status = true
+    }
+  }
+  else if (requiresAuth === "volunteer"){
+    if (store.state.viewing_status === "admin" || store.state.viewing_status === "volunteer"){
+      status = false
+    }
+    else{
+      status = true
+    }
+  }
+
+  // Bounce to existing route if not authorized to visit page
+  console.log("check from:", from)
+  if (status) {
+    console.log("mid gate")
     // Redirect to login page
-    next('/login');
+    next(from.fullPath);
   } else {
     // Proceed to the next middleware or route
     next();
