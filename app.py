@@ -65,6 +65,24 @@ def register_new_client():
     except Exception as e:
         # Log the error here if you have logging setup
         return flask.jsonify({"error": str(e)}), 500
+        
+# Query Master Database for users
+@app.route('/api/query_masterdatabase', methods = ["POST"])
+def query_masterdatabase():
+    requests = flask.request.get_json()
+    if flask.request.method == 'POST':
+        client_id = requests.get('client_id')
+        first_name = requests.get('first_name')
+        last_name = requests.get('last_name')
+        phone = requests.get('phone')
+        dob = requests.get('dob')
+    try:
+        response = db.query_masterdb_client(
+            client_id, first_name, last_name, phone, dob)
+        return flask.jsonify(response)
+    except Exception as e:
+        # Log the error here if you have logging setup
+        return flask.jsonify({"error": str(e)}), 500
 
 # Add new volunteers or admins - only accessible for ADMINS
 @app.route('/api/add_new_user', methods = ["POST"])
