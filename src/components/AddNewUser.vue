@@ -78,6 +78,8 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import store from '../main'
+
 
 const formData = ref({
   username: '',
@@ -96,7 +98,7 @@ async function submitData() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        sender_role: 'admin',
+        sender_role: store.state.viewing_status,
         username: formData.value.username,
         password: formData.value.password,
         user_role: formData.value.userRole
@@ -123,7 +125,7 @@ async function fetchUsers() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        sender_role: 'admin'
+        sender_role: store.state.viewing_status
       })
     });
     const data = await response.json();
@@ -146,7 +148,7 @@ async function deleteUser(username, password) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        sender_role: 'admin',
+        sender_role: store.state.viewing_status,
         username: username,
         password: password
       })

@@ -51,7 +51,7 @@
             </li>
             <div v-if = "this.$store.state.login_status === 'admin'" class="nav-item navbar-toggler-toggle" @click="toggleClick">
               <transition name="toggle-transition">
-                <span v-if="togglePosition === 'left'" class="toggle-off">
+                <span v-if="this.$store.state.viewing_status === 'volunteer'" class="toggle-off">
                   <!-- SVG for toggle off state -->
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="60" height="60" class = "svgtoggle">
                     <!-- Your SVG path for toggle off state -->
@@ -71,7 +71,8 @@
   
               <!-- Text next to toggle button -->
               <li v-if = "this.$store.state.login_status !== 'not_authorized'" class="nav-item">
-                <a class="nav-link">View: {{ toggleText }}</a>
+                <a  v-if="this.$store.state.viewing_status === 'volunteer'" class="nav-link">View: Volunteer</a>
+                <a  v-else class="nav-link">View: Administrator</a>
               </li>
 
           </ul>
@@ -84,9 +85,12 @@
   export default {
     name: 'NavBar',
     data() {
+      console.log("check init:", this.$store.state.viewing_status)
       return {
-        togglePosition: 'left', // Initial position of the toggle
-        toggleText: "Volunteer",
+        // set togglePosition with ternary operator 
+        // depending on whether admin is viewing login view or admin view
+        togglePosition: this.$store.state.viewing_status === 'admin' ? 'right' : 'left',
+        toggleText: this.$store.state.viewing_status === 'admin' ? 'Administrator' : 'Volunteer',
         login_status: "admin"
       };
     },
@@ -107,6 +111,7 @@
           this.$store.commit('log_in_admin_volunteer_view')
           console.log("login status", this.$store.state.login_status)
           console.log("viewing status", this.$store.state.viewing_status)
+          this.$router.go(0);
 
 
         }
