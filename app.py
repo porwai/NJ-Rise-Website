@@ -113,6 +113,36 @@ def read_all_users():
     }
     return flask.jsonify(response)
 
+# Add new volunteers or admins - only accessible for ADMINS
+@app.route('/api/remove_user', methods = ["POST"])
+def remove_user():
+
+    # input schema
+    # {
+    #     "sender_role": "role",
+    #     "username": "...",
+    #     "password": "..."
+    # }
+
+    request = flask.request.get_json()
+
+    # Sender must be admin in order to add new user
+    if request["sender_role"] != "admin":
+        response = {
+            "status": False
+        }
+        return flask.jsonify(response)
+    
+    username = request["username"]
+    password = request["password"]
+
+    status = user_db.remove_user(username= username, password= password)
+    response = {
+        "status": status
+    }
+    return flask.jsonify(response)
+
+
 # search for the user 
 @app.route('/api/search', methods=['GET', 'POST'])
 def search():
