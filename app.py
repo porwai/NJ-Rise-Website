@@ -55,6 +55,17 @@ def login():
     }
     return flask.jsonify(response_object)
 
+@app.route('/api/register_new_client', methods = ["POST"])
+def register_new_client():
+    requests = flask.request.get_json()
+    
+    try:
+        status = db.add_master_db_client(requests)
+        return flask.jsonify({"status": status}), 200
+    except Exception as e:
+        # Log the error here if you have logging setup
+        return flask.jsonify({"error": str(e)}), 500
+
 # Add new volunteers or admins - only accessible for ADMINS
 @app.route('/api/add_new_user', methods = ["POST"])
 def add_new_user():

@@ -231,13 +231,12 @@
             phone: '',
             dob: '',
             activeRowId: null,
-            clients: [{first_name: 'John', last_name: 'Doe', client_id: '1234', phone: '123-456-7890', dob: '01/01/2000', selected: false, 
-                       food: "sds", baby_supplies: "sds", cleaning: "sds", gift_items: "sds", personal_care: "sds", pet_food: "sds", pj: "sds", summer_feeding: "sds", winter: "sds", other: "sds"
-                }], 
+            clients: [], 
             showModal: false
             };
         },
         mounted() {
+          this.handleQueryEvent();
           this.clients.forEach( client => client.selected = false);
         },
         methods: {

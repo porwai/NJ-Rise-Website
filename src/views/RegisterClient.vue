@@ -3,7 +3,7 @@
     <div class="card">
         <div class="card-body d-flex flex-column" style="overflow-y: auto;">
             <h1 class="card-title">Register New Client</h1>
-            <form @submit.prevent="handleSubmit">
+            <form @submit.prevent="submitForm">
                 <div v-for="(field, key) in formData" :key="key" class="form-group">
                     <label :for="key">{{ formatLabel(key) }}</label>
                     
@@ -70,8 +70,8 @@
               "middle_initial": {"value": "", "type": "string"},
               "total_family_members": {"value": 0, "type": "number"},
               "case_manager_initials": {"value": "", "type": "string"},
-              "empowerOR": {"value": "", "type": "string"},
-              "renewal_date": {"value": "", "type": "string"},
+              "empowerOR": {"value": "", "type": "number"},
+              "renewal_date": {"value": "", "type": "date"},
               "gender_head_of_household": {"value": "", "type": "string"},
               "head_of_household_date_of_birth": {"value": "", "type": "date"},
               "household_number_of_adults": {"value": 0, "type": "number"},
@@ -179,21 +179,20 @@
         methods: {
           submitForm: function () {
             this.formSubmitted = true
-            const payload = {
-                      first_name: this.firstname,
-                      last_name: this.lastname,
-                      phone: this.phonenumber,
-                      dob: this.dob,
-                      date:this.date,
-                      foodbags:this.foodbags
-                  };
-            this.addClients(payload);
+            const payload = {};
+            for (const key in this.formData) {
+                if (this.formData.hasOwnProperty(key)) {
+                  payload[key] = this.formData[key].value;
+                }
+            }
+            this.registerNewClient(payload);
           },
-          addClients(payload) {
-                  axios.post('/api/add', payload)
+          registerNewClient(payload) {
+                  axios.post('/api/register_new_client', payload)
                   .then(() => {
                   }).catch((error) => {
                       console.error(error);
+                      alert('Error: Failed to register client. Please try again.' + error)
                       // Consider adding user-facing error handling here
                   });
         }, 

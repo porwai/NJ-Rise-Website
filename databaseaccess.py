@@ -14,6 +14,119 @@ _DATABASE_URL = _DATABASE_URL.replace("postgres://", "postgresql://")
 _engine = sqlalchemy.create_engine(_DATABASE_URL)
 Base = declarative_base()
 
+class t_master_db(Base):
+    __tablename__ = "master_db"
+
+    client_id = sqlalchemy.Column(sqlalchemy.String, primary_key=True)
+
+    last_name = sqlalchemy.Column(sqlalchemy.String)
+    first_name = sqlalchemy.Column(sqlalchemy.String)
+    middle_initial = sqlalchemy.Column(sqlalchemy.String)
+    total_family_members = sqlalchemy.Column(sqlalchemy.Integer)
+    case_manager_initials = sqlalchemy.Column(sqlalchemy.String)
+    empowerOR = sqlalchemy.Column(sqlalchemy.Integer)
+    renewal_date = sqlalchemy.Column(sqlalchemy.String)
+    gender_head_of_household = sqlalchemy.Column(sqlalchemy.String)
+    head_of_household_date_of_birth = sqlalchemy.Column(sqlalchemy.String)
+    household_number_of_adults = sqlalchemy.Column(sqlalchemy.Integer)
+    household_number_of_children = sqlalchemy.Column(sqlalchemy.Integer)
+    household_number_of_children_under_18 = sqlalchemy.Column(sqlalchemy.Integer)
+    additional_family_members_first_name = sqlalchemy.Column(sqlalchemy.String)
+    additional_family_members_last_name = sqlalchemy.Column(sqlalchemy.String)
+    additional_family_member_middle_initial = sqlalchemy.Column(sqlalchemy.String)
+    additional_family_members_date_of_birth = sqlalchemy.Column(sqlalchemy.String)
+    city = sqlalchemy.Column(sqlalchemy.String)
+    state = sqlalchemy.Column(sqlalchemy.String)
+    zip_code = sqlalchemy.Column(sqlalchemy.String)
+    country_of_origin = sqlalchemy.Column(sqlalchemy.String)
+    residence_hightstown = sqlalchemy.Column(sqlalchemy.Integer)
+    residence_east_windsor = sqlalchemy.Column(sqlalchemy.Integer)
+    residence_cranbury = sqlalchemy.Column(sqlalchemy.Integer)
+    residence_other = sqlalchemy.Column(sqlalchemy.Integer)
+    housing_own = sqlalchemy.Column(sqlalchemy.Integer)
+    housing_rent = sqlalchemy.Column(sqlalchemy.Integer)
+    housing_other_permanent = sqlalchemy.Column(sqlalchemy.Integer)
+    homeless = sqlalchemy.Column(sqlalchemy.Integer)
+    date_file_opened = sqlalchemy.Column(sqlalchemy.String)
+    renewal_return_date = sqlalchemy.Column(sqlalchemy.String)
+    return_client = sqlalchemy.Column(sqlalchemy.Integer)
+    new_client = sqlalchemy.Column(sqlalchemy.Integer)
+    new_client_intake_date = sqlalchemy.Column(sqlalchemy.String)
+    phone_number = sqlalchemy.Column(sqlalchemy.String)
+    affected_by_covid = sqlalchemy.Column(sqlalchemy.Integer)
+    household_single = sqlalchemy.Column(sqlalchemy.Integer)
+    household_two_adults_no_children = sqlalchemy.Column(sqlalchemy.Integer)
+    household_single_parent_female = sqlalchemy.Column(sqlalchemy.Integer)
+    household_single_parent_male = sqlalchemy.Column(sqlalchemy.Integer)
+    household_two_parent = sqlalchemy.Column(sqlalchemy.Integer)
+    household_non_related_adults_no_children = sqlalchemy.Column(sqlalchemy.Integer)
+    household_multi_generational = sqlalchemy.Column(sqlalchemy.Integer)
+    household_other = sqlalchemy.Column(sqlalchemy.Integer)
+    household_not_reported = sqlalchemy.Column(sqlalchemy.Integer)
+    ethnicity_hispanic_latino = sqlalchemy.Column(sqlalchemy.Integer)
+    ethnicity_non_hispanic_latino = sqlalchemy.Column(sqlalchemy.Integer)
+    ethnicity_unknown = sqlalchemy.Column(sqlalchemy.Integer)
+    ethnicity_american_indian = sqlalchemy.Column(sqlalchemy.Integer)
+    ethnicity_alaska_native = sqlalchemy.Column(sqlalchemy.Integer)
+    ethnicity_asian = sqlalchemy.Column(sqlalchemy.Integer)
+    ethnicity_black_african = sqlalchemy.Column(sqlalchemy.Integer)
+    ethnicity_white = sqlalchemy.Column(sqlalchemy.Integer)
+    ethnicity_other =  sqlalchemy.Column(sqlalchemy.Integer)
+    ethnicity_multi_race = sqlalchemy.Column(sqlalchemy.Integer)
+    ethnicity_unknown_not_reported = sqlalchemy.Column(sqlalchemy.Integer)
+    adults_in_household_female = sqlalchemy.Column(sqlalchemy.Integer)
+    adults_in_household_pregnant_female = sqlalchemy.Column(sqlalchemy.Integer)
+    adults_in_household_pregnant_due_date = sqlalchemy.Column(sqlalchemy.String)
+    adults_in_household_male = sqlalchemy.Column(sqlalchemy.Integer)
+    adults_in_household_other = sqlalchemy.Column(sqlalchemy.Integer)
+    adults_in_household_unknown_not_reported = sqlalchemy.Column(sqlalchemy.Integer)
+    adults_in_household_disabled = sqlalchemy.Column(sqlalchemy.Integer)
+    adults_in_household_aged = sqlalchemy.Column(sqlalchemy.Integer)
+    adults_in_household_veteran = sqlalchemy.Column(sqlalchemy.Integer)
+    adults_in_household_veteran_active = sqlalchemy.Column(sqlalchemy.Integer)
+    household_total_number_of_children = sqlalchemy.Column(sqlalchemy.Integer)
+    household_total_number_of_female_children = sqlalchemy.Column(sqlalchemy.Integer)
+    household_total_number_of_male_children = sqlalchemy.Column(sqlalchemy.Integer)
+    household_total_number_of_disabled_children = sqlalchemy.Column(sqlalchemy.Integer)
+    household_children_0_5_years_old = sqlalchemy.Column(sqlalchemy.Integer)
+    household_children_6_13_years_old = sqlalchemy.Column(sqlalchemy.Integer)
+    household_children_14_17_years_old = sqlalchemy.Column(sqlalchemy.Integer)
+    education_9_12_grade_non_graduate = sqlalchemy.Column(sqlalchemy.Integer)
+    education_graduate_or_equivalent_diploma = sqlalchemy.Column(sqlalchemy.Integer)
+    education_12th_grade_and_some_post_secondary_school = sqlalchemy.Column(sqlalchemy.Integer)
+    education_2_4_year_college_graduate = sqlalchemy.Column(sqlalchemy.Integer)
+    education_graduate_and_post_secondary_school = sqlalchemy.Column(sqlalchemy.Integer)
+    education_graduate_and_post_secondary_school_over_25_years_old = sqlalchemy.Column(sqlalchemy.Integer)
+    annual_income = sqlalchemy.Column(sqlalchemy.Integer)
+    full_time_employment = sqlalchemy.Column(sqlalchemy.Integer)
+    part_time_employment = sqlalchemy.Column(sqlalchemy.Integer)
+    migrant_or_seasonal_worker = sqlalchemy.Column(sqlalchemy.Integer)
+    unemployed_short_term_6_months_or_less = sqlalchemy.Column(sqlalchemy.Integer)
+    unemployed_long_term_over_6_months = sqlalchemy.Column(sqlalchemy.Integer)
+    not_in_labor_force = sqlalchemy.Column(sqlalchemy.Integer)
+    retired = sqlalchemy.Column(sqlalchemy.Integer)
+    unknown_or_not_reported_employment = sqlalchemy.Column(sqlalchemy.Integer)
+    obtained_job_through_rise = sqlalchemy.Column(sqlalchemy.Integer)
+    poverty_guidelines_125 = sqlalchemy.Column(sqlalchemy.Integer)
+    poverty_guidelines_185 = sqlalchemy.Column(sqlalchemy.Integer)
+    poverty_guidelines_200 = sqlalchemy.Column(sqlalchemy.Integer)
+    poverty_guidelines_over_200 = sqlalchemy.Column(sqlalchemy.Integer)
+    total_family_receiving_fs_snap = sqlalchemy.Column(sqlalchemy.Integer)
+    total_family_receiving_tanf = sqlalchemy.Column(sqlalchemy.Integer)
+    total_family_receiving_alimony = sqlalchemy.Column(sqlalchemy.Integer)
+    total_family_receiving_lheap = sqlalchemy.Column(sqlalchemy.Integer)
+    total_family_receiving_ga = sqlalchemy.Column(sqlalchemy.Integer)
+    total_family_receiving_medicaid_njfc = sqlalchemy.Column(sqlalchemy.Integer)
+    total_family_receiving_child_support = sqlalchemy.Column(sqlalchemy.Integer)
+    total_family_receiving_pension = sqlalchemy.Column(sqlalchemy.Integer)
+    total_family_receiving_ssa = sqlalchemy.Column(sqlalchemy.Integer)
+    total_family_receiving_ssi = sqlalchemy.Column(sqlalchemy.Integer)
+    total_family_receiving_ssdi = sqlalchemy.Column(sqlalchemy.Integer)
+    total_family_receiving_wic = sqlalchemy.Column(sqlalchemy.Integer)
+    total_family_receiving_workers_comp = sqlalchemy.Column(sqlalchemy.Integer)
+    total_family_receiving_temporary_disability = sqlalchemy.Column(sqlalchemy.Integer)
+    total_family_receiving_unemployment = sqlalchemy.Column(sqlalchemy.Integer)
+
 class t_client(Base):
     __tablename__ = "transactional_db"
     first_name = sqlalchemy.Column(sqlalchemy.String)
@@ -117,10 +230,126 @@ def update_client (transactional_id: int, new_visit_date: str, f_bags=0, b_suppl
         # # Execute changes
         # _engine.execute(u)
 
+def add_master_db_client (data: dict):
+    required_fields = {
+        "first_name": "First Name is required",
+        "last_name": "Last Name is required",
+        "phone_number": "Phone Number is required",
+        "head_of_household_date_of_birth": "Date of Birth for Head of Household is required",
+        "client_id": "Client ID is missing"
+    }
+
+    # Check for missing required fields
+    for field, error_message in required_fields.items():
+        if not data.get(field):
+            raise ValueError(error_message)
+
+    with sqlalchemy.orm.Session(_engine) as session:
+        # Create a new client object
+        new_client = t_client(
+            first_name=data["first_name"],
+            last_name=data["last_name"],
+            phone=data["phone_number"],
+            dob=data["head_of_household_date_of_birth"],
+            client_id=data["client_id"]
+        )
+
+        # Check if client_id already exists in the database
+        existing_client = session.query(t_client).filter(t_client.client_id == data["client_id"]).first()
+        if existing_client:
+            raise ValueError("Client with this ID already exists")
+
+        new_masterdb_client = t_master_db(**data)
+
+        session.add(new_client)
+        session.add(new_masterdb_client)
+        try:
+            session.commit()
+            return new_client.transactional_id
+        except sqlalchemy.exc.IntegrityError as e:
+            session.rollback()  # Roll back the transaction if any database errors occurred
+            raise e
+
+def update_master_db_client(client_id: str, updates: dict, _engine):
+    """
+    Update an existing client record in the t_master_db table.
+
+    Args:
+    client_id (str): The primary key of the client to update.
+    updates (dict): A dictionary of fields to update.
+    _engine: The SQLAlchemy engine instance connected to the database.
+
+    Raises:
+    ValueError: If no client is found with the given client_id.
+    """
+    # Create a new session
+    with sqlalchemy.orm.Session(_engine) as session:
+        # Retrieve the client record by client_id
+        client = session.query(t_master_db).filter_by(client_id=client_id).first()
+        if client is None:
+            raise ValueError(f"No client found in master_db with client_id {client_id}")
+
+        # Retrieve the transactional_db client record
+        transactional_client = session.query(t_client).filter_by(client_id=client_id).first()
+        if transactional_client is None:
+            raise ValueError(f"No client found in transactional_db with client_id {client_id}")
+
+        # Fields that should not be edited
+        immutable_fields = ['client_id', 'new_client_intake_date']
+
+        # Fields that require sync with transactional_db
+        sync_fields = ['phone_number']
+
+        # Update the fields with the data provided in the updates dictionary
+        for key, value in updates.items():
+            if key in immutable_fields:
+                raise ValueError(f"The field '{key}' is not editable.")
+            if hasattr(client, key):
+                setattr(client, key, value)
+                if key in sync_fields:
+                    setattr(transactional_client, key, value)
+            else:
+                raise ValueError(f"{key} is not a valid field of t_master_db")
+
+        # Attempt to commit changes to the database
+        try:
+            session.commit()
+            print(f"Client {client_id} updated successfully.")
+        except sqlalchemy.exc.SQLAlchemyError as e:
+            session.rollback()  # Roll back the transaction if any database errors occurred
+            raise RuntimeError(f"Failed to update client due to: {str(e)}")
+        
+def delete_client_id_records(client_id: str, _engine):
+    """
+    Delete client records from both master_db and transactional_db tables based on the client_id.
+
+    Args:
+    client_id (str): The primary key of the client to delete.
+    _engine: The SQLAlchemy engine instance connected to the database.
+    """
+    with sqlalchemy.orm.Session(_engine) as session:
+        # Attempt to retrieve the client records from both databases
+        master_client = session.query(t_master_db).filter_by(client_id=client_id).first()
+        transactional_client = session.query(t_client).filter_by(client_id=client_id).first()
+
+        if master_client is None or transactional_client is None:
+            raise ValueError(f"No client found with client_id {client_id} in one or both databases.")
+
+        # Delete the client records
+        try:
+            if master_client:
+                session.delete(master_client)
+            if transactional_client:
+                session.delete(transactional_client)
+            session.commit()
+            print(f"Client records with client_id {client_id} have been deleted successfully from both databases.")
+        except sqlalchemy.exc.SQLAlchemyError as e:
+            session.rollback()  # Roll back the transaction if any database errors occurred
+            raise RuntimeError(f"Failed to delete client records due to: {str(e)}")
+        
 
 # Delete client from database
 def delete_client (transactional_id: int):
-
     with sqlalchemy.orm.Session(_engine) as session:
 
         # Select relevant row
@@ -157,7 +386,3 @@ def get_history (id: int):
         del visit["_sa_instance_state"]
         h.append(visit)
     return h
- 
-        
-
-
