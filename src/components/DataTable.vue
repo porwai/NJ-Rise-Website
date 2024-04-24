@@ -230,7 +230,7 @@
         },
         methods: {
             queryClients(payload) {
-                if (this.$store.state.login_status === false) {
+                if (this.$store.state.login_status === "not_authorized") {
                     console.log("FALSE LOGIN")
                     this.$router.push({ path: '/login'})
                 }

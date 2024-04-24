@@ -90,5 +90,34 @@ def read_all_users():
             }
             user_list.append(user_dict)
         return True, user_list
+    
+# Remove a user's volunteer/admin account
+def remove_user(username: str, password: str):
+    # Check if the provided username and password match a user in the database
+    if check_user(username, password) == "not_authorized":
+        print("User not found or unauthorized.")
+        return False
+
+    # Create a session
+    with sqlalchemy.orm.Session(_engine) as session:
+        try:
+            # Query the user to delete
+            user_to_delete = session.query(user_client).filter(user_client.username == username).first()
+            if user_to_delete:
+                # Delete the user
+                session.delete(user_to_delete)
+                # Commit the transaction
+                session.commit()
+                print("User removed successfully.")
+                return True
+            else:
+                print("User not found.")
+                return False
+        except Exception as e:
+            # Rollback the transaction if an error occurs
+            session.rollback()
+            print(f"Error occurred while removing user: {e}")
+            return False
+
 
     
