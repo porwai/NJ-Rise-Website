@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 import sqlalchemy
 from typing import List
-from sqlalchemy import update
+from sqlalchemy import update, MetaData
 from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -127,6 +127,8 @@ class t_master_db(Base):
     total_family_receiving_temporary_disability = sqlalchemy.Column(sqlalchemy.Integer)
     total_family_receiving_unemployment = sqlalchemy.Column(sqlalchemy.Integer)
 
+    transactional_id = sqlalchemy.Column(sqlalchemy.Integer)
+
 class t_client(Base):
     __tablename__ = "transactional_db"
     first_name = sqlalchemy.Column(sqlalchemy.String)
@@ -185,13 +187,38 @@ def get_client (client_id: str, first_name: str, last_name: str, phone: str, dob
             last_name = "%" + last_name + "%"
             phone = "%" + phone + "%"
             dob = "%" + dob + "%"
-            query = session.query(t_client).filter(t_client.first_name.ilike(first_name), t_client.last_name.ilike(last_name), t_client.dob.like(dob), t_client.phone.like(phone))        
+            query = session.query(t_client).filter(t_client.first_name.ilike(first_name), t_client.last_name.ilike(last_name), t_client.dob.like(dob), t_client.phone.like(phone))  
+        query = query.order_by(t_client.client_id, t_client.first_name, t_client.last_name)      
     res = []
     for u in query.all():
         u = u.__dict__
         del u["_sa_instance_state"]
         res.append(u)
     return res
+
+def query_masterdb_client (client_id: str, first_name: str, last_name: str, phone: str, dob: str):
+    with sqlalchemy.orm.Session(_engine) as session:
+        if client_id != "":
+            client_id = "%" + client_id + "%"
+            query = session.query(t_master_db).filter(t_master_db.client_id.like(client_id))
+        else:
+            first_name = "%" + first_name + "%"
+            last_name = "%" + last_name + "%"
+            phone = "%" + phone + "%"
+            dob = "%" + dob + "%"
+            query = session.query(t_master_db).filter(
+                t_master_db.first_name.ilike(first_name),
+                t_master_db.last_name.ilike(last_name),
+                t_master_db.head_of_household_date_of_birth.like(dob),
+                t_master_db.phone_number.like(phone))
+        query = query.order_by(t_master_db.client_id, t_master_db.first_name, t_master_db.last_name)
+    # Execute the query and fetch all results
+        results = query.all()
+        # Process results: convert SQLAlchemy objects to dictionaries
+        res = [u.__dict__ for u in results]
+        for item in res:
+            del item["_sa_instance_state"]  # Remove instance state info
+        return res
 
 # Update Special items or visit_date_list
 def update_client (transactional_id: int, new_visit_date: str, f_bags=0, b_supplies=0, p_food=0, g_items=0, c=0, 
@@ -230,7 +257,7 @@ def update_client (transactional_id: int, new_visit_date: str, f_bags=0, b_suppl
         # # Execute changes
         # _engine.execute(u)
 
-def add_master_db_client (data: dict):
+def add_master_db_client(data: dict):
     required_fields = {
         "first_name": "First Name is required",
         "last_name": "Last Name is required",
@@ -245,30 +272,39 @@ def add_master_db_client (data: dict):
             raise ValueError(error_message)
 
     with sqlalchemy.orm.Session(_engine) as session:
-        # Create a new client object
-        new_client = t_client(
-            first_name=data["first_name"],
-            last_name=data["last_name"],
-            phone=data["phone_number"],
-            dob=data["head_of_household_date_of_birth"],
-            client_id=data["client_id"]
-        )
-
-        # Check if client_id already exists in the database
-        existing_client = session.query(t_client).filter(t_client.client_id == data["client_id"]).first()
-        if existing_client:
-            raise ValueError("Client with this ID already exists")
-
-        new_masterdb_client = t_master_db(**data)
-
-        session.add(new_client)
-        session.add(new_masterdb_client)
         try:
+            # Create a new client object
+            new_client = t_client(
+                first_name=data["first_name"],
+                last_name=data["last_name"],
+                phone=data["phone_number"],
+                dob=data["head_of_household_date_of_birth"],
+                client_id=data["client_id"]
+            )
+
+            # Add the new client to the session and flush to generate the transactional_id
+            session.add(new_client)
+            session.flush()  # This flushes the session to the database and populates new_client.transactional_id
+
+            # Check if client_id already exists in the database
+            existing_client = session.query(t_client).filter(t_client.client_id == data["client_id"]).first()
+            if existing_client and existing_client != new_client:
+                raise ValueError("Client with this ID already exists")
+
+            # Prepare and add master_db client object using the transactional_id from new_client
+            data['transactional_id'] = new_client.transactional_id  # Set the transactional_id in the data dictionary
+            new_masterdb_client = t_master_db(**data)
+            session.add(new_masterdb_client)
+
+            # Commit all transactions if everything is valid
             session.commit()
             return new_client.transactional_id
-        except sqlalchemy.exc.IntegrityError as e:
-            session.rollback()  # Roll back the transaction if any database errors occurred
-            raise e
+
+        except Exception as e:
+            session.rollback()  # Roll back the transaction if any errors occurred
+            raise  # Re-raise the exception after rollback
+
+        
 
 def update_master_db_client(client_id: str, updates: dict, _engine):
     """

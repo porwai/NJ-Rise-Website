@@ -14,7 +14,8 @@ const store = createStore({
     state () {
       return {
         login_status: "not_authorized",
-        viewing_status: "not_authorized"
+        viewing_status: "not_authorized",
+        master_db_view: false // Global boolean to toggle database view
       }
     },
     mutations: {
@@ -28,10 +29,12 @@ const store = createStore({
       },
       log_out (state) {
         state.login_status = false
-      }
+      },
+      toggleMasterDBView(state) {
+        state.master_db_view = !state.master_db_view; // Mutation to toggle DB view
     }
-  })
-
+  }
+})
 
 const app = createApp(App)
 app.use(router)
