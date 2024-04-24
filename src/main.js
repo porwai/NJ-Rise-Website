@@ -13,7 +13,8 @@ const store = createStore({
     state () {
       return {
         login_status: checkCookie("login_status"),
-        viewing_status: checkCookie("viewing_status")
+        viewing_status: checkCookie("viewing_status"),
+        master_db_view: false
       }
     },
     mutations: {
@@ -40,6 +41,9 @@ const store = createStore({
         setCookie("login_status", "not_authorized", 1);
         state.viewing_status = "not_authorized";
         setCookie("viewing_status", "not_authorized", 1);
+      },
+      toggleMasterDBView(state) {
+        state.master_db_view = !state.master_db_view; // Mutation to toggle DB view
       }
     }
   });
