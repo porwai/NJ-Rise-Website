@@ -123,10 +123,6 @@
         }
     }
 
-    .highlighted {
-    background-color: #747baf; /* Yellow background for highlighting */
-    }
-
     .button-group .btn {
     width: 180px; /* Adjust the width as needed */
     margin-right: 30px; /* Adds spacing between the buttons */
@@ -163,16 +159,14 @@
         <div class="table-title">
             <div class="row align-items-center justify-content-between">
                 <div class="col-auto">
-                    <h1 style="padding-left: 15px; align-items: center;">Query Matches: <b>{{clients.length}}</b></h1>
+                    <h1 style="padding-left: 15px; align-items: center;">{{ masterDBView ? 'Master Database ' : '' }}Query Matches: <b>{{clients.length}}</b></h1>
                 </div>
                 <div class="col-auto">
                     <div class="button-group" style="float: right;">
-                        <button to="/search" class="btn btn-warning" @click="openAdvancedSearch">
-                            <span>Advanced Search</span>
+                        <button class="btn btn-warning" @click="toggleDBView(); handleQueryEvent()">
+                            <span>MasterDB Toggle</span>
                         </button>
-                        <!-- Modal Component Here -->
-                        <my-modal :isVisible="showModal" @update:isVisible="showModal = $event">
-                        </my-modal>
+
                         <router-link to="/addwalkin" class="btn btn-success">
                             <span>Add Walk-In Client</span>
                         </router-link>
@@ -185,7 +179,7 @@
         <table class="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
-                    <th><input type="checkbox" class="checkbox" :checked="allSelected" @click="selectAllClients"/></th>
+                    <th></th>
                     <th v-for="(value, key) in clients[0]" :key="key">
                         <template v-if="key !== 'transactional_id'">
                             {{ formatKey(key) }}
@@ -212,13 +206,10 @@
         </table>
         </div>
     </div>
-
-
 </template>
   
 <script>
     import axios from 'axios';
-    import AdvancedSearch from './AdvancedSearch.vue'
 
     export default {
         name: 'search',
@@ -231,9 +222,7 @@
             phone: '',
             dob: '',
             activeRowId: null,
-            clients: [], 
-            showModal: false
-            };
+            clients: []            };
         },
         mounted() {
           this.handleQueryEvent();
@@ -253,6 +242,20 @@
                     // Consider adding user-facing error handling here
                 });
             },
+            queryMasterDB(payload) {
+                if (this.$store.state.login_status === false) {
+                    console.log("FALSE LOGIN")
+                    this.$router.push({ path: '/login'})
+                }
+                axios.post('/api/query_masterdatabase', payload)
+                .then((response) => {
+                    this.clients = response.data;
+                    console.log(response.data);
+                }).catch((error) => {
+                    console.error(error);
+                    // Consider adding user-facing error handling here
+                });
+            },
             handleQueryEvent() {
                 const payload = {
                     first_name: this.first_name,
@@ -261,7 +264,11 @@
                     phone: this.phone,
                     dob: this.dob,
                 };
-                this.queryClients(payload);
+                if (this.masterDBView) {
+                    this.queryMasterDB(payload);
+                } else {
+                    this.queryClients(payload);
+                }
             },
             handleClientDetailsEvent(clientData) {
                 if (this.showDetails == false) {
@@ -279,20 +286,20 @@
             setActiveRow(id) {
                 this.activeRowId = id;
             },
-            openAdvancedSearch() {
-            this.showModal = true;  // Opens the modal
-            }, 
             formatKey(key) {
               return key.split('_')
                         .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
                         .join(' ');
+            },
+            toggleDBView() {
+                this.$store.commit('toggleMasterDBView'); // Mutating the state
             }
         },
-        computed: {
-        allSelected() {
-          return this.clients.every(client => client.selected);
+        computed: { 
+        masterDBView() {
+            return this.$store.state.master_db_view; // Accessing the state
         }
-    }, 
+        }, 
         props: {
             showDetails: {
                 type: Boolean,

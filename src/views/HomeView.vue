@@ -103,7 +103,6 @@ export default {
       } else {
         this.isMobile = false
       }
-      console.log(this.isMobile)
     }
   }
 }
