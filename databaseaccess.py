@@ -415,10 +415,11 @@ def add_client (f_name: str, l_name:str, p: str, dob_date: str, date:str, foodba
 
 def get_history (id: int):
     with sqlalchemy.orm.Session(_engine) as session:
-        history = session.query(t_history).filter(t_history.t_id == id).all()
+        history = session.query(t_history).filter(t_history.t_id == id).order_by(t_history.visit_date).all()
     h = []
     for visit in history:
         visit = visit.__dict__
         del visit["_sa_instance_state"]
+        visit['visit_date'] = visit['visit_date'].strftime("%A \n %B %d, %Y")
         h.append(visit)
     return h
