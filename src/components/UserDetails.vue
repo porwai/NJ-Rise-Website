@@ -47,6 +47,7 @@
                 <th class="rotate personal-care" scope="col"><div><span>personal care</span></div></th>
                 <th class="rotate pet-food" scope="col"><div><span>pet food</span></div></th>
                 <th class="rotate pj" scope="col"><div><span>pj</span></div></th>
+                <th class="rotate clothing" scope="col"><div><span>clothing</span></div></th>
                 <th class="rotate summer-feeding" scope="col"><div><span>summer feeding</span></div></th>
                 <th class="rotate winter" scope="col"><div><span>winter</span></div></th>
                 <th class="rotate other" scope="col"><div><span>other</span></div></th>
@@ -62,6 +63,7 @@
                   <td>{{ visit_date.personal_care }}</td>
                   <td>{{ visit_date.pet_food }}</td>
                   <td>{{ visit_date.pj }}</td>
+                  <td>{{ visit_date.clothing }}</td>
                   <td>{{ visit_date.summer_feeding }}</td>
                   <td>{{ visit_date.winter }}</td>
                   <td>{{ visit_date.other }}</td>
@@ -223,6 +225,7 @@
   .pet-food { background-color: #cfe2f3; }
   .pj { background-color: #d9d2e9; }
   .summer-feeding { background-color: #ead1dc; }
+  .clothing { background-color: #af16c4; }
   .winter { background-color: #e6b8af; }
   .other { background-color: #f9cb9c; }
   .actions { background-color: #fff; } /* Different color or keep as default */
@@ -244,7 +247,7 @@
         c: 0,
         sf: 0,
         p_care: 0,
-        p: 0,
+        pj: 0,
         cloth: 0,
         w: 0,
         o: 0
@@ -281,7 +284,7 @@
         c: this.c,
         sf: this.sf,
         p_care: this.p_care,
-        p: this.p,
+        pj: this.pj,
         cloth: this.cloth,
         w: this.w,
         o: this.o

@@ -211,7 +211,7 @@ def add_date():
         c = get_data.get('c')
         p_care = get_data.get('p_care')
         sf = get_data.get('sf')
-        p = get_data.get('p')
+        p = get_data.get('pj')
         cloth = get_data.get('cloth')
         w = get_data.get('w')
         o = get_data.get('o')
@@ -311,6 +311,16 @@ def get_visit_history():
         except Exception as ex:
             raise Exception(ex)
     return flask.jsonify(response_object)
+
+@app.route('/api/monthEmpower', methods = ['POST'])
+def monthEmpower():
+    get_data = flask.request.get_json()
+    month = get_data.get("month")
+    year = get_data.get("year")
+    csv_data =  db.monthEmpower(month, year)
+    response = flask.Response(csv_data, mimetype="text/csv")
+    response.headers["Content-Disposition"] = "attachment;filename=EmpowerMonthlyReport.csv"
+    return response
 
 # Run flask server
 if __name__ == '__main__':

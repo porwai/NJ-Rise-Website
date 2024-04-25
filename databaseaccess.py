@@ -3,8 +3,10 @@ from dotenv import load_dotenv
 import sqlalchemy
 from typing import List
 from sqlalchemy import update, MetaData
+from sqlalchemy.sql import extract
 from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
+import calendar
 
 load_dotenv()
 
@@ -144,6 +146,7 @@ class t_client(Base):
 class t_history(Base):
     __tablename__ = "transactional_history"
     t_id = sqlalchemy.Column(sqlalchemy.Integer)
+    client_type = sqlalchemy.Column(sqlalchemy.String)
 
     visit_date = sqlalchemy.Column(sqlalchemy.Date)
     food_bags = sqlalchemy.Column(sqlalchemy.Integer)
@@ -235,9 +238,10 @@ def update_client (transactional_id: int, new_visit_date: str, f_bags=0, b_suppl
 
         # Select current visit_date_list
         date_format = '%Y-%m-%d'
+        c_type = session.query(t_client).filter(t_client.transactional_id==transactional_id).one().client_type
         date_obj = datetime.strptime(new_visit_date, date_format)
         new_visit = t_history(t_id=transactional_id, visit_date=date_obj, food_bags=f_bags, baby_supplies=b_supplies,pet_food=p_food,
-                              gift_items=g_items, cleaning=c, personal_care=p_care, summer_feeding = sf, pj=p, clothing = cloth, winter=w, other = o)
+                              gift_items=g_items, cleaning=c, personal_care=p_care, summer_feeding = sf, pj=p, clothing = cloth, winter=w, other = o, client_type=c_type)
         session.add(new_visit)
         session.commit()
         return get_history(transactional_id)
@@ -407,7 +411,7 @@ def add_client (f_name: str, l_name:str, p: str, dob_date: str, date:str, foodba
         if dob_date is None:
             dob_date = ''
         # Select relevant row
-        new_client = t_client(first_name=f_name, last_name=l_name, phone=p, dob=dob_date)
+        new_client = t_client(first_name=f_name, last_name=l_name, phone=p, dob=dob_date, client_type="not eligible")
         session.add(new_client)
         session.commit()
         id = new_client.transactional_id
@@ -420,6 +424,25 @@ def get_history (id: int):
     for visit in history:
         visit = visit.__dict__
         del visit["_sa_instance_state"]
+        del visit["client_type"]
         visit['visit_date'] = visit['visit_date'].strftime("%A \n %B %d, %Y")
         h.append(visit)
     return h
+
+
+def monthEmpower(month: int, year: int):
+    with sqlalchemy.orm.Session(_engine) as session:
+        res = "Client,Distribution Day,Food Bags,Baby Supplies,Pet Food,Gift Items, Cleaning Supplies,"
+        res += "Personal Care,Summer Feeding,Kids Pajamas,Clothing,Winter Coats,Other Items,Date\n"
+        visits=session.query(t_history).filter(extract('month', t_history.visit_date) == month).filter(extract('year', t_history.visit_date) == year).filter(t_history.client_type=="empower").all()
+        print('reached')
+        for visit in visits:
+            name = session.query(t_client).filter(t_client.transactional_id==visit.t_id).one()
+            fullname = name.first_name + " " + name.last_name
+            date = visit.visit_date.strftime("%m/%d/%Y")
+            res += fullname + ','
+            
+            res += f"{calendar.day_name[visit.visit_date.weekday()]},{visit.food_bags},{visit.baby_supplies},"
+            res += f"{visit.pet_food},{visit.gift_items},{visit.cleaning},{visit.personal_care},{visit.summer_feeding},"
+            res += f"{visit.pj},{visit.clothing},{visit.winter},{visit.other},{date}\n"
+        return res
