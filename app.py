@@ -322,6 +322,7 @@ def monthEmpower():
     response.headers["Content-Disposition"] = "attachment;filename=EmpowerMonthlyReport.csv"
     return response
 
+
 @app.route('/api/monthSummary', methods = ['POST'])
 def monthSummary():
     get_data = flask.request.get_json()
@@ -339,6 +340,38 @@ def walkInSummary():
     response = flask.Response(csv_data, mimetype="text/csv")
     response.headers["Content-Disposition"] = "attachment;filename=MonthSummaryReport.csv"
     return response
+
+
+# Route for general reports, 
+# returns list of numVisits from startDate to endDate
+@app.route('/api/report_basic', methods = ["POST"])
+def report_basic():
+    '''
+    input schema
+    {
+        "sender_role": "...",
+        "start_date": "...",
+        "end_date": "..."
+    }
+    '''
+    '''
+    output schema
+    {
+        "num_visit_per_day_list": list
+    }
+    '''
+
+    request = flask.request.get_json()
+
+    start_date = request.get("start_date")
+    end_date = request.get("end_date")
+
+    print("check basic report:", type(start_date), "  END ", type(end_date))
+
+    visit_list = db.get_visit_history(start= start_date, end= end_date)
+
+    print("check visit list in server: ", visit_list)
+    return flask.jsonify(visit_list)
 
 # Run flask server
 if __name__ == '__main__':

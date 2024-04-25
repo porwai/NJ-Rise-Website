@@ -47,7 +47,7 @@
             </li>
             
             <li v-if = "this.$store.state.viewing_status === 'admin'" class="nav-item">
-              <router-link class="nav-link" to="/addnewuser"> Add New User </router-link>
+              <router-link class="nav-link" to="/addnewuser"> Add New Staff </router-link>
             </li>
             <div v-if = "this.$store.state.login_status === 'admin'" class="nav-item navbar-toggler-toggle" @click="toggleClick">
               <transition name="toggle-transition">
