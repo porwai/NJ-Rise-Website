@@ -8,6 +8,9 @@ import { createStore } from 'vuex'
 import App from './App.vue'
 import router from './router'
 
+import CanvasJSChart from '@canvasjs/vue-charts';
+
+
 // Create a new store instance.
 const store = createStore({
     state () {
@@ -53,6 +56,8 @@ export default store;
 const app = createApp(App);
 app.use(router);
 app.use(store);
+app.use(CanvasJSChart); // install the CanvasJS Vuejs Chart Plugin
+
 
 app.mount('#app');
 

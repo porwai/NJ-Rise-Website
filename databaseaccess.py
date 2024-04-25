@@ -446,3 +446,36 @@ def monthEmpower(month: int, year: int):
             res += f"{visit.pet_food},{visit.gift_items},{visit.cleaning},{visit.personal_care},{visit.summer_feeding},"
             res += f"{visit.pj},{visit.clothing},{visit.winter},{visit.other},{date}\n"
         return res
+
+
+# Function to retrieve visit history between start and end date
+def get_visit_history(start, end):
+
+    start_date = datetime.strptime(start, '%Y-%m-%d').date()
+    end_date = datetime.strptime(end, '%Y-%m-%d').date()
+    
+    with sqlalchemy.orm.Session(_engine) as session:
+
+        # Total number of days in range
+        num_days = (end_date - start_date).days + 1
+
+        # Initialize a list to store the visit counts for each day
+        visit_counts = [0] * num_days
+
+        # Query the database to retrieve transactional history records between start and end date
+        history_records = session.query(t_history).filter(
+            t_history.visit_date >= start_date,
+            t_history.visit_date <= end_date
+        ).all()
+
+        # Update visit counts for each day based on the retrieved history records
+        for record in history_records:
+            # Calculate the index for the current record's visit date in the visit_counts list
+            index = (record.visit_date - start_date).days
+            # Increment the visit count for the corresponding day
+            visit_counts[index] += 1
+
+
+        # check visit_count array before returning
+        print("check visit count list:", visit_counts)
+        return visit_counts
