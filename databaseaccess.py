@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 import sqlalchemy
 from typing import List
-from sqlalchemy import update, MetaData
+from sqlalchemy import update, MetaData, func
 from sqlalchemy.sql import extract
 from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
@@ -445,4 +445,169 @@ def monthEmpower(month: int, year: int):
             res += f"{calendar.day_name[visit.visit_date.weekday()]},{visit.food_bags},{visit.baby_supplies},"
             res += f"{visit.pet_food},{visit.gift_items},{visit.cleaning},{visit.personal_care},{visit.summer_feeding},"
             res += f"{visit.pj},{visit.clothing},{visit.winter},{visit.other},{date}\n"
+        return res
+    
+def monthSummary(year: int):
+    with sqlalchemy.orm.Session(_engine) as session:
+        res = "Items,January,February,March,April,May,June,July,August,September,October,November,December,Year To Date\n"
+        res += "Total Food Bags Distributed - Monday,"
+        tot = 0
+        for i in range(12):
+            val = session.query(func.sum(t_history.food_bags)).filter(extract('month', t_history.visit_date) == (i + 1)).filter(extract('dow', t_history.visit_date) == 1)\
+                .filter(extract('year', t_history.visit_date) == (year)).scalar()
+            if val is None:
+                val = 0
+            tot += val
+            res += str(val) + ","
+        res += str(tot) + '\n'
+        res += "Total Food Bags Distributed - Tuesday,"
+        tot = 0
+        for i in range(12):
+            val = session.query(func.sum(t_history.food_bags)).filter(extract('month', t_history.visit_date) == (i + 1)).filter(extract('dow', t_history.visit_date) == 2)\
+                .filter(extract('year', t_history.visit_date) == (year)).scalar()
+            if val is None:
+                val = 0
+            tot += val
+            res += str(val) + ","
+        res += str(tot) + '\n'
+        res += "Total Food Bags Distributed - Wednesday,"
+        tot = 0
+        for i in range(12):
+            val = session.query(func.sum(t_history.food_bags)).filter(extract('month', t_history.visit_date) == (i + 1)).filter(extract('dow', t_history.visit_date) == 3)\
+                .filter(extract('year', t_history.visit_date) == (year)).scalar()
+            if val is None:
+                val = 0
+            tot += val
+            res += str(val) + ","
+        res += str(tot) + '\n'
+        res += "Total Bags Distributed - Pet Food,"
+        tot = 0
+        for i in range(12):
+            val = session.query(func.sum(t_history.pet_food)).filter(extract('month', t_history.visit_date) == (i + 1))\
+                .filter(extract('year', t_history.visit_date) == (year)).scalar()
+            if val is None:
+                val = 0
+            tot += val
+            res += str(val) + ","
+        res += str(tot) + '\n'
+        res += "Total Bags Distributed - Personal Care,"
+        tot = 0
+        for i in range(12):
+            val = session.query(func.sum(t_history.personal_care)).filter(extract('month', t_history.visit_date) == (i + 1))\
+                .filter(extract('year', t_history.visit_date) == (year)).scalar()
+            if val is None:
+                val = 0
+            tot += val
+            res += str(val) + ","
+        res += str(tot) + '\n'
+        res += "Total Bags Distributed - Baby Supplies,"
+        tot = 0
+        for i in range(12):
+            val = session.query(func.sum(t_history.baby_supplies)).filter(extract('month', t_history.visit_date) == (i + 1))\
+                .filter(extract('year', t_history.visit_date) == (year)).scalar()
+            if val is None:
+                val = 0
+            tot += val
+            res += str(val) + ","
+        res += str(tot) + '\n'
+        res += "Total Bags Distributed -  Gift Items,"
+        tot = 0
+        for i in range(12):
+            val = session.query(func.sum(t_history.gift_items)).filter(extract('month', t_history.visit_date) == (i + 1))\
+                .filter(extract('year', t_history.visit_date) == (year)).scalar()
+            if val is None:
+                val = 0
+            tot += val
+            res += str(val) + ","
+        res += str(tot) + '\n'
+        res += "Total Bags Distributed - Summer Feeding,"
+        tot = 0
+        for i in range(12):
+            val = session.query(func.sum(t_history.summer_feeding)).filter(extract('month', t_history.visit_date) == (i + 1))\
+                .filter(extract('year', t_history.visit_date) == (year)).scalar()
+            if val is None:
+                val = 0
+            tot += val
+            res += str(val) + ","
+        res += str(tot) + '\n'
+        res += "Total Bags Distributed - Cleaning Supplies,"
+        tot = 0
+        for i in range(12):
+            val = session.query(func.sum(t_history.cleaning)).filter(extract('month', t_history.visit_date) == (i + 1))\
+                .filter(extract('year', t_history.visit_date) == (year)).scalar()
+            if val is None:
+                val = 0
+            tot += val
+            res += str(val) + ","
+        res += str(tot) + '\n'
+        res += "Total Bags Distributed - Kids Pajamas,"
+        tot = 0
+        for i in range(12):
+            val = session.query(func.sum(t_history.pj)).filter(extract('month', t_history.visit_date) == (i + 1))\
+                .filter(extract('year', t_history.visit_date) == (year)).scalar()
+            if val is None:
+                val = 0
+            tot += val
+            res += str(val) + ","
+        res += str(tot) + '\n'
+        res += "Total Bags Distributed - Clothing (General),"
+        tot = 0
+        for i in range(12):
+            val = session.query(func.sum(t_history.clothing)).filter(extract('month', t_history.visit_date) == (i + 1))\
+                .filter(extract('year', t_history.visit_date) == (year)).scalar()
+            if val is None:
+                val = 0
+            tot += val
+            res += str(val) + ","
+        res += str(tot) + '\n'
+        res += "Total Bags Distributed - Winter Coats,"
+        tot = 0
+        for i in range(12):
+            val = session.query(func.sum(t_history.winter)).filter(extract('month', t_history.visit_date) == (i + 1))\
+                .filter(extract('year', t_history.visit_date) == (year)).scalar()
+            if val is None:
+                val = 0
+            tot += val
+            res += str(val) + ","
+        res += str(tot) + '\n'
+        res += "Total Bags Distributed - Other Items,"
+        tot = 0
+        for i in range(12):
+            val = session.query(func.sum(t_history.other)).filter(extract('month', t_history.visit_date) == (i + 1))\
+                .filter(extract('year', t_history.visit_date) == (year)).scalar()
+            if val is None:
+                val = 0
+            tot += val
+            res += str(val) + ","
+        res += str(tot) + '\n'
+        res += "Total Walk in/Unregistered Visits,"
+        tot = 0
+        for i in range(12):
+            val = session.query(t_history).filter(extract('month', t_history.visit_date) == (i + 1))\
+                .filter(extract('year', t_history.visit_date) == (year)).filter(t_history.client_type=="not eligible").count()
+            if val is None:
+                val = 0
+            tot += val
+            res += str(val) + ","
+        res += str(tot) + '\n'
+        res += "Total Food Pantry Visits,"
+        tot = 0
+        for i in range(12):
+            val = session.query(t_history).filter(extract('month', t_history.visit_date) == (i + 1))\
+                .filter(extract('year', t_history.visit_date) == (year)).count()
+            if val is None:
+                val = 0
+            tot += val
+            res += str(val) + ","
+        res += str(tot) + '\n'
+        res += "Total Food Bags Distributed,"
+        tot = 0
+        for i in range(12):
+            val = session.query(func.sum(t_history.food_bags)).filter(extract('month', t_history.visit_date) == (i + 1))\
+                .filter(extract('year', t_history.visit_date) == (year)).scalar()
+            if val is None:
+                val = 0
+            tot += val
+            res += str(val) + ","
+        res += str(tot) + '\n'
         return res
