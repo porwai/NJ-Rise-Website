@@ -231,7 +231,7 @@
                       // Consider adding user-facing error handling here
                   });
               },
-        },
+      
 
               // api call to receive number of visits between
               // a given start date and end date
