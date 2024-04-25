@@ -60,19 +60,28 @@
             <div v-if="this.basic_report_sum !== null">
               <p>Sum of Visit Frequencies: {{ this.basic_report_sum }}</p>
             </div>
+            <div v-if="this.basic_report_sum !== null">
+              <p>Sum of Visit Frequencies: {{ this.basic_report_sum }}</p>
+            </div>
+            <div v-if="this.basic_report_sum !== null">
+              <p>Sum of Visit Frequencies: {{ this.basic_report_sum }}</p>
+            </div>
+            <div v-if="this.basic_report_sum !== null">
+              <p>Sum of Visit Frequencies: {{ this.basic_report_sum }}</p>
+            </div>
 
                 <!-- Slider to adjust the range -->
-              <label for="range">Select Range:</label>
+                <label for="range">Select Range:</label>
               <input 
                   type="range" 
                   id="range" 
                   v-model="selectedRange" 
                   min="1" 
-                  :max="basic_report_list.length" 
+                  :max="this.basic_report_list ? this.basic_report_list.length : 0"
                   @change="updateData"
               />
               <p>
-                Min: 1 ; Current: {{ this.selectedRange}}; max: {{ this.basic_report_list.length }}
+                Min: 1 ; Current: {{ this.selectedRange}}; max: {{ this.basic_report_list ? this.basic_report_list.length : 0 }}
               </p>
 
             <CanvasJSChart :options="options" :style="styleOptions" @chart-ref="chartInstance"/>
@@ -95,12 +104,9 @@
             basic_report_start_date: 0,
             basic_report_end_date: null,
             basic_report_sum: null,
-            basic_report_list: [],
+            basic_report_list: null,
 
-            // /////////////////////////////////////////////////////////
             // variables for displaying chart-js:
-            // SEE DETAILED CHART-JS DOCS HERE:
-            // https://canvasjs.com/vuejs-charts/dynamic-live-line-chart/
             // /////////////////////////////////////////////////////////
             chart: null,
             xValue: 1,
@@ -118,24 +124,19 @@
               }],
               axisX: {
                   title: "Days",
-                  maximum: this.basic_report_list ? this.basic_report_list.length : 0,
-                  interval: this.selectedRange,
-              },
-              axisY: {
-                  title: "Number of Visits",
-                  maximum: 3,
-                  interval: 1
+                  // maximum: this.basic_report_list ? this.basic_report_list.length : 0,
+                  // interval: this.selectedRange,
+                  viewportMaximum: 0
               },
             },
             styleOptions: {
               width: "100%",
-              height: "560px"
+              height: "360px"
             },
 
             // Used to dynamically update chart intervals
             // Init set at 1 day intervals
             selectedRange: 1, 
-
             // /////////////////////////////////////////////////////////
           }
         },
@@ -176,8 +177,7 @@
 
                     // Compute sum using private helper function
                     this.basic_report_sum = this.sumValues(this.basic_report_list);
-                    this.updateData();
-
+                    this.updateData()
                   })
                   .catch(error => {
                     console.error('Error fetching basic report:', error);
@@ -196,27 +196,29 @@
           },
 
           updateData() {
-            console.log("reached update data")
-            if (!this.basic_report_list) {
-                console.warn('basic_report_list is null. No data to update.');
-                return;
-            }
 
-            // Reset dataPoints array
-            this.options.data[0].dataPoints = [];
+            // update the viewportMax based on slider selectRange val
+            this.options.axisX.viewportMaximum = this.selectedRange
+            
+            console.log("in the update:")
+            console.log("selectRange:", this.selectedRange)
+            console.log("chartMaxX:", this.options.axisX.viewportMaximum)
+              // Reset dataPoints array
+              this.options.data[0].dataPoints = [];
 
-            // Iterate over basic_report_list based on selectedRange
-            // for (let i = 0; i < this.basic_report_list.length; i += this.selectedRange) {
-            //     this.options.data[0].dataPoints.push({ x: i, y: this.basic_report_list[i] });
-            // }
+              if(!this.basic_report_list){
+                return true
+              }
 
-            this.basic_report_list.forEach((value, index) => {
-                this.options.data[0].dataPoints.push({ x: index, y: value });
-            });
+              // Iterate over basic_report_list and add data points
+              this.basic_report_list.forEach((value, index) => {
+                  this.options.data[0].dataPoints.push({ x: index, y: value });
+              });
 
-            // Render the chart
-            this.chart.render();
-        },
+              // Render the chart
+              this.chart.render();
+          },
+
 
           // functions to load chart from chart-js
           chartInstance(chart) {
