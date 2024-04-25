@@ -331,6 +331,15 @@ def monthSummary():
     response.headers["Content-Disposition"] = "attachment;filename=MonthSummaryReport.csv"
     return response
 
+@app.route('/api/walkInReport', methods = ['POST'])
+def walkInSummary():
+    get_data = flask.request.get_json()
+    year = get_data.get("year")
+    csv_data =  db.walkInReport(year)
+    response = flask.Response(csv_data, mimetype="text/csv")
+    response.headers["Content-Disposition"] = "attachment;filename=MonthSummaryReport.csv"
+    return response
+
 # Run flask server
 if __name__ == '__main__':
     app.run()

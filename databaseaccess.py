@@ -611,3 +611,16 @@ def monthSummary(year: int):
             res += str(val) + ","
         res += str(tot) + '\n'
         return res
+    
+def walkInReport(year: int):
+    with sqlalchemy.orm.Session(_engine) as session:
+        res = "Full Name,Phone Number,Date,Distribution Day\n"
+        visits=session.query(t_history).filter(t_history.client_type == "not eligible").filter(extract('year', t_history.visit_date) == (year)).all()
+        for visit in visits:
+            client = session.query(t_client).filter(t_client.transactional_id==visit.t_id).one()
+            fullname = client.first_name + " " + client.last_name
+            phone = client.phone
+            date = visit.visit_date.strftime("%m/%d/%Y")
+            weekday = calendar.day_name[visit.visit_date.weekday()]
+            res += f"{fullname},{phone},{date},{weekday}\n"
+        return res

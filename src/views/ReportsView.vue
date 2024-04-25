@@ -46,6 +46,20 @@
               </div>
                 <button class="btn btn-primary" type="submit">Submit</button>
           </form>
+          <h1 class="card-title"> Walk In Summary Report</h1>
+            <h2> Select Year</h2>
+            <form @submit.prevent="submitForm3">
+                <div class="mb-3">
+                  <label for="year3" class="form-label">Year</label>
+                  <input 
+                    v-model="year3" 
+                    type="number" 
+                    class="form-control"
+                    id="year3"
+                  />
+              </div>
+                <button class="btn btn-primary" type="submit">Submit</button>
+          </form>
         </div>
     </div>
   </template>
@@ -103,7 +117,28 @@
                       console.error(error);
                       // Consider adding user-facing error handling here
                   });
-              }
+              },
+          submitForm3: function () {
+            const payload = {
+                      month: this.selected,
+                      year: this.year3
+                  };
+            this.getWalkInReport(payload);
+          },
+          getWalkInReport(payload) {
+                  axios.post('/api/walkInReport', payload)
+                  .then(response => {
+                    const csv = response.data;
+                    const link = document.createElement("a");
+                    link.target = "_blank";
+                    link.href = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
+                    link.download = "walkInReport.csv";
+                    link.click();
+                  }).catch((error) => {
+                      console.error(error);
+                      // Consider adding user-facing error handling here
+                  });
+              },
         },
       };
     </script>
