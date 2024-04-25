@@ -4,7 +4,7 @@
         <div class="card-body d-flex flex-column" style="overflow-y: auto;">
             <h1 class="card-title">Monthly Empower Report</h1>
             <h2> Select Month of Empower Report</h2>
-            <form @submit.prevent="submitForm">
+            <form @submit.prevent="submitForm1">
                 <select v-model="selected">
                     <option disabled value="">Please select one</option>
                     <option value = 1>January</option>
@@ -30,7 +30,34 @@
                     id="year"
                   />
               </div>
-
+                <button class="btn btn-primary" type="submit">Submit</button>
+            </form>
+          <h1 class="card-title"> Yearly Summary Report</h1>
+            <h2> Select Year</h2>
+            <form @submit.prevent="submitForm2">
+                <div class="mb-3">
+                  <label for="year2" class="form-label">Year</label>
+                  <input 
+                    v-model="year2" 
+                    type="number" 
+                    class="form-control"
+                    id="year2"
+                  />
+              </div>
+                <button class="btn btn-primary" type="submit">Submit</button>
+          </form>
+          <h1 class="card-title"> Walk In Summary Report</h1>
+            <h2> Select Year</h2>
+            <form @submit.prevent="submitForm3">
+                <div class="mb-3">
+                  <label for="year3" class="form-label">Year</label>
+                  <input 
+                    v-model="year3" 
+                    type="number" 
+                    class="form-control"
+                    id="year3"
+                  />
+              </div>
                 <button class="btn btn-primary" type="submit">Submit</button>
           </form>
 
@@ -101,6 +128,7 @@
           return {
             selected: null,
             year:0,
+            year2:0,
             basic_report_start_date: 0,
             basic_report_end_date: null,
             basic_report_sum: null,
@@ -141,7 +169,7 @@
           }
         },
         methods: {
-          submitForm: function () {
+          submitForm1: function () {
             const payload = {
                       month: this.selected,
                       year: this.year
@@ -162,6 +190,48 @@
                       // Consider adding user-facing error handling here
                   });
               },
+          submitForm2: function () {
+            const payload = {
+                      year: this.year2
+                  };
+            this.getYearlySummary(payload);
+          },
+          getYearlySummary(payload) {
+                  axios.post('/api/monthSummary', payload)
+                  .then(response => {
+                    const csv = response.data;
+                    const link = document.createElement("a");
+                    link.target = "_blank";
+                    link.href = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
+                    link.download = "YearSummary.csv";
+                    link.click();
+                  }).catch((error) => {
+                      console.error(error);
+                      // Consider adding user-facing error handling here
+                  });
+              },
+          submitForm3: function () {
+            const payload = {
+                      month: this.selected,
+                      year: this.year3
+                  };
+            this.getWalkInReport(payload);
+          },
+          getWalkInReport(payload) {
+                  axios.post('/api/walkInReport', payload)
+                  .then(response => {
+                    const csv = response.data;
+                    const link = document.createElement("a");
+                    link.target = "_blank";
+                    link.href = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
+                    link.download = "walkInReport.csv";
+                    link.click();
+                  }).catch((error) => {
+                      console.error(error);
+                      // Consider adding user-facing error handling here
+                  });
+              },
+        },
 
               // api call to receive number of visits between
               // a given start date and end date
