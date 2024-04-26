@@ -154,11 +154,6 @@
           <input type="date" v-model="dob" placeholder="Date of Birth" class="form-control" @keyup.enter="handleQueryEvent" />
         </div>
       </div>
-      <div class="row">
-        <button class="btn btn-info" @click="handleQueryEvent()">
-            <span>Search</span>
-        </button>
-      </div>   
     
     <div class="table-wrapper">
         <div class="table-title">
@@ -168,6 +163,10 @@
                 </div>
                 <div class="col-auto">
                     <div class="button-group" style="float: right;">
+                        <button class="btn btn-info" @click="handleQueryEvent">
+                            <span>Search</span>
+                        </button>
+
                         <button class="btn btn-warning" @click="toggleDBView(); handleQueryEvent()">
                             <span>MasterDB Toggle</span>
                         </button>
