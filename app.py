@@ -226,7 +226,6 @@ def add_date():
 # Delete entry for the user
 @app.route('/api/delete', methods = ['POST'])
 def delete_row():
-
     transactional_id = flask.request.args.get("transactional_id")
 
     try:
@@ -235,6 +234,24 @@ def delete_row():
     except Exception as ex:
         raise Exception(ex)
 
+@app.route('/api/delete_t_client', methods=['POST'])
+def delete_transactional_client():
+    data = flask.request.get_json()  # Use 'request' directly if it's imported
+    transactional_id = data.get("transactional_id")
+    
+    if not transactional_id:
+        return flask.jsonify({"error": "Missing transactional_id"}), 400  # Bad Request for missing ID
+
+    try:
+        db.delete_transactional_id_records(transactional_id)
+        return flask.jsonify({"success": "Client records deleted successfully"}), 200  # OK Success
+
+    except ValueError as ve:
+        # Handle specific known error scenarios, e.g., ID not found
+        return flask.jsonify({"error": str(ve)}), 404  # Not Found
+    except Exception as ex:
+        # Log the exception here if possible
+        return flask.jsonify({"error": "Internal server error"}), 500  # Internal Server Error
 
 # Login reroute
 # @app.route('/api/login', methods = ["POST"])

@@ -52,7 +52,7 @@ def add_new_user(username: str, password: str, user_role: str):
     # Do not allow entry of new user that is empty or non-string value
     if type(username) != str or type(password) != str or type(user_role) != str:
         return False
-    if username is "" or password is "" or user_role is "":
+    if username == "" or password == "" or user_role == "":
         return False
     
     # Create a new user instance

@@ -306,10 +306,8 @@ def add_master_db_client(data: dict):
 
         except Exception as e:
             session.rollback()  # Roll back the transaction if any errors occurred
-            raise  # Re-raise the exception after rollback
-
+            raise  # Re-raise the exception after rollbackx
         
-
 def update_master_db_client(client_id: str, updates: dict, _engine):
     """
     Update an existing client record in the t_master_db table.
@@ -359,6 +357,35 @@ def update_master_db_client(client_id: str, updates: dict, _engine):
             session.rollback()  # Roll back the transaction if any database errors occurred
             raise RuntimeError(f"Failed to update client due to: {str(e)}")
         
+def delete_transactional_id_records(transactional_id: int):
+    """
+    Delete client records from both master_db and transactional_db tables based on the client_id.
+
+    Args:
+    client_id (str): The primary key of the client to delete.
+    _engine: The SQLAlchemy engine instance connected to the database.
+    """
+    with sqlalchemy.orm.Session(_engine) as session:
+        # Attempt to retrieve the client records from both databases
+        master_client = session.query(t_master_db).filter_by(transactional_id=transactional_id).first()
+        transactional_client = session.query(t_client).filter_by(transactional_id=transactional_id).first()
+
+        if transactional_client is None:
+            raise ValueError(f"No client found with transactional_id {transactional_id} in transactional DB.")
+
+        # Delete the client records
+        try:
+            if master_client:
+                session.delete(master_client)
+            if transactional_client:
+                session.delete(transactional_client)
+            session.commit()
+            print(f"Client records with transactional_id {transactional_id} have been deleted successfully from both databases.")
+        except sqlalchemy.exc.SQLAlchemyError as e:
+            session.rollback()
+            raise Exception(f"Database operation failed: {e}") from e
+
+
 def delete_client_id_records(client_id: str, _engine):
     """
     Delete client records from both master_db and transactional_db tables based on the client_id.
@@ -419,7 +446,7 @@ def add_client (f_name: str, l_name:str, p: str, dob_date: str, date:str, foodba
 
 def get_history (id: int):
     with sqlalchemy.orm.Session(_engine) as session:
-        history = session.query(t_history).filter(t_history.t_id == id).order_by(t_history.visit_date).all()
+        history = session.query(t_history).filter(t_history.t_id == id).order_by(t_history.visit_date.desc()).all()
     h = []
     for visit in history:
         visit = visit.__dict__
