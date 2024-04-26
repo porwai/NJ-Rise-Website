@@ -151,7 +151,7 @@
           <input type="text" v-model="phone" placeholder="Phone" class="form-control" @keyup.enter="handleQueryEvent" />
         </div>
         <div class="col-md-12 col-lg mb-2">
-          <input type="text" v-model="dob" placeholder="Date of Birth" class="form-control" @keyup.enter="handleQueryEvent" />
+          <input type="date" v-model="dob" placeholder="Date of Birth" class="form-control" @keyup.enter="handleQueryEvent" />
         </div>
       </div>
       <div class="row">
