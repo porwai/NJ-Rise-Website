@@ -2,7 +2,7 @@
   <div class="container mt-5">
     <div class="row">
       <!-- Left column: Existing user creation form -->
-      <div class="col-lg-5">
+      <div class="col-lg-6">
         <div class="card">
           <div class="card-body">
             <div class="text-center">
@@ -41,7 +41,7 @@
       </div>
 
       <!-- Right column: Display all current users -->
-      <div class="col-lg-7">
+      <div class="col-lg-6">
         <div class="card">
           <div class="card-body">
             <h4 class="text-center mb-4">Current Users</h4>
@@ -49,8 +49,8 @@
               <thead>
                 <tr>
                   <th scope="col">Username</th>
-                  <th scope="col">Password</th>
                   <th scope="col">User Role</th>
+                  <!-- <th scope="col">Password</th> -->
                   <th scope="col"></th> <!-- New column for delete button -->
                 </tr>
               </thead>
