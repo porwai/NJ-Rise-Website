@@ -202,7 +202,6 @@
                         </template>
                     </td>
                     <td>
-                        <a class="edit" title="Edit" data-toggle="tooltip"><i class="fas fa-edit mr-1"></i></a> 
                         <a class="delete" title="Delete" data-toggle="tooltip" @click="handleDelete(client.transactional_id)">
                             <i class="fas fa-trash mr-1"></i>
                         </a>

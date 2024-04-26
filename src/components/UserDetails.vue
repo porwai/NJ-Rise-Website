@@ -68,7 +68,6 @@
                   <td>{{ visit_date.winter }}</td>
                   <td>{{ visit_date.other }}</td>
                   <td>
-                    <a class="edit" title="Edit" data-toggle="tooltip"><i class="fas fa-edit mr-1"></i></a> 
                     <a class="delete" title="Delete" data-toggle="tooltip"><i class="fas fa-trash mr-1"></i></a>
                   </td>
               </tr>
