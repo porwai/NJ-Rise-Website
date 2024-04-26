@@ -153,7 +153,12 @@
         <div class="col-md-12 col-lg mb-2">
           <input type="text" v-model="dob" placeholder="Date of Birth" class="form-control" @keyup.enter="handleQueryEvent" />
         </div>
-      </div>      
+      </div>
+      <div class="row">
+        <button class="btn btn-info" @click="handleQueryEvent()">
+            <span>Search</span>
+        </button>
+      </div>   
     
     <div class="table-wrapper">
         <div class="table-title">
