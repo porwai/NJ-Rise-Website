@@ -204,7 +204,9 @@
                     </td>
                     <td>
                         <a class="edit" title="Edit" data-toggle="tooltip"><i class="fas fa-edit mr-1"></i></a> 
-                        <a class="delete" title="Delete" data-toggle="tooltip"><i class="fas fa-trash mr-1"></i></a>
+                        <a class="delete" title="Delete" data-toggle="tooltip" @click="handleDelete(client.transactional_id)">
+                            <i class="fas fa-trash mr-1"></i>
+                        </a>
                     </td>
                 </tr>
             </tbody>
@@ -248,7 +250,7 @@
                 });
             },
             queryMasterDB(payload) {
-                if (this.$store.state.login_status === false) {
+                if (this.$store.state.login_status === "not_authorized") {
                     console.log("FALSE LOGIN")
                     this.$router.push({ path: '/login'})
                 }
@@ -281,8 +283,23 @@
                 }
                 this.$emit('new-client-request', clientData);
             }, 
-            handleDelete() {
-              
+            handleDelete(t_id) {
+                const payload = {
+                    transactional_id: t_id
+                };
+                if (this.$store.state.login_status === "not_authorized") {
+                    console.log("FALSE LOGIN")
+                    this.$router.push({ path: '/login'})
+                    return;
+                }
+                axios.post('/api/delete_t_client', payload)
+                .then((response) => {
+                    console.log("Deletion successful:", response.data);
+                    this.clients = this.clients.filter(client => client.transactional_id !== t_id);
+                }).catch((error) => {
+                    console.error("Error deleting client:", error);
+                    // Consider adding user-facing error handling here
+                });
             }, 
             selectAllClients() {
               let all_s = this.allSelected;

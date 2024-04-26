@@ -70,7 +70,7 @@
               "middle_initial": {"value": "", "type": "string"},
               "total_family_members": {"value": 0, "type": "number"},
               "case_manager_initials": {"value": "", "type": "string"},
-              "empowerOR": {"value": "", "type": "number"},
+              "empowerOR": {"value": 0, "type": "number"},
               "renewal_date": {"value": "", "type": "date"},
               "gender_head_of_household": {"value": "", "type": "string"},
               "head_of_household_date_of_birth": {"value": "", "type": "date"},
