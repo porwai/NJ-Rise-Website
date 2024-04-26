@@ -181,39 +181,36 @@ def get_client (client_id: str, first_name: str, last_name: str, phone: str, dob
     '''
     
     with sqlalchemy.orm.Session(_engine) as session:
+        query_id = "%" + client_id + "%"
+        query_fname = "%" + first_name + "%"
+        query_lname = "%" + last_name + "%"
+        query_phone = "%" + phone + "%"
+        query_dob = "%" + dob + "%"
         if client_id != "":
-            client_id = "%" + client_id + "%"
-            query = session.query(t_client).filter(t_client.client_id.like(client_id))
+            query  = session.query(t_client).filter(t_client.client_id.ilike(query_id),t_client.first_name.ilike(query_fname), t_client.last_name.ilike(query_lname), t_client.dob.like(query_dob), t_client.phone.like(query_phone))  
         else:
-            
-            first_name = "%" + first_name + "%"
-            last_name = "%" + last_name + "%"
-            phone = "%" + phone + "%"
-            dob = "%" + dob + "%"
-            query = session.query(t_client).filter(t_client.first_name.ilike(first_name), t_client.last_name.ilike(last_name), t_client.dob.like(dob), t_client.phone.like(phone))  
+            query = session.query(t_client).filter(t_client.first_name.ilike(query_fname), t_client.last_name.ilike(query_lname), t_client.dob.like(query_dob), t_client.phone.like(query_phone))  
         query = query.order_by(t_client.client_id, t_client.first_name, t_client.last_name)      
-    res = []
-    for u in query.all():
-        u = u.__dict__
-        del u["_sa_instance_state"]
-        res.append(u)
-    return res
+        res = []
+        for u in query.all():
+            u = u.__dict__
+            del u["_sa_instance_state"]
+            res.append(u)
+        return res
 
 def query_masterdb_client (client_id: str, first_name: str, last_name: str, phone: str, dob: str):
     with sqlalchemy.orm.Session(_engine) as session:
-        if client_id != "":
-            client_id = "%" + client_id + "%"
-            query = session.query(t_master_db).filter(t_master_db.client_id.like(client_id))
-        else:
-            first_name = "%" + first_name + "%"
-            last_name = "%" + last_name + "%"
-            phone = "%" + phone + "%"
-            dob = "%" + dob + "%"
-            query = session.query(t_master_db).filter(
-                t_master_db.first_name.ilike(first_name),
-                t_master_db.last_name.ilike(last_name),
-                t_master_db.head_of_household_date_of_birth.like(dob),
-                t_master_db.phone_number.like(phone))
+        query_id = "%" + client_id + "%"
+        query_fname = "%" + first_name + "%"
+        query_lname = "%" + last_name + "%"
+        query_phone = "%" + phone + "%"
+        query_dob = "%" + dob + "%"
+        query = session.query(t_master_db).filter(
+            t_master_db.client_id.ilike(query_id),
+            t_master_db.first_name.ilike(query_fname),
+            t_master_db.last_name.ilike(query_lname),
+            t_master_db.head_of_household_date_of_birth.like(query_dob),
+            t_master_db.phone_number.like(query_phone))
         query = query.order_by(t_master_db.client_id, t_master_db.first_name, t_master_db.last_name)
     # Execute the query and fetch all results
         results = query.all()
