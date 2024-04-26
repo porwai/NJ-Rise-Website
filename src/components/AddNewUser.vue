@@ -57,7 +57,7 @@
               <tbody>
                 <tr v-for="user in users" :key="user.username" class="table-light">
                   <td>{{ user.username }}</td>
-                  <td>{{ user.password }}</td>
+                  <!-- <td>{{ user.password }}</td> -->
                   <td>{{ user.user_role }}</td>
                   <td>
                     <button @click="deleteUser(user.username, user.password)" class="btn btn-danger">Delete</button>
