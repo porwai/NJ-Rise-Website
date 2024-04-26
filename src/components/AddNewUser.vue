@@ -80,6 +80,8 @@
 import { ref, onMounted } from 'vue';
 import store from '../main'
 
+import {sha256} from 'crypto-hash';
+
 
 const formData = ref({
   username: '',
@@ -90,6 +92,7 @@ const formData = ref({
 const users = ref([]);
 const status = ref('');
 
+// Hashing password with SHA 256
 async function submitData() {
   try {
     const response = await fetch('/api/add_new_user', {
@@ -100,7 +103,7 @@ async function submitData() {
       body: JSON.stringify({
         sender_role: store.state.viewing_status,
         username: formData.value.username,
-        password: formData.value.password,
+        password: await sha256(formData.value.password),
         user_role: formData.value.userRole
       })
     });

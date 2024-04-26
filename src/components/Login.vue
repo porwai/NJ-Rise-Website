@@ -42,31 +42,41 @@
 
 <script>
 
+import {sha256} from 'crypto-hash';
+
 console.log('test 1');
 export default {
   data() {
     console.log('test 2');
     return {
       formData: {
-        username: "judy_frank",
-        password: "judy123frank",
+        username: "",
+        password: "",
       },
       responseData: null
     };
   },
   methods: {
     async submitData() {
+
+      // Hashing password with SHA 256
+      let payload = {
+        "username": this.formData.username,
+        "password": await sha256(this.formData.password)
+      };
+
       const response = await fetch('http://localhost:5000/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(this.formData)
+        body: JSON.stringify(payload)
       });
       const responseData = await response.json();
       console.log(responseData["status"]);
 
       if (responseData["status"] == true) {
+        // console.log("reached true login")
         if (responseData["role"] == "admin"){
           console.log("set to admin privelege")
           console.log(this.$store.state.login_status)
@@ -78,9 +88,14 @@ export default {
           console.log(this.$store.state.login_status)
           this.$store.commit('log_in_volunteer')
         }
+        else{
+          this.formData.password = ""
+
+        }
         
         this.$router.push({ path: '/search'})
       }
+
 
     }
   }

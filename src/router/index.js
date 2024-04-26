@@ -71,7 +71,7 @@ const router = createRouter({
       name: 'registernewclient',
       component: () => import('../views/RegisterClient.vue'),
       meta: {
-        requiresAuth: "volunteer" // Example: Register new client page requires authentication
+        requiresAuth: "admin" // Example: Register new client page requires authentication
       }
     },
     {
