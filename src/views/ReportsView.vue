@@ -79,6 +79,7 @@
                 type="date" 
                 class="form-control"
                 id="basic_report_start_date"
+                required
               />
 
               <label for="basic_report_end_date" class="form-label">End Date</label>
@@ -87,6 +88,7 @@
                 type="date" 
                 class="form-control"
                 id="basic_report_end_date"
+                required
               />
 
               <button class="btn btn-primary" type="submit">Submit</button>
@@ -95,8 +97,9 @@
                <!-- Display sum and list of visit frequencies -->
             <div v-if="this.basic_report_sum !== null">
               <p>Sum of Visit Frequencies: {{ this.basic_report_sum }}</p>
-            </div>
-
+            
+            
+            
                 <!-- Slider to adjust the range -->
                 <label for="range">Select Range:</label>
               <input 
@@ -105,13 +108,19 @@
                   v-model="selectedRange"
                   min="1"
                   :max="this.basic_report_list ? this.basic_report_list.length : 0"
+                  class="full-width-slider"
                   @change="updateData"
               />
               <p>
                 Min: 1 ; Current: {{ this.selectedRange}}; max: {{ this.basic_report_list ? this.basic_report_list.length : 0 }}
               </p>
+            
+            
 
             <CanvasJSChart :options="options" :style="styleOptions" @chart-ref="chartInstance"/>
+          </div>
+          
+          
 
 
 
@@ -254,6 +263,7 @@
               // api call to receive number of visits between
               // a given start date and end date
               numVisitReportBasic() {
+                this.basic_report_sum = null
                 const payload = {
                       start_date: this.basic_report_start_date,
                       end_date: this.basic_report_end_date
@@ -262,15 +272,25 @@
                 axios.post('/api/report_basic', payload)
                   .then(response => {
                     this.basic_report_list = response.data;
+                    this.selectedRange = this.basic_report_list.length || 1
+                    console.log(this.selectedRange, 'selected range in axios post')
+                    this.updateSlider(this.selectedRange)
 
                     // Compute sum using private helper function
                     this.basic_report_sum = this.sumValues(this.basic_report_list);
                     this.updateData()
+                    console.log('after updateData')
+                    return {
+                      selectedRange: this.selectedRange
+                    }
+
+                    
                   })
                   .catch(error => {
                     console.error('Error fetching basic report:', error);
                     // Consider adding user-facing error handling here
                   });
+                  this.selectedRange = this.selectedRange
               },
 
           // private helper to compute sum for list of visit frequencies
@@ -281,6 +301,10 @@
             }
 
             return sum
+          },
+
+          updateSlider(newValue) {
+            this.selectedRange = newValue;
           },
 
           updateData() {
@@ -304,7 +328,10 @@
               });
 
               // Render the chart
-              this.chart.render();
+              if (this.chart !== null) {
+                this.chart.render();
+              }
+              
           },
 
 
@@ -318,7 +345,29 @@
 
           unmounted() {
             clearTimeout(this.timeout);
+          },
+
+          mounted() {
+            this.updateSlider(this.basic_report_list ? this.basic_report_list.length : 0);
           }
+
+
+
+          // computed: {
+          //   maxValue() {
+          //     return this.basic_report_list ? this.basic_report_list.length : 0;
+          //   }
+          // },
+
+          // watch: {
+          //   selectedRange(newRange, oldRange) {
+          //     this.selectedRange = newRange
+          //     // this.selectedRange = newList.length || 1;
+          //     // console.log(this.selectedRange, 'watch basic report list')
+          //   },
+          //   immediate: true
+          // }
+
       };
     </script>
   
