@@ -5,7 +5,7 @@
             <h1 class="card-title">Monthly Empower Report</h1>
             <h2> Select Month of Empower Report</h2>
             <form @submit.prevent="submitForm1">
-                <select v-model="selected">
+                <select v-model="selected" required>
                     <option disabled value="">Please select one</option>
                     <option value = 1>January</option>
                     <option value = 2>February</option>
@@ -28,6 +28,9 @@
                     type="number" 
                     class="form-control"
                     id="year"
+                    placeholder="YYYY"
+                    required
+                    min="0"
                   />
               </div>
                 <button class="btn btn-primary" type="submit">Submit</button>
@@ -42,6 +45,9 @@
                     type="number" 
                     class="form-control"
                     id="year2"
+                    placeholder="YYYY"
+                    required
+                    min="0"
                   />
               </div>
                 <button class="btn btn-primary" type="submit">Submit</button>
@@ -56,6 +62,9 @@
                     type="number" 
                     class="form-control"
                     id="year3"
+                    placeholder="YYYY"
+                    required
+                    min="0"
                   />
               </div>
                 <button class="btn btn-primary" type="submit">Submit</button>
@@ -87,23 +96,14 @@
             <div v-if="this.basic_report_sum !== null">
               <p>Sum of Visit Frequencies: {{ this.basic_report_sum }}</p>
             </div>
-            <div v-if="this.basic_report_sum !== null">
-              <p>Sum of Visit Frequencies: {{ this.basic_report_sum }}</p>
-            </div>
-            <div v-if="this.basic_report_sum !== null">
-              <p>Sum of Visit Frequencies: {{ this.basic_report_sum }}</p>
-            </div>
-            <div v-if="this.basic_report_sum !== null">
-              <p>Sum of Visit Frequencies: {{ this.basic_report_sum }}</p>
-            </div>
 
                 <!-- Slider to adjust the range -->
                 <label for="range">Select Range:</label>
               <input 
-                  type="range" 
-                  id="range" 
-                  v-model="selectedRange" 
-                  min="1" 
+                  type="range"
+                  id="range"
+                  v-model="selectedRange"
+                  min="1"
                   :max="this.basic_report_list ? this.basic_report_list.length : 0"
                   @change="updateData"
               />
@@ -127,8 +127,9 @@
         data() {
           return {
             selected: null,
-            year:0,
-            year2:0,
+            year:new Date().getFullYear(),
+            year2:new Date().getFullYear(),
+            year3:new Date().getFullYear(),
             basic_report_start_date: 0,
             basic_report_end_date: null,
             basic_report_sum: null,
@@ -170,11 +171,18 @@
         },
         methods: {
           submitForm1: function () {
-            const payload = {
-                      month: this.selected,
-                      year: this.year
-                  };
-            this.getMonthlyEmpower(payload);
+            if (this.year.toString().length !== 4) {
+              alert('Please enter a valid 4-digit year.')
+            }
+            else {
+              const payload = {
+                        month: this.selected,
+                        year: this.year
+                    };
+              
+              
+              this.getMonthlyEmpower(payload);
+            }
           },
           getMonthlyEmpower(payload) {
                   axios.post('/api/monthEmpower', payload)
@@ -191,10 +199,15 @@
                   });
               },
           submitForm2: function () {
-            const payload = {
-                      year: this.year2
-                  };
-            this.getYearlySummary(payload);
+            if (this.year.toString().length !== 4) {
+              alert('Please enter a valid 4-digit year.')
+            }
+            else {
+              const payload = {
+                        year: this.year2
+                    };
+              this.getYearlySummary(payload);
+            }
           },
           getYearlySummary(payload) {
                   axios.post('/api/monthSummary', payload)
@@ -211,11 +224,16 @@
                   });
               },
           submitForm3: function () {
-            const payload = {
-                      month: this.selected,
-                      year: this.year3
-                  };
-            this.getWalkInReport(payload);
+            if (this.year.toString().length !== 4) {
+              alert('Please enter a valid 4-digit year.')
+            }
+            else {
+              const payload = {
+                        month: this.selected,
+                        year: this.year3
+                    };
+              this.getWalkInReport(payload);
+                }
           },
           getWalkInReport(payload) {
                   axios.post('/api/walkInReport', payload)
