@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 import sqlalchemy
+from collections import OrderedDict
 from typing import List
 from sqlalchemy import update, MetaData, func
 from sqlalchemy.sql import extract
@@ -212,12 +213,13 @@ def query_masterdb_client (client_id: str, first_name: str, last_name: str, phon
             t_master_db.head_of_household_date_of_birth.like(query_dob),
             t_master_db.phone_number.like(query_phone))
         query = query.order_by(t_master_db.client_id, t_master_db.first_name, t_master_db.last_name)
-    # Execute the query and fetch all results
-        results = query.all()
+
         # Process results: convert SQLAlchemy objects to dictionaries
-        res = [u.__dict__ for u in results]
-        for item in res:
-            del item["_sa_instance_state"]  # Remove instance state info
+        res = []
+        for item in query.all():
+            # Using OrderedDict to maintain order of columns as defined in the class
+            item_data = OrderedDict((col.name, getattr(item, col.name)) for col in item.__table__.columns)
+            res.append(item_data)
         return res
 
 # Update Special items or visit_date_list
@@ -382,7 +384,6 @@ def delete_transactional_id_records(transactional_id: int):
             session.rollback()
             raise Exception(f"Database operation failed: {e}") from e
 
-
 def delete_client_id_records(client_id: str, _engine):
     """
     Delete client records from both master_db and transactional_db tables based on the client_id.
@@ -410,7 +411,30 @@ def delete_client_id_records(client_id: str, _engine):
         except sqlalchemy.exc.SQLAlchemyError as e:
             session.rollback()  # Roll back the transaction if any database errors occurred
             raise RuntimeError(f"Failed to delete client records due to: {str(e)}")
-        
+
+def delete_client_visithistory(transactional_id: int, visit_id: int):
+    """
+    Delete a specific visit history record for a client in the transactional_history table.
+
+    Args:
+    transactional_id (int): The transactional_id of the client.
+    visit_id (int): The visit_id of the history record to delete.
+    """
+    with sqlalchemy.orm.Session(_engine) as session:
+        # Attempt to retrieve the visit history record
+        visit_record = session.query(t_history).filter_by(t_id=transactional_id, visit_id=visit_id).first()
+
+        if visit_record is None:
+            raise ValueError(f"No visit history record found with transactional_id {transactional_id} and visit_id {visit_id}.")
+
+        # Delete the visit history record
+        try:
+            session.delete(visit_record)
+            session.commit()
+            print(f"Visit history record with visit_id {visit_id} for client {transactional_id} has been deleted successfully.")
+        except sqlalchemy.exc.SQLAlchemyError as e:
+            session.rollback()  # Roll back the transaction if any database errors occurred
+            raise RuntimeError(f"Failed to delete visit history record due to: {str(e)}")
 
 # Delete client from database
 def delete_client (transactional_id: int):
@@ -452,7 +476,6 @@ def get_history (id: int):
         visit['visit_date'] = visit['visit_date'].strftime("%A \n %B %d, %Y")
         h.append(visit)
     return h
-
 
 def monthEmpower(month: int, year: int):
     with sqlalchemy.orm.Session(_engine) as session:

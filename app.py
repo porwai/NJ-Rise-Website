@@ -1,6 +1,7 @@
 import flask
-from flask import Flask
+from flask import Flask, Response
 import requests
+import json
 from flask_cors import CORS
 import databaseaccess as db
 import user_login as user_db
@@ -79,7 +80,8 @@ def query_masterdatabase():
     try:
         response = db.query_masterdb_client(
             client_id, first_name, last_name, phone, dob)
-        return flask.jsonify(response)
+        json_response = json.dumps(response, ensure_ascii=False)
+        return Response(json_response, mimetype='application/json')
     except Exception as e:
         # Log the error here if you have logging setup
         return flask.jsonify({"error": str(e)}), 500
@@ -246,6 +248,27 @@ def delete_transactional_client():
         db.delete_transactional_id_records(transactional_id)
         return flask.jsonify({"success": "Client records deleted successfully"}), 200  # OK Success
 
+    except ValueError as ve:
+        # Handle specific known error scenarios, e.g., ID not found
+        return flask.jsonify({"error": str(ve)}), 404  # Not Found
+    except Exception as ex:
+        # Log the exception here if possible
+        return flask.jsonify({"error": "Internal server error"}), 500  # Internal Server Error
+
+@app.route('/api/delete_client_visithistory', methods=['POST'])
+def delete_client_visithistory():
+    data = flask.request.get_json()
+    transactional_id = data.get("transactional_id")
+    visit_id = data.get("visit_id")
+
+    if not transactional_id:
+        return flask.jsonify({"error": "Missing transactional_id"}), 400  # Bad Request for missing ID
+    if not visit_id:
+        return flask.jsonify({"error": "Missing visit_id"}), 400  # Bad Request for missing ID
+    
+    try:
+        db.delete_client_visithistory(transactional_id, visit_id)
+        return flask.jsonify({"success": "Client visit history deleted successfully"}), 200  # OK Success
     except ValueError as ve:
         # Handle specific known error scenarios, e.g., ID not found
         return flask.jsonify({"error": str(ve)}), 404  # Not Found

@@ -184,11 +184,13 @@
             <thead>
                 <tr>
                     <th></th>
-                    <th v-for="(value, key) in clients[0]" :key="key">
-                        <template v-if="key !== 'transactional_id'">
-                            {{ formatKey(key) }}
-                        </template>
-                    </th>
+                    <template v-if="key !== 'transactional_id'">
+                        <th 
+                        v-for="(value, key) in clients[0]" :key="key" 
+                        v-if="key !== 'transactional_id'">
+                                {{ formatKey(key) }}
+                        </th>
+                    </template>
                     <th></th>
                 </tr>
             </thead>
@@ -196,11 +198,14 @@
                 <tr v-for="client in clients" :key="client.transactional_id"
                 :class="{ 'highlighted': client.transactional_id === activeRowId }">
                     <td><input type="checkbox" class="checkbox" v-model="client.selected"/></td>
-                    <td v-for="(value, key) in client" :key="key" @click="handleClientDetailsEvent(client)">
-                        <template v-if="key !== 'transactional_id'">
-                            {{ value }}
-                        </template>
-                    </td>
+                    <template v-if="key !== 'transactional_id'">
+                        <td 
+                        v-for="(value, key) in client" :key="key" 
+                        v-if="key !== 'transactional_id'"
+                        @click="handleClientDetailsEvent(client)">
+                                {{ value }}
+                        </td>
+                    </template>
                     <td>
                         <a class="delete" title="Delete" data-toggle="tooltip" @click="handleDelete(client.transactional_id)">
                             <i class="fas fa-trash mr-1"></i>
@@ -227,7 +232,7 @@
             phone: '',
             dob: '',
             activeRowId: null,
-            clients: []            };
+            clients: []};
         },
         mounted() {
           this.handleQueryEvent();
@@ -255,7 +260,6 @@
                 axios.post('/api/query_masterdatabase', payload)
                 .then((response) => {
                     this.clients = response.data;
-                    console.log(response.data);
                 }).catch((error) => {
                     console.error(error);
                     // Consider adding user-facing error handling here

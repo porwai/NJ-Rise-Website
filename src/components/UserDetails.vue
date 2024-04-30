@@ -68,7 +68,7 @@
                   <td>{{ visit_date.winter }}</td>
                   <td>{{ visit_date.other }}</td>
                   <td>
-                    <a class="delete" title="Delete" data-toggle="tooltip"><i class="fas fa-trash mr-1"></i></a>
+                    <a class="delete" title="Delete" @click="handleVisitHistoryDelete(visit_date.t_id, visit_date.visit_id)"><i class="fas fa-trash mr-1"></i></a>
                   </td>
               </tr>
           </tbody>
@@ -190,7 +190,7 @@
 	</div>
 </template>
   
-  <style scoped>
+<style scoped>
   .card-header {
   background-color: white;
   border: none;
@@ -229,9 +229,9 @@
   .other { background-color: #f9cb9c; }
   .actions { background-color: #fff; } /* Different color or keep as default */
 
-  </style>
+</style>
 
-  <script>
+<script>
   import axios from 'axios';
 
   export default {
@@ -305,8 +305,26 @@
       return key.split('_')
                 .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
                 .join(' ');
+    }, 
+    handleVisitHistoryDelete(transactional_id, visit_id) {
+      const payload = {
+        transactional_id: transactional_id, 
+        visit_id: visit_id
+      };
+      if (this.$store.state.login_status === "not_authorized") {
+        console.log("FALSE LOGIN")
+        this.$router.push({ path: '/login'})
+        return;
+      }
+      axios.post('/api/delete_client_visithistory', payload)
+      .then((response) => {
+        console.log("Deletion successful:", response.data);
+        this.$emit('get-history')
+      }).catch((error) => {
+        console.error("Error deleting client:", error);
+      });
     }
 	}
   };
-  </script>
+</script>
   
