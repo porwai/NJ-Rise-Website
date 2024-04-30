@@ -114,9 +114,10 @@
               <p>
                 Min: 1 ; Current: {{ this.selectedRange}}; max: {{ this.basic_report_list ? this.basic_report_list.length : 0 }}
               </p>
-            
+            </div>
             
 
+            <div v-if="this.basic_report_sum !== null">
             <CanvasJSChart :options="options" :style="styleOptions" @chart-ref="chartInstance"/>
           </div>
           
@@ -264,6 +265,7 @@
               // a given start date and end date
               numVisitReportBasic() {
                 this.basic_report_sum = null
+                
                 const payload = {
                       start_date: this.basic_report_start_date,
                       end_date: this.basic_report_end_date
@@ -277,11 +279,16 @@
                     this.updateSlider(this.selectedRange)
 
                     // Compute sum using private helper function
+                    
+                    
                     this.basic_report_sum = this.sumValues(this.basic_report_list);
+                    console.log('after basic report sum not null')
+                    console.log("styleOptions at updateData:", this.styleOptions);
                     this.updateData()
                     console.log('after updateData')
                     return {
                       selectedRange: this.selectedRange
+                      
                     }
 
                     
@@ -305,9 +312,17 @@
 
           updateSlider(newValue) {
             this.selectedRange = newValue;
+            // const slider = document.getElementById('range');
+            
+            // console.log('slider', slider)
+            // if (slider) {
+            //   slider.style.width = '100%';
+            // }
+            
           },
 
           updateData() {
+
 
             // update the viewportMax based on slider selectRange val
             this.options.axisX.viewportMaximum = this.selectedRange
@@ -315,6 +330,7 @@
             console.log("in the update:")
             console.log("selectRange:", this.selectedRange)
             console.log("chartMaxX:", this.options.axisX.viewportMaximum)
+            console.log("style options:", this.styleOptions);
               // Reset dataPoints array
               this.options.data[0].dataPoints = [];
 
@@ -328,7 +344,7 @@
               });
 
               // Render the chart
-              if (this.chart !== null) {
+              if (this.chart) {
                 this.chart.render();
               }
               
@@ -349,6 +365,8 @@
 
           mounted() {
             this.updateSlider(this.basic_report_list ? this.basic_report_list.length : 0);
+            this.updateData()
+            
           }
 
 
@@ -371,4 +389,10 @@
       };
     </script>
   
+    <style>
+    .full-width-slider {
+  width: 100%;
+  /* Add additional styling for the thumb and track here */
+}
 
+  </style>
