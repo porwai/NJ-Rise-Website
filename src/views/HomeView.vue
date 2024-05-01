@@ -23,7 +23,7 @@ function closeDetailsScreen() {
     <div class="container-fluid">
       <div class="row">
         <!-- Utilize computed classes for column sizes based on showDetails prop -->
-        <div :class="showDetails ? 'col-6' : 'col-12'" v-if="!showDetails || !isMobile">
+        <div :class="showDetails ? 'col-6' : 'col-12'" v-show="!showDetails || !isMobile">
           <DataTable
             @new-client-request="handleNewClient"
             :show-details="showDetails"
