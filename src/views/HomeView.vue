@@ -24,7 +24,7 @@ function closeDetailsScreen() {
       <div class="row">
         <!-- Utilize computed classes for column sizes based on showDetails prop -->
         <div :class="showDetails ? 'col-6' : 'col-12'" v-show="!showDetails || !isMobile">
-          <DataTable
+          <DataTable ref="DataTable"
             @new-client-request="handleNewClient"
             :show-details="showDetails"
             @toggle-details="UserDetailScreen"
@@ -33,11 +33,13 @@ function closeDetailsScreen() {
         </div>
         <!-- Conditional rendering for UserDetails component -->
         <div :class="isMobile ? 'col-12' : 'col-6'" v-if="showDetails">
-          <UserDetails 
+          <UserDetails
             v-bind:curr_details="curr_details"
             @toggle-details="UserDetailScreen"
             v-bind:curr_history="curr_history"
             @get-history="getClientHistory"
+            @query-database="callHandleQueryEvent"
+            @update-currdetails="updateCurrDetails"
           />
         </div>
       </div>
@@ -89,6 +91,12 @@ export default {
       } else {
         this.isMobile = false
       }
+    }, 
+    callHandleQueryEvent() {
+      this.$refs.DataTable.handleQueryEvent();
+    },
+    updateCurrDetails(updates) {
+      Object.assign(this.curr_details, updates);
     }
   }
 }

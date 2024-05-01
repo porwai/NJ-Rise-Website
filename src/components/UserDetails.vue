@@ -15,12 +15,13 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
       <div class="row align-items-center justify-content-between">
         <div class="col">
           <h1>{{curr_details.first_name + " " + curr_details.last_name}}</h1>
-            <h3 style="margin-bottom: 0;">Client ID: {{curr_details.client_id}}</h3>
         </div>
         <div class="col-auto">
           <EditMasterDBmodal 
           v-if="masterDBView == true" 
           :curr_details="curr_details"
+          @query-database="$emit('query-database')"
+          @update-currdetails="handleUpdateClientDetails"
           />
         </div>
       </div>
@@ -29,7 +30,7 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
         <div class="table-responsive" style="max-height: 35vh; overflow-y: auto;">
               <table class="table table-striped table-bordered">
                   <tbody>
-                      <tr v-for="(value, key) in curr_details" :key="key" v-if="key !== 'transactional_id' && key !== 'selected' ">
+                      <tr v-for="(value, key) in curr_details" :key="key" v-if="key !== 'transactional_id'">
                           <th style="white-space: nowrap;">{{ formatKey(key) }}</th>
                           <td>{{ value }}</td>
                       </tr>
@@ -341,7 +342,10 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
       }).catch((error) => {
         console.error("Error deleting client:", error);
       });
-    }, 
+    },
+    handleUpdateClientDetails(payload) {
+      this.$emit('update-currdetails', payload);
+    } 
 	}
   };
 </script>

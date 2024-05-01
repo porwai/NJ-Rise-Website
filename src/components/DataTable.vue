@@ -284,7 +284,7 @@
                     this.$emit('toggle-details')
                 }
                 this.$emit('new-client-request', clientData);
-            }, 
+            },
             handleDelete(t_id) {
                 const payload = {
                     transactional_id: t_id

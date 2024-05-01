@@ -216,6 +216,8 @@ export default {
       axios.post('/api/edit_masterdb_client', payload)
       .then(() => {
         alert('Updated Client Data');
+        this.$emit('query-database');
+        this.$emit('update-currdetails', payload.update)
       }).catch((error) => {
         console.error(error);
         alert('Error: Failed to register client. Please try again.' + error);
