@@ -2,6 +2,18 @@
     <br>
     <div class="card">
         <div class="card-body d-flex flex-column" style="overflow-y: auto;">
+          <h1 class="card-title">Please select the type of report you would like.</h1>
+          <select v-model="selectedSection" required>
+                    <option disabled value="">Please select one</option>
+                    <option value = "option1">Monthly Empower Report</option>
+                    <option value = "option2">Yearly Summary Report</option>
+                    <option value = "option3">Walk In Summary Report</option>
+                    <option value = "option4">Visit History Basic Frequency Report</option>
+                </select>
+                <br>
+          
+
+            <div v-if="selectedSection === 'option1'">
             <h1 class="card-title">Monthly Empower Report</h1>
             <h2> Select Month of Empower Report</h2>
             <form @submit.prevent="submitForm1">
@@ -35,6 +47,9 @@
               </div>
                 <button class="btn btn-primary" type="submit">Submit</button>
             </form>
+          </div>
+
+          <div v-if="selectedSection === 'option2'">
           <h1 class="card-title"> Yearly Summary Report</h1>
             <h2> Select Year</h2>
             <form @submit.prevent="submitForm2">
@@ -52,7 +67,11 @@
               </div>
                 <button class="btn btn-primary" type="submit">Submit</button>
           </form>
-          <h1 class="card-title"> Walk In Summary Report</h1>
+        </div>
+
+
+        <div v-if="selectedSection === 'option3'">
+        <h1 class="card-title"> Walk In Summary Report</h1>
             <h2> Select Year</h2>
             <form @submit.prevent="submitForm3">
                 <div class="mb-3">
@@ -69,8 +88,11 @@
               </div>
                 <button class="btn btn-primary" type="submit">Submit</button>
           </form>
+        </div>  
 
-          <h2> Visit History Basic Frequency Report</h2>
+          
+        <div v-if="selectedSection === 'option4'">
+        <h2> Visit History Basic Frequency Report</h2>
 
           <form @submit.prevent = "numVisitReportBasic">
               <label for="basic_report_start_date" class="form-label">Start Date</label>
@@ -120,13 +142,14 @@
             <div v-if="this.basic_report_sum !== null">
             <CanvasJSChart :options="options" :style="styleOptions" @chart-ref="chartInstance"/>
           </div>
+        </div>
           
           
 
-
+      </div>
 
         </div>
-    </div>
+    <!-- </div> -->
   </template>
   
     <script>
@@ -136,6 +159,7 @@
         name: 'reports',
         data() {
           return {
+            selectedSection: null,
             selected: null,
             year:new Date().getFullYear(),
             year2:new Date().getFullYear(),
@@ -333,20 +357,25 @@
             console.log("style options:", this.styleOptions);
               // Reset dataPoints array
               this.options.data[0].dataPoints = [];
+              console.log('after reset array');
 
               if(!this.basic_report_list){
                 return true
               }
+              console.log('after return true');
 
               // Iterate over basic_report_list and add data points
               this.basic_report_list.forEach((value, index) => {
                   this.options.data[0].dataPoints.push({ x: index, y: value });
               });
+              console.log('after iterate over lists');
 
               // Render the chart
               if (this.chart) {
+                
                 this.chart.render();
               }
+              console.log('after render chart');
               
           },
 
