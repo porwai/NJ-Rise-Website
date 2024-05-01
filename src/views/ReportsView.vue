@@ -3,19 +3,30 @@
     <div class="card">
         <div class="card-body d-flex flex-column" style="overflow-y: auto;">
           <h1 class="card-title">Please select the type of report you would like.</h1>
-          <select v-model="selectedSection" required>
+          <!-- <select v-model="selectedSection" required>
                     <option disabled value="">Please select one</option>
                     <option value = "option1">Monthly Empower Report</option>
                     <option value = "option2">Yearly Summary Report</option>
                     <option value = "option3">Walk In Summary Report</option>
                     <option value = "option4">Visit History Basic Frequency Report</option>
-                </select>
+                </select> -->
+<div class="button-row">
+                <button
+                  v-for="button in buttons"
+                  :key="button.id"
+                  :class="{ pressed: currentButton === button.id }"
+                  @click="toggleElement(button.id)"
+                >
+                {{ button.label }}
+                </button>
+                </div>
                 <br>
           
 
-            <div v-if="selectedSection === 'option1'">
+            <!-- <div v-if="selectedSection === 'option1'"> -->
+              <div v-if="currentElement === 'element1'">
             <h1 class="card-title">Monthly Empower Report</h1>
-            <h2> Select Month of Empower Report</h2>
+            <h3> Select Month</h3>
             <form @submit.prevent="submitForm1">
                 <select v-model="selected" required>
                     <option disabled value="">Please select one</option>
@@ -34,7 +45,7 @@
                 </select>
                 <br>
                 <div class="mb-3">
-                  <label for="year" class="form-label">Year</label>
+                  <label for="year" class="form-label"><h3>Select Year</h3></label>
                   <input 
                     v-model="year" 
                     type="number" 
@@ -49,12 +60,13 @@
             </form>
           </div>
 
-          <div v-if="selectedSection === 'option2'">
+          <!-- <div v-if="selectedSection === 'option2'"> -->
+            <div v-if="currentElement === 'element2'">
           <h1 class="card-title"> Yearly Summary Report</h1>
-            <h2> Select Year</h2>
+            <!-- <h2> Select Year</h2> -->
             <form @submit.prevent="submitForm2">
                 <div class="mb-3">
-                  <label for="year2" class="form-label">Year</label>
+                  <label for="year2" class="form-label"><h3>Select Year</h3></label>
                   <input 
                     v-model="year2" 
                     type="number" 
@@ -70,12 +82,13 @@
         </div>
 
 
-        <div v-if="selectedSection === 'option3'">
+        <!-- <div v-if="selectedSection === 'option3'"> -->
+          <div v-if="currentElement === 'element3'">
         <h1 class="card-title"> Walk In Summary Report</h1>
-            <h2> Select Year</h2>
+            <!-- <h2> Select Year</h2> -->
             <form @submit.prevent="submitForm3">
                 <div class="mb-3">
-                  <label for="year3" class="form-label">Year</label>
+                  <label for="year3" class="form-label"><h3>Select Year</h3></label>
                   <input 
                     v-model="year3" 
                     type="number" 
@@ -91,11 +104,12 @@
         </div>  
 
           
-        <div v-if="selectedSection === 'option4'">
-        <h2> Visit History Basic Frequency Report</h2>
+        <!-- <div v-if="selectedSection === 'option4'"> -->
+          <div v-if="currentElement === 'element4'">
+        <h1> Visit History Basic Frequency Report</h1>
 
           <form @submit.prevent = "numVisitReportBasic">
-              <label for="basic_report_start_date" class="form-label">Start Date</label>
+              <label for="basic_report_start_date" class="form-label"><h3>Select Start Date</h3></label>
               <input 
                 v-model="basic_report_start_date" 
                 type="date" 
@@ -103,8 +117,9 @@
                 id="basic_report_start_date"
                 required
               />
+              <br>
 
-              <label for="basic_report_end_date" class="form-label">End Date</label>
+              <label for="basic_report_end_date" class="form-label"><h3>Select End Date</h3></label>
               <input 
                 v-model="basic_report_end_date" 
                 type="date" 
@@ -159,7 +174,15 @@
         name: 'reports',
         data() {
           return {
-            selectedSection: null,
+            // selectedSection: null,
+            currentButton: null,
+      currentElement: null,
+      buttons: [
+        { id: 'element1', label: 'Monthly Empower Report' },
+        { id: 'element2', label: 'Yearly Summary Report' },
+        { id: 'element3', label: 'Walk In Summary Report' },
+        { id: 'element4', label: 'Visit History Basic Frequency Report' }
+      ],
             selected: null,
             year:new Date().getFullYear(),
             year2:new Date().getFullYear(),
@@ -204,6 +227,10 @@
           }
         },
         methods: {
+          toggleElement(elementId) {
+      this.currentButton = elementId;
+      this.currentElement = this.currentElement === elementId ? null : elementId;
+    },
           submitForm1: function () {
             if (this.year.toString().length !== 4) {
               alert('Please enter a valid 4-digit year.')
@@ -423,5 +450,27 @@
   width: 100%;
   /* Add additional styling for the thumb and track here */
 }
+
+  button {
+    /* width: 300px; */
+    padding: 10px;
+    margin: 5px;
+    flex: 1;
+    border-radius: 8px;
+  }
+
+  .pressed {
+    background-color: #6CB4EE;
+    color: white;
+  }
+
+  .button-row {
+    display: flex;        
+  justify-content: center; 
+  align-items: center;  
+  margin-bottom: 20px;
+  }
+
+
 
   </style>
