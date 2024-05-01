@@ -222,6 +222,54 @@ def query_masterdb_client (client_id: str, first_name: str, last_name: str, phon
             res.append(item_data)
         return res
 
+def edit_masterdb_client (client_id: str, updates: dict):
+    with sqlalchemy.orm.Session(_engine) as session:
+        try:
+            t_client_updates = {
+                "first_name": updates.get("first_name"),
+                "last_name": updates.get("last_name"),
+                "phone": updates.get("phone_number"),
+                "dob": updates.get("head_of_household_date_of_birth")
+            }
+        except Exception as e:
+            raise RuntimeError(f"Missing fields")
+
+        # Retrieve the client record by client_id
+        client = session.query(t_master_db).filter_by(client_id=client_id).first()
+        if client is None:
+            raise ValueError(f"No client found in master_db with client_id {client_id}")
+
+        # Fields that should not be edited
+        immutable_fields = ['client_id']
+
+        # Update the fields with the data provided in the updates dictionary
+        for key, value in updates.items():
+            if key in immutable_fields:
+                raise ValueError(f"The field '{key}' is not editable.")
+            if hasattr(client, key):
+                setattr(client, key, value)
+            else:
+                raise ValueError(f"{key} is not a valid field of t_master_db")
+
+        transactional_client = session.query(t_client).filter_by(client_id=client_id).first()
+
+        # Update the fields with the data provided in the updates dictionary
+        for key, value in t_client_updates.items():
+            if key in immutable_fields:
+                raise ValueError(f"The field '{key}' is not editable.")
+            if hasattr(transactional_client, key):
+                setattr(transactional_client, key, value)
+            else:
+                raise ValueError(f"{key} is not a valid field of t_master_db")
+
+        # Attempt to commit changes to the database
+        try:
+            session.commit()
+            print(f"Client {client_id} updated successfully.")
+        except sqlalchemy.exc.SQLAlchemyError as e:
+            session.rollback()  # Roll back the transaction if any database errors occurred
+            raise RuntimeError(f"Failed to update client due to: {str(e)}")
+
 # Update Special items or visit_date_list
 def update_client (transactional_id: int, new_visit_date: str, f_bags=0, b_supplies=0, p_food=0, g_items=0, c=0, 
                    p_care=0, sf = 0, p=0, cloth=0, w=0, o=0):
@@ -494,7 +542,6 @@ def monthEmpower(month: int, year: int):
             res += f"{visit.pj},{visit.clothing},{visit.winter},{visit.other},{date}\n"
         return res
 
-    
 def monthSummary(year: int):
     with sqlalchemy.orm.Session(_engine) as session:
         res = "Items,January,February,March,April,May,June,July,August,September,October,November,December,Year To Date\n"

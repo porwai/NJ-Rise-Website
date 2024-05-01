@@ -8,6 +8,13 @@ const showDetails = ref(false);
 function UserDetailScreen() {
   showDetails.value = !showDetails.value; // Toggle visibility of UserDetails
 }
+
+function closeDetailsScreen() {
+  if (showDetails.value) {
+    showDetails.value = !showDetails.value;
+  }
+}
+
 </script>
 
 <template>
@@ -21,6 +28,7 @@ function UserDetailScreen() {
             @new-client-request="handleNewClient"
             :show-details="showDetails"
             @toggle-details="UserDetailScreen"
+            @close-details="closeDetailsScreen"
           />
         </div>
         <!-- Conditional rendering for UserDetails component -->
@@ -44,6 +52,7 @@ function UserDetailScreen() {
             @new-client-request="handleNewClient"
             :show-details="showDetails"
             @toggle-details="UserDetailScreen"
+            @close-details="closeDetailsScreen"
           />
         </div>
         <!-- Conditional rendering for UserDetails component -->

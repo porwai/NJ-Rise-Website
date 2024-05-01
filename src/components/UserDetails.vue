@@ -1,3 +1,7 @@
+<script setup>
+import EditMasterDBmodal from './editMasterDBmodal.vue';
+</script>
+
 <template>
 	<div class="card full-height full-width">
 	  <div class="card-header d-flex justify-content-end">
@@ -7,17 +11,19 @@
 	  </div>
     <!-- card body -->
 	  <div class="card-body d-flex flex-column" style="overflow-y: auto;">
-        <div class="row align-items-center justify-content-between">
-            <div class="col">
-                <h1>{{curr_details.first_name + " " + curr_details.last_name}}</h1>
-                <h3 style="margin-bottom: 0;">Client ID: {{curr_details.client_id}}</h3>
-            </div>
-            <div class="col-auto">
-                <button type="button" class="btn btn-warning">
-                    Edit Client Data
-                </button>
-            </div>
+      
+      <div class="row align-items-center justify-content-between">
+        <div class="col">
+          <h1>{{curr_details.first_name + " " + curr_details.last_name}}</h1>
+            <h3 style="margin-bottom: 0;">Client ID: {{curr_details.client_id}}</h3>
         </div>
+        <div class="col-auto">
+          <EditMasterDBmodal 
+          v-if="masterDBView == true" 
+          :curr_details="curr_details"
+          />
+        </div>
+      </div>
       
       <div class="row">
         <div class="table-responsive" style="max-height: 35vh; overflow-y: auto;">
@@ -79,10 +85,10 @@
       <button type="button" class="btn btn-success" data-toggle="modal" data-target="#newVisit">
         Add New Visit
       </button>
-    </div>
+      </div>
 
       <!-- The Modal -->
-      <div class="modal" id="newVisit">
+    <div class="modal" id="newVisit">
     <div class="modal-dialog">
       <div class="modal-content">
 
@@ -184,7 +190,11 @@
 
       </div>
     </div>
-      </div>
+
+
+
+    </div>
+
     </div>
     <!-- card end -->
 	</div>
@@ -235,7 +245,10 @@
   import axios from 'axios';
 
   export default {
-    data() {
+  components: {
+    EditMasterDBmodal
+  },
+  data() {
       return {
         transactional_id: -1,
         new_visit_date: null,
@@ -249,7 +262,7 @@
         pj: 0,
         cloth: 0,
         w: 0,
-        o: 0
+        o: 0, 
       }
     }
   , 
@@ -265,6 +278,11 @@
           default: () => []
         }
     },
+  computed: { 
+    masterDBView() {
+      return this.$store.state.master_db_view; // Accessing the state
+    }
+  },
 	methods: {
 	  closeCard() {
 		this.$emit('toggle-details')
@@ -323,7 +341,7 @@
       }).catch((error) => {
         console.error("Error deleting client:", error);
       });
-    }
+    }, 
 	}
   };
 </script>

@@ -66,7 +66,19 @@ def register_new_client():
     except Exception as e:
         # Log the error here if you have logging setup
         return flask.jsonify({"error": str(e)}), 500
-        
+    
+@app.route('/api/edit_masterdb_client', methods = ['POST'])
+def edit_masterdb_client():
+    requests = flask.request.get_json()
+    if flask.request.method == 'POST':
+        client_id = requests.get('client_id')
+        update = requests.get('update')
+    try:
+        status = db.edit_masterdb_client(client_id, update)
+        return flask.jsonify({"status": status}), 200
+    except Exception as ex:
+        return flask.jsonify({"error": str(ex)}), 500
+     
 # Query Master Database for users
 @app.route('/api/query_masterdatabase', methods = ["POST"])
 def query_masterdatabase():
@@ -340,7 +352,7 @@ def add_client():
         db.add_client(first_name, last_name, phone, dob, date, foodbags)
     except Exception as ex:
         raise Exception(ex)
-    
+
 @app.route('/api/history', methods = ['POST'])
 def get_visit_history():
     get_data = flask.request.get_json()

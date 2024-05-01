@@ -167,7 +167,7 @@
                             <span>Search</span>
                         </button>
 
-                        <button class="btn btn-warning" @click="toggleDBView(); handleQueryEvent()">
+                        <button class="btn btn-warning" @click="toggleDBView(); handleQueryEvent(); $emit('close-details');">
                             <span>MasterDB Toggle</span>
                         </button>
 
