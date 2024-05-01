@@ -20,10 +20,10 @@ function closeDetailsScreen() {
 <template>
   <main>
     <!-- Desktop view -->
-    <div class="container-fluid" v-if="!isMobile">
+    <div class="container-fluid">
       <div class="row">
         <!-- Utilize computed classes for column sizes based on showDetails prop -->
-        <div :class="showDetails ? 'col-6' : 'col-12'">
+        <div :class="showDetails ? 'col-6' : 'col-12'" v-if="!showDetails || !isMobile">
           <DataTable
             @new-client-request="handleNewClient"
             :show-details="showDetails"
@@ -32,31 +32,7 @@ function closeDetailsScreen() {
           />
         </div>
         <!-- Conditional rendering for UserDetails component -->
-        <div class="col-6" v-if="showDetails">
-          <UserDetails 
-            v-bind:curr_details="curr_details"
-            @toggle-details="UserDetailScreen"
-            v-bind:curr_history="curr_history"
-            @get-history="getClientHistory"
-          />
-        </div>
-      </div>
-    </div>
-    <!-- Mobile view -->
-    <div class="container-fluid" v-else>
-      <div class="row">
-
-        <!-- Utilize computed classes for column sizes based on showDetails prop -->
-        <div class="col" v-if="!showDetails">
-          <DataTable
-            @new-client-request="handleNewClient"
-            :show-details="showDetails"
-            @toggle-details="UserDetailScreen"
-            @close-details="closeDetailsScreen"
-          />
-        </div>
-        <!-- Conditional rendering for UserDetails component -->
-        <div class="col" v-if="showDetails">
+        <div :class="isMobile ? 'col-12' : 'col-6'" v-if="showDetails">
           <UserDetails 
             v-bind:curr_details="curr_details"
             @toggle-details="UserDetailScreen"
@@ -67,8 +43,8 @@ function closeDetailsScreen() {
       </div>
     </div>
   </main> 
-</template>
 
+</template>
 
 <script>
 import axios from 'axios';
@@ -82,7 +58,8 @@ export default {
     return {
       curr_details: {}, 
       curr_history: [], 
-      isMobile: false
+      isMobile: false, 
+      showDetails: false
     };
   }, 
   mounted() {

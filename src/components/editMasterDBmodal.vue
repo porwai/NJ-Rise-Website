@@ -52,15 +52,9 @@ Edit Client Data
         </select>
         
       </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="submit" class="btn btn-success">Submit</button>
     </form>
   </div>
-        
-  <!-- Modal footer -->
-  <div class="modal-footer">
-    <button type="button" class="btn btn-success" @click="addNewVisit()">Edit Client Data</button>
-  </div>
-
   </div>
   </div>
 </div>
