@@ -2,7 +2,7 @@
     <br>
     <div class="card">
         <div class="card-body d-flex flex-column" style="overflow-y: auto;">
-          <h1 class="card-title">Please select the type of report you would like.</h1>
+          <h1 class="card-title">Please select the type of report you would like</h1>
           <!-- <select v-model="selectedSection" required>
                     <option disabled value="">Please select one</option>
                     <option value = "option1">Monthly Empower Report</option>
@@ -446,6 +446,12 @@
     </script>
   
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+.custom-text {
+  font-family: 'Roboto', sans-serif;
+}
+
     .full-width-slider {
   width: 100%;
   /* Add additional styling for the thumb and track here */
