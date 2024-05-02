@@ -306,7 +306,6 @@
                 }
                 if (this.$store.state.viewing_status !== "admin") {
                     alert("You must be an admin to delete the database.");
-                    this.toggleDBView();
                     return;
                 }
                 axios.post('/api/delete_t_client', payload)
