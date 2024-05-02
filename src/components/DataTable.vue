@@ -30,7 +30,7 @@
         margin: 0 5px;
         cursor: pointer;
     }	
-    table.table th:last-child, td:last-child {
+    table.table .actions {
         background-color: white;
         margin: 0 5px;
         position: sticky;
@@ -193,7 +193,7 @@
                                 {{ formatKey(key) }}
                         </th>
                     </template>
-                    <th></th>
+                    <th v-if="adminStatus" class="actions"></th>
                 </tr>
             </thead>
             <tbody>
@@ -207,7 +207,7 @@
                                 {{ value }}
                         </td>
                     </template>
-                    <td>
+                    <td  v-if="adminStatus" class="actions">
                         <a class="delete" title="Delete" data-toggle="tooltip" @click="handleDelete(client.transactional_id)">
                             <i class="fas fa-trash mr-1"></i>
                         </a>
