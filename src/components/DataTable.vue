@@ -139,10 +139,10 @@
       <!-- Inline form using Bootstrap's row and col classes -->
       <div class="row">
         <div class="col-md-12 col-lg mb-2">
-          <input type="text" v-model="first_name" placeholder="Firstname" class="form-control" @keyup.enter="handleQueryEvent" />
+          <input type="text" v-model="first_name" placeholder="First Name" class="form-control" @keyup.enter="handleQueryEvent" />
         </div>
         <div class="col-md-12 col-lg mb-2">
-          <input type="text" v-model="last_name" placeholder="Lastname" class="form-control" @keyup.enter="handleQueryEvent" />
+          <input type="text" v-model="last_name" placeholder="Last Ne ame" class="form-control" @keyup.enter="handleQueryEvent" />
         </div>
         <div class="col-md-12 col-lg mb-2">
           <input type="text" v-model="client_id" placeholder="Client ID" class="form-control" @keyup.enter="handleQueryEvent" />
@@ -151,7 +151,13 @@
           <input type="text" v-model="phone" placeholder="Phone" class="form-control" @keyup.enter="handleQueryEvent" />
         </div>
         <div class="col-md-12 col-lg mb-2">
-          <input type="date" v-model="dob" placeholder="Date of Birth" class="form-control" @keyup.enter="handleQueryEvent" />
+          <input type="text" v-model="month" placeholder="DOB: Month (MM)" class="form-control" @keyup.enter="handleQueryEvent" />
+        </div>
+        <div class="col-md-12 col-lg mb-2">
+          <input type="text" v-model="day" placeholder="DOB: Day (DD)" class="form-control" @keyup.enter="handleQueryEvent" />
+        </div>
+        <div class="col-md-12 col-lg mb-2">
+          <input type="text" v-model="year" placeholder="DOB: Year (YYYY)" class="form-control" @keyup.enter="handleQueryEvent" />
         </div>
       </div>
     
@@ -230,7 +236,9 @@
             last_name: '',
             client_id: '',
             phone: '',
-            dob: '',
+            month: '',
+            day: '',
+            year: '',
             activeRowId: null,
             clients: []};
         },
@@ -271,7 +279,9 @@
                     last_name: this.last_name,
                     client_id: this.client_id,
                     phone: this.phone,
-                    dob: this.dob,
+                    month: this.month,
+                    day: this.day,
+                    year: this.year
                 };
                 if (this.masterDBView) {
                     this.queryMasterDB(payload);
