@@ -99,7 +99,7 @@
           dob: "",
           phonenumber: "",
           email: "",
-          date: "",
+          date: new Date().toISOString().slice(0,10),
           foodbags: "",
           formSubmitted: false
         };

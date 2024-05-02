@@ -252,7 +252,7 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
   data() {
       return {
         transactional_id: -1,
-        new_visit_date: null,
+        new_visit_date: new Date().toISOString().slice(0,10),
         f_bags: 0,
         b_supplies:0,
         p_food:0,

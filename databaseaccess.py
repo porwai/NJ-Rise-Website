@@ -165,7 +165,7 @@ class t_history(Base):
     # PRIMARY KEY to identify instances in transactional_history table
     visit_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key= True, autoincrement=True)
     
-def get_client (client_id: str, first_name: str, last_name: str, phone: str, dob: str):
+def get_client (client_id: str, first_name: str, last_name: str, phone: str, month: str, day: str,year: str):
     # SQL QUERY SCHEMA
     '''
     SELECT * 
@@ -186,16 +186,33 @@ def get_client (client_id: str, first_name: str, last_name: str, phone: str, dob
         query_fname = "%" + first_name + "%"
         query_lname = "%" + last_name + "%"
         query_phone = "%" + phone + "%"
-        query_dob = "%" + dob + "%"
+        q_month = month
+        q_day = day
+        q_year = year
+        if month == "":
+            q_month = "%"
+        if day == "":
+            q_day = "%%"
+        if year == "":
+            q_year = "%%"
         if client_id != "":
-            query  = session.query(t_client).filter(t_client.client_id.ilike(query_id),t_client.first_name.ilike(query_fname), t_client.last_name.ilike(query_lname), t_client.dob.like(query_dob), t_client.phone.like(query_phone))  
+            query  = session.query(t_client).filter(t_client.client_id.ilike(query_id),t_client.first_name.ilike(query_fname), t_client.last_name.ilike(query_lname), 
+                                                    t_client.phone.like(query_phone))  
         else:
-            query = session.query(t_client).filter(t_client.first_name.ilike(query_fname), t_client.last_name.ilike(query_lname), t_client.dob.like(query_dob), t_client.phone.like(query_phone))  
+            query  = session.query(t_client).filter(t_client.first_name.ilike(query_fname), t_client.last_name.ilike(query_lname)
+                                                   , t_client.phone.like(query_phone))  
+        if month != "":
+            query = query.filter(extract('month', t_client.dob) == q_month)
+        if day != "":
+            query = query.filter(extract('day', t_client.dob) == q_day)
+        if year != "":
+            query = query.filter(extract('year', t_client.dob) == q_year)
         query = query.order_by(t_client.client_id, t_client.first_name, t_client.last_name)      
         res = []
         for u in query.all():
             u = u.__dict__
             del u["_sa_instance_state"]
+            u['dob'] = u['dob'].strftime("%Y-%m-%d")
             res.append(u)
         return res
 

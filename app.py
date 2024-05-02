@@ -195,7 +195,9 @@ def search():
         first_name = get_data.get('first_name')
         last_name = get_data.get('last_name')
         phone = get_data.get('phone')
-        dob = get_data.get('dob')
+        month = get_data.get('month')
+        day = get_data.get('day')
+        year = get_data.get('year')
     # dummy = {
     #     "client_id" : "1234",
     #     "first_name" : "John",
@@ -203,7 +205,7 @@ def search():
     #     "phone_number" : "6307700880"
     # }
     #response_object = db.get_client(dummy['client_id'], dummy['first_name'], dummy['last_name'], dummy['phone_number'], "11052003")
-        response_object = db.get_client(client_id, first_name, last_name, phone, dob)
+        response_object = db.get_client(client_id, first_name, last_name, phone, month, day, year)
     # else:
         # transactional_id = get_data.get('transactional_id')
         # new_visit_date = get_data.get('new_visit_date')
