@@ -88,10 +88,12 @@ def query_masterdatabase():
         first_name = requests.get('first_name')
         last_name = requests.get('last_name')
         phone = requests.get('phone')
-        dob = requests.get('dob')
+        month = requests.get('month')
+        day = requests.get('day')
+        year = requests.get('year')
     try:
         response = db.query_masterdb_client(
-            client_id, first_name, last_name, phone, dob)
+            client_id, first_name, last_name, phone, month, day, year)
         json_response = json.dumps(response, ensure_ascii=False)
         return Response(json_response, mimetype='application/json')
     except Exception as e:

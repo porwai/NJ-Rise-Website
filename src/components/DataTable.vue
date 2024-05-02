@@ -142,7 +142,7 @@
           <input type="text" v-model="first_name" placeholder="First Name" class="form-control" @keyup.enter="handleQueryEvent" />
         </div>
         <div class="col-md-12 col-lg mb-2">
-          <input type="text" v-model="last_name" placeholder="Last Ne ame" class="form-control" @keyup.enter="handleQueryEvent" />
+          <input type="text" v-model="last_name" placeholder="Last Name" class="form-control" @keyup.enter="handleQueryEvent" />
         </div>
         <div class="col-md-12 col-lg mb-2">
           <input type="text" v-model="client_id" placeholder="Client ID" class="form-control" @keyup.enter="handleQueryEvent" />
