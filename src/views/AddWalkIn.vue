@@ -12,6 +12,7 @@
                     class="form-control"
                     id="firstname"
                     placeholder="Enter your first name" 
+                    required
                   />
               </div>
               <div class="mb-3">
@@ -22,6 +23,7 @@
                     class="form-control"
                     id="lastname"
                     placeholder="Enter your last name" 
+                    required
                   />
               </div>
               <div class="mb-3">
@@ -67,6 +69,7 @@
                     v-model="foodbags" 
                     class="form-control"
                     id="foodbags"
+                    required
                   />
               </div>
               
