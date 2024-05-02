@@ -1,6 +1,7 @@
 import flask
-from flask import Flask
+from flask import Flask, Response
 import requests
+import json
 from flask_cors import CORS
 import databaseaccess as db
 import user_login as user_db
@@ -65,7 +66,19 @@ def register_new_client():
     except Exception as e:
         # Log the error here if you have logging setup
         return flask.jsonify({"error": str(e)}), 500
-        
+    
+@app.route('/api/edit_masterdb_client', methods = ['POST'])
+def edit_masterdb_client():
+    requests = flask.request.get_json()
+    if flask.request.method == 'POST':
+        client_id = requests.get('client_id')
+        update = requests.get('update')
+    try:
+        status = db.edit_masterdb_client(client_id, update)
+        return flask.jsonify({"status": status}), 200
+    except Exception as ex:
+        return flask.jsonify({"error": str(ex)}), 500
+     
 # Query Master Database for users
 @app.route('/api/query_masterdatabase', methods = ["POST"])
 def query_masterdatabase():
@@ -79,7 +92,8 @@ def query_masterdatabase():
     try:
         response = db.query_masterdb_client(
             client_id, first_name, last_name, phone, dob)
-        return flask.jsonify(response)
+        json_response = json.dumps(response, ensure_ascii=False)
+        return Response(json_response, mimetype='application/json')
     except Exception as e:
         # Log the error here if you have logging setup
         return flask.jsonify({"error": str(e)}), 500
@@ -181,7 +195,9 @@ def search():
         first_name = get_data.get('first_name')
         last_name = get_data.get('last_name')
         phone = get_data.get('phone')
-        dob = get_data.get('dob')
+        month = get_data.get('month')
+        day = get_data.get('day')
+        year = get_data.get('year')
     # dummy = {
     #     "client_id" : "1234",
     #     "first_name" : "John",
@@ -189,7 +205,7 @@ def search():
     #     "phone_number" : "6307700880"
     # }
     #response_object = db.get_client(dummy['client_id'], dummy['first_name'], dummy['last_name'], dummy['phone_number'], "11052003")
-        response_object = db.get_client(client_id, first_name, last_name, phone, dob)
+        response_object = db.get_client(client_id, first_name, last_name, phone, month, day, year)
     # else:
         # transactional_id = get_data.get('transactional_id')
         # new_visit_date = get_data.get('new_visit_date')
@@ -246,6 +262,27 @@ def delete_transactional_client():
         db.delete_transactional_id_records(transactional_id)
         return flask.jsonify({"success": "Client records deleted successfully"}), 200  # OK Success
 
+    except ValueError as ve:
+        # Handle specific known error scenarios, e.g., ID not found
+        return flask.jsonify({"error": str(ve)}), 404  # Not Found
+    except Exception as ex:
+        # Log the exception here if possible
+        return flask.jsonify({"error": "Internal server error"}), 500  # Internal Server Error
+
+@app.route('/api/delete_client_visithistory', methods=['POST'])
+def delete_client_visithistory():
+    data = flask.request.get_json()
+    transactional_id = data.get("transactional_id")
+    visit_id = data.get("visit_id")
+
+    if not transactional_id:
+        return flask.jsonify({"error": "Missing transactional_id"}), 400  # Bad Request for missing ID
+    if not visit_id:
+        return flask.jsonify({"error": "Missing visit_id"}), 400  # Bad Request for missing ID
+    
+    try:
+        db.delete_client_visithistory(transactional_id, visit_id)
+        return flask.jsonify({"success": "Client visit history deleted successfully"}), 200  # OK Success
     except ValueError as ve:
         # Handle specific known error scenarios, e.g., ID not found
         return flask.jsonify({"error": str(ve)}), 404  # Not Found
@@ -317,7 +354,7 @@ def add_client():
         db.add_client(first_name, last_name, phone, dob, date, foodbags)
     except Exception as ex:
         raise Exception(ex)
-    
+
 @app.route('/api/history', methods = ['POST'])
 def get_visit_history():
     get_data = flask.request.get_json()

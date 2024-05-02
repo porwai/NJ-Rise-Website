@@ -8,58 +8,45 @@ const showDetails = ref(false);
 function UserDetailScreen() {
   showDetails.value = !showDetails.value; // Toggle visibility of UserDetails
 }
+
+function closeDetailsScreen() {
+  if (showDetails.value) {
+    showDetails.value = !showDetails.value;
+  }
+}
+
 </script>
 
 <template>
   <main>
     <!-- Desktop view -->
-    <div class="container-fluid" v-if="!isMobile">
+    <div class="container-fluid">
       <div class="row">
         <!-- Utilize computed classes for column sizes based on showDetails prop -->
-        <div :class="showDetails ? 'col-6' : 'col-12'">
-          <DataTable
+        <div :class="showDetails ? 'col-6' : 'col-12'" v-show="!showDetails || !isMobile">
+          <DataTable ref="DataTable"
             @new-client-request="handleNewClient"
             :show-details="showDetails"
             @toggle-details="UserDetailScreen"
+            @close-details="closeDetailsScreen"
           />
         </div>
         <!-- Conditional rendering for UserDetails component -->
-        <div class="col-6" v-if="showDetails">
-          <UserDetails 
+        <div :class="isMobile ? 'col-12' : 'col-6'" v-if="showDetails">
+          <UserDetails
             v-bind:curr_details="curr_details"
             @toggle-details="UserDetailScreen"
             v-bind:curr_history="curr_history"
             @get-history="getClientHistory"
-          />
-        </div>
-      </div>
-    </div>
-    <!-- Mobile view -->
-    <div class="container-fluid" v-else>
-      <div class="row">
-
-        <!-- Utilize computed classes for column sizes based on showDetails prop -->
-        <div class="col" v-if="!showDetails">
-          <DataTable
-            @new-client-request="handleNewClient"
-            :show-details="showDetails"
-            @toggle-details="UserDetailScreen"
-          />
-        </div>
-        <!-- Conditional rendering for UserDetails component -->
-        <div class="col" v-if="showDetails">
-          <UserDetails 
-            v-bind:curr_details="curr_details"
-            @toggle-details="UserDetailScreen"
-            v-bind:curr_history="curr_history"
-            @get-history="getClientHistory"
+            @query-database="callHandleQueryEvent"
+            @update-currdetails="updateCurrDetails"
           />
         </div>
       </div>
     </div>
   </main> 
-</template>
 
+</template>
 
 <script>
 import axios from 'axios';
@@ -73,7 +60,8 @@ export default {
     return {
       curr_details: {}, 
       curr_history: [], 
-      isMobile: false
+      isMobile: false, 
+      showDetails: false
     };
   }, 
   mounted() {
@@ -103,6 +91,12 @@ export default {
       } else {
         this.isMobile = false
       }
+    }, 
+    callHandleQueryEvent() {
+      this.$refs.DataTable.handleQueryEvent();
+    },
+    updateCurrDetails(updates) {
+      Object.assign(this.curr_details, updates);
     }
   }
 }

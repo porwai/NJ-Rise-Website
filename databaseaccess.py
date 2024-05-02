@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 import sqlalchemy
+from collections import OrderedDict
 from typing import List
 from sqlalchemy import update, MetaData, func
 from sqlalchemy.sql import extract
@@ -164,7 +165,7 @@ class t_history(Base):
     # PRIMARY KEY to identify instances in transactional_history table
     visit_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key= True, autoincrement=True)
     
-def get_client (client_id: str, first_name: str, last_name: str, phone: str, dob: str):
+def get_client (client_id: str, first_name: str, last_name: str, phone: str, month: str, day: str,year: str):
     # SQL QUERY SCHEMA
     '''
     SELECT * 
@@ -185,16 +186,33 @@ def get_client (client_id: str, first_name: str, last_name: str, phone: str, dob
         query_fname = "%" + first_name + "%"
         query_lname = "%" + last_name + "%"
         query_phone = "%" + phone + "%"
-        query_dob = "%" + dob + "%"
+        q_month = month
+        q_day = day
+        q_year = year
+        if month == "":
+            q_month = "%"
+        if day == "":
+            q_day = "%%"
+        if year == "":
+            q_year = "%%"
         if client_id != "":
-            query  = session.query(t_client).filter(t_client.client_id.ilike(query_id),t_client.first_name.ilike(query_fname), t_client.last_name.ilike(query_lname), t_client.dob.like(query_dob), t_client.phone.like(query_phone))  
+            query  = session.query(t_client).filter(t_client.client_id.ilike(query_id),t_client.first_name.ilike(query_fname), t_client.last_name.ilike(query_lname), 
+                                                    t_client.phone.like(query_phone))  
         else:
-            query = session.query(t_client).filter(t_client.first_name.ilike(query_fname), t_client.last_name.ilike(query_lname), t_client.dob.like(query_dob), t_client.phone.like(query_phone))  
+            query  = session.query(t_client).filter(t_client.first_name.ilike(query_fname), t_client.last_name.ilike(query_lname)
+                                                   , t_client.phone.like(query_phone))  
+        if month != "":
+            query = query.filter(extract('month', t_client.dob) == q_month)
+        if day != "":
+            query = query.filter(extract('day', t_client.dob) == q_day)
+        if year != "":
+            query = query.filter(extract('year', t_client.dob) == q_year)
         query = query.order_by(t_client.client_id, t_client.first_name, t_client.last_name)      
         res = []
         for u in query.all():
             u = u.__dict__
             del u["_sa_instance_state"]
+            u['dob'] = u['dob'].strftime("%Y-%m-%d")
             res.append(u)
         return res
 
@@ -212,13 +230,62 @@ def query_masterdb_client (client_id: str, first_name: str, last_name: str, phon
             t_master_db.head_of_household_date_of_birth.like(query_dob),
             t_master_db.phone_number.like(query_phone))
         query = query.order_by(t_master_db.client_id, t_master_db.first_name, t_master_db.last_name)
-    # Execute the query and fetch all results
-        results = query.all()
+
         # Process results: convert SQLAlchemy objects to dictionaries
-        res = [u.__dict__ for u in results]
-        for item in res:
-            del item["_sa_instance_state"]  # Remove instance state info
+        res = []
+        for item in query.all():
+            # Using OrderedDict to maintain order of columns as defined in the class
+            item_data = OrderedDict((col.name, getattr(item, col.name)) for col in item.__table__.columns)
+            res.append(item_data)
         return res
+
+def edit_masterdb_client (client_id: str, updates: dict):
+    with sqlalchemy.orm.Session(_engine) as session:
+        try:
+            t_client_updates = {
+                "first_name": updates.get("first_name"),
+                "last_name": updates.get("last_name"),
+                "phone": updates.get("phone_number"),
+                "dob": updates.get("head_of_household_date_of_birth")
+            }
+        except Exception as e:
+            raise RuntimeError(f"Missing fields")
+
+        # Retrieve the client record by client_id
+        client = session.query(t_master_db).filter_by(client_id=client_id).first()
+        if client is None:
+            raise ValueError(f"No client found in master_db with client_id {client_id}")
+
+        # Fields that should not be edited
+        immutable_fields = ['client_id']
+
+        # Update the fields with the data provided in the updates dictionary
+        for key, value in updates.items():
+            if key in immutable_fields:
+                raise ValueError(f"The field '{key}' is not editable.")
+            if hasattr(client, key):
+                setattr(client, key, value)
+            else:
+                raise ValueError(f"{key} is not a valid field of t_master_db")
+
+        transactional_client = session.query(t_client).filter_by(client_id=client_id).first()
+
+        # Update the fields with the data provided in the updates dictionary
+        for key, value in t_client_updates.items():
+            if key in immutable_fields:
+                raise ValueError(f"The field '{key}' is not editable.")
+            if hasattr(transactional_client, key):
+                setattr(transactional_client, key, value)
+            else:
+                raise ValueError(f"{key} is not a valid field of t_master_db")
+
+        # Attempt to commit changes to the database
+        try:
+            session.commit()
+            print(f"Client {client_id} updated successfully.")
+        except sqlalchemy.exc.SQLAlchemyError as e:
+            session.rollback()  # Roll back the transaction if any database errors occurred
+            raise RuntimeError(f"Failed to update client due to: {str(e)}")
 
 # Update Special items or visit_date_list
 def update_client (transactional_id: int, new_visit_date: str, f_bags=0, b_supplies=0, p_food=0, g_items=0, c=0, 
@@ -382,7 +449,6 @@ def delete_transactional_id_records(transactional_id: int):
             session.rollback()
             raise Exception(f"Database operation failed: {e}") from e
 
-
 def delete_client_id_records(client_id: str, _engine):
     """
     Delete client records from both master_db and transactional_db tables based on the client_id.
@@ -410,7 +476,30 @@ def delete_client_id_records(client_id: str, _engine):
         except sqlalchemy.exc.SQLAlchemyError as e:
             session.rollback()  # Roll back the transaction if any database errors occurred
             raise RuntimeError(f"Failed to delete client records due to: {str(e)}")
-        
+
+def delete_client_visithistory(transactional_id: int, visit_id: int):
+    """
+    Delete a specific visit history record for a client in the transactional_history table.
+
+    Args:
+    transactional_id (int): The transactional_id of the client.
+    visit_id (int): The visit_id of the history record to delete.
+    """
+    with sqlalchemy.orm.Session(_engine) as session:
+        # Attempt to retrieve the visit history record
+        visit_record = session.query(t_history).filter_by(t_id=transactional_id, visit_id=visit_id).first()
+
+        if visit_record is None:
+            raise ValueError(f"No visit history record found with transactional_id {transactional_id} and visit_id {visit_id}.")
+
+        # Delete the visit history record
+        try:
+            session.delete(visit_record)
+            session.commit()
+            print(f"Visit history record with visit_id {visit_id} for client {transactional_id} has been deleted successfully.")
+        except sqlalchemy.exc.SQLAlchemyError as e:
+            session.rollback()  # Roll back the transaction if any database errors occurred
+            raise RuntimeError(f"Failed to delete visit history record due to: {str(e)}")
 
 # Delete client from database
 def delete_client (transactional_id: int):
@@ -453,7 +542,6 @@ def get_history (id: int):
         h.append(visit)
     return h
 
-
 def monthEmpower(month: int, year: int):
     with sqlalchemy.orm.Session(_engine) as session:
         res = "Client,Distribution Day,Food Bags,Baby Supplies,Pet Food,Gift Items, Cleaning Supplies,"
@@ -471,7 +559,6 @@ def monthEmpower(month: int, year: int):
             res += f"{visit.pj},{visit.clothing},{visit.winter},{visit.other},{date}\n"
         return res
 
-    
 def monthSummary(year: int):
     with sqlalchemy.orm.Session(_engine) as session:
         res = "Items,January,February,March,April,May,June,July,August,September,October,November,December,Year To Date\n"

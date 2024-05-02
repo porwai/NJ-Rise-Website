@@ -139,10 +139,10 @@
       <!-- Inline form using Bootstrap's row and col classes -->
       <div class="row">
         <div class="col-md-12 col-lg mb-2">
-          <input type="text" v-model="first_name" placeholder="Firstname" class="form-control" @keyup.enter="handleQueryEvent" />
+          <input type="text" v-model="first_name" placeholder="First Name" class="form-control" @keyup.enter="handleQueryEvent" />
         </div>
         <div class="col-md-12 col-lg mb-2">
-          <input type="text" v-model="last_name" placeholder="Lastname" class="form-control" @keyup.enter="handleQueryEvent" />
+          <input type="text" v-model="last_name" placeholder="Last Ne ame" class="form-control" @keyup.enter="handleQueryEvent" />
         </div>
         <div class="col-md-12 col-lg mb-2">
           <input type="text" v-model="client_id" placeholder="Client ID" class="form-control" @keyup.enter="handleQueryEvent" />
@@ -151,7 +151,13 @@
           <input type="text" v-model="phone" placeholder="Phone" class="form-control" @keyup.enter="handleQueryEvent" />
         </div>
         <div class="col-md-12 col-lg mb-2">
-          <input type="date" v-model="dob" placeholder="Date of Birth" class="form-control" @keyup.enter="handleQueryEvent" />
+          <input type="text" v-model="month" placeholder="DOB: Month (MM)" class="form-control" @keyup.enter="handleQueryEvent" />
+        </div>
+        <div class="col-md-12 col-lg mb-2">
+          <input type="text" v-model="day" placeholder="DOB: Day (DD)" class="form-control" @keyup.enter="handleQueryEvent" />
+        </div>
+        <div class="col-md-12 col-lg mb-2">
+          <input type="text" v-model="year" placeholder="DOB: Year (YYYY)" class="form-control" @keyup.enter="handleQueryEvent" />
         </div>
       </div>
     
@@ -167,7 +173,7 @@
                             <span>Search</span>
                         </button>
 
-                        <button class="btn btn-warning" @click="toggleDBView(); handleQueryEvent()">
+                        <button class="btn btn-warning" @click="toggleDBView(); handleQueryEvent(); $emit('close-details');">
                             <span>MasterDB Toggle</span>
                         </button>
 
@@ -184,11 +190,13 @@
             <thead>
                 <tr>
                     <th></th>
-                    <th v-for="(value, key) in clients[0]" :key="key">
-                        <template v-if="key !== 'transactional_id'">
-                            {{ formatKey(key) }}
-                        </template>
-                    </th>
+                    <template v-if="key !== 'transactional_id'">
+                        <th 
+                        v-for="(value, key) in clients[0]" :key="key" 
+                        v-if="key !== 'transactional_id'">
+                                {{ formatKey(key) }}
+                        </th>
+                    </template>
                     <th></th>
                 </tr>
             </thead>
@@ -196,11 +204,14 @@
                 <tr v-for="client in clients" :key="client.transactional_id"
                 :class="{ 'highlighted': client.transactional_id === activeRowId }">
                     <td><input type="checkbox" class="checkbox" v-model="client.selected"/></td>
-                    <td v-for="(value, key) in client" :key="key" @click="handleClientDetailsEvent(client)">
-                        <template v-if="key !== 'transactional_id'">
-                            {{ value }}
-                        </template>
-                    </td>
+                    <template v-if="key !== 'transactional_id'">
+                        <td 
+                        v-for="(value, key) in client" :key="key" 
+                        v-if="key !== 'transactional_id'"
+                        @click="handleClientDetailsEvent(client)">
+                                {{ value }}
+                        </td>
+                    </template>
                     <td>
                         <a class="delete" title="Delete" data-toggle="tooltip" @click="handleDelete(client.transactional_id)">
                             <i class="fas fa-trash mr-1"></i>
@@ -225,9 +236,11 @@
             last_name: '',
             client_id: '',
             phone: '',
-            dob: '',
+            month: '',
+            day: '',
+            year: '',
             activeRowId: null,
-            clients: []            };
+            clients: []};
         },
         mounted() {
           this.handleQueryEvent();
@@ -255,7 +268,6 @@
                 axios.post('/api/query_masterdatabase', payload)
                 .then((response) => {
                     this.clients = response.data;
-                    console.log(response.data);
                 }).catch((error) => {
                     console.error(error);
                     // Consider adding user-facing error handling here
@@ -267,7 +279,9 @@
                     last_name: this.last_name,
                     client_id: this.client_id,
                     phone: this.phone,
-                    dob: this.dob,
+                    month: this.month,
+                    day: this.day,
+                    year: this.year
                 };
                 if (this.masterDBView) {
                     this.queryMasterDB(payload);
@@ -280,7 +294,7 @@
                     this.$emit('toggle-details')
                 }
                 this.$emit('new-client-request', clientData);
-            }, 
+            },
             handleDelete(t_id) {
                 const payload = {
                     transactional_id: t_id

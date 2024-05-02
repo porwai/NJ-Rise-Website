@@ -1,3 +1,7 @@
+<script setup>
+import EditMasterDBmodal from './editMasterDBmodal.vue';
+</script>
+
 <template>
 	<div class="card full-height full-width">
 	  <div class="card-header d-flex justify-content-end">
@@ -7,23 +11,26 @@
 	  </div>
     <!-- card body -->
 	  <div class="card-body d-flex flex-column" style="overflow-y: auto;">
-        <div class="row align-items-center justify-content-between">
-            <div class="col">
-                <h1>{{curr_details.first_name + " " + curr_details.last_name}}</h1>
-                <h3 style="margin-bottom: 0;">Client ID: {{curr_details.client_id}}</h3>
-            </div>
-            <div class="col-auto">
-                <button type="button" class="btn btn-warning">
-                    Edit Client Data
-                </button>
-            </div>
+      
+      <div class="row align-items-center justify-content-between">
+        <div class="col">
+          <h1>{{curr_details.first_name + " " + curr_details.last_name}}</h1>
         </div>
+        <div class="col-auto">
+          <EditMasterDBmodal 
+          v-if="masterDBView == true" 
+          :curr_details="curr_details"
+          @query-database="$emit('query-database')"
+          @update-currdetails="handleUpdateClientDetails"
+          />
+        </div>
+      </div>
       
       <div class="row">
         <div class="table-responsive" style="max-height: 35vh; overflow-y: auto;">
               <table class="table table-striped table-bordered">
                   <tbody>
-                      <tr v-for="(value, key) in curr_details" :key="key" v-if="key !== 'transactional_id' && key !== 'selected' ">
+                      <tr v-for="(value, key) in curr_details" :key="key" v-if="key !== 'transactional_id'">
                           <th style="white-space: nowrap;">{{ formatKey(key) }}</th>
                           <td>{{ value }}</td>
                       </tr>
@@ -68,7 +75,7 @@
                   <td>{{ visit_date.winter }}</td>
                   <td>{{ visit_date.other }}</td>
                   <td>
-                    <a class="delete" title="Delete" data-toggle="tooltip"><i class="fas fa-trash mr-1"></i></a>
+                    <a class="delete" title="Delete" @click="handleVisitHistoryDelete(visit_date.t_id, visit_date.visit_id)"><i class="fas fa-trash mr-1"></i></a>
                   </td>
               </tr>
           </tbody>
@@ -79,10 +86,10 @@
       <button type="button" class="btn btn-success" data-toggle="modal" data-target="#newVisit">
         Add New Visit
       </button>
-    </div>
+      </div>
 
       <!-- The Modal -->
-      <div class="modal" id="newVisit">
+    <div class="modal" id="newVisit">
     <div class="modal-dialog">
       <div class="modal-content">
 
@@ -184,13 +191,17 @@
 
       </div>
     </div>
-      </div>
+
+
+
+    </div>
+
     </div>
     <!-- card end -->
 	</div>
 </template>
   
-  <style scoped>
+<style scoped>
   .card-header {
   background-color: white;
   border: none;
@@ -229,16 +240,19 @@
   .other { background-color: #f9cb9c; }
   .actions { background-color: #fff; } /* Different color or keep as default */
 
-  </style>
+</style>
 
-  <script>
+<script>
   import axios from 'axios';
 
   export default {
-    data() {
+  components: {
+    EditMasterDBmodal
+  },
+  data() {
       return {
         transactional_id: -1,
-        new_visit_date: null,
+        new_visit_date: new Date().toISOString().slice(0,10),
         f_bags: 0,
         b_supplies:0,
         p_food:0,
@@ -249,7 +263,7 @@
         pj: 0,
         cloth: 0,
         w: 0,
-        o: 0
+        o: 0, 
       }
     }
   , 
@@ -265,6 +279,11 @@
           default: () => []
         }
     },
+  computed: { 
+    masterDBView() {
+      return this.$store.state.master_db_view; // Accessing the state
+    }
+  },
 	methods: {
 	  closeCard() {
 		this.$emit('toggle-details')
@@ -305,8 +324,29 @@
       return key.split('_')
                 .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
                 .join(' ');
-    }
+    }, 
+    handleVisitHistoryDelete(transactional_id, visit_id) {
+      const payload = {
+        transactional_id: transactional_id, 
+        visit_id: visit_id
+      };
+      if (this.$store.state.login_status === "not_authorized") {
+        console.log("FALSE LOGIN")
+        this.$router.push({ path: '/login'})
+        return;
+      }
+      axios.post('/api/delete_client_visithistory', payload)
+      .then((response) => {
+        console.log("Deletion successful:", response.data);
+        this.$emit('get-history')
+      }).catch((error) => {
+        console.error("Error deleting client:", error);
+      });
+    },
+    handleUpdateClientDetails(payload) {
+      this.$emit('update-currdetails', payload);
+    } 
 	}
   };
-  </script>
+</script>
   
