@@ -11,19 +11,22 @@
                         :id="key"
                         class="form-control"
                         type="text"
-                        v-model="field.value" />
+                        v-model="field.value"
+                        :required="field.required" />
 
                     <input v-if="field.type === 'number'"
                         :id="key"
                         class="form-control"
                         type="number"
-                        v-model="field.value" />
+                        v-model="field.value"
+                        :required="field.required" />
                         
                     <input v-if="field.type === 'date'"
                         :id="key"
                         class="form-control"
                         type="date"
-                        v-model="field.value" />
+                        v-model="field.value"
+                        :required="field.required" />
                     
                     <div v-if="field.type === 'checkbox'" class="form-check">
                         <input :id="key" type="checkbox" class="form-check-input" v-model="field.value">
@@ -64,16 +67,16 @@
         data() {
           return {
             formData: {
-              "client_id": {"value": "", "type": "string"},
-              "last_name": {"value": "", "type": "string"},
-              "first_name": {"value": "", "type": "string"},
+              "client_id": {"value": "", "type": "string", "required": "true"},
+              "last_name": {"value": "", "type": "string", "required": "true"},
+              "first_name": {"value": "", "type": "string", "required": "true"},
               "middle_initial": {"value": "", "type": "string"},
               "total_family_members": {"value": 0, "type": "number"},
               "case_manager_initials": {"value": "", "type": "string"},
               "empowerOR": {"value": 0, "type": "number"},
               "renewal_date": {"value": "", "type": "date"},
               "gender_head_of_household": {"value": "", "type": "string"},
-              "head_of_household_date_of_birth": {"value": "", "type": "date"},
+              "head_of_household_date_of_birth": {"value": "", "type": "date", "required": "true"},
               "household_number_of_adults": {"value": 0, "type": "number"},
               "household_number_of_children": {"value": 0, "type": "number"},
               "household_number_of_children_under_18": {"value": 0, "type": "number"},
@@ -98,7 +101,7 @@
               "return_client": {"value": 0, "type": "number"},
               "new_client": {"value": 0, "type": "number"},
               "new_client_intake_date": {"value": "", "type": "date"},
-              "phone_number": {"value": "", "type": "string"},
+              "phone_number": {"value": "", "type": "string", "required": "true"},
               "affected_by_covid": {"value": 0, "type": "number"},
               "household_single": {"value": 0, "type": "number"},
               "household_two_adults_no_children": {"value": 0, "type": "number"},
