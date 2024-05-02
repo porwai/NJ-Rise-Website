@@ -27,10 +27,10 @@ class t_master_db(Base):
     middle_initial = sqlalchemy.Column(sqlalchemy.String)
     total_family_members = sqlalchemy.Column(sqlalchemy.Integer)
     case_manager_initials = sqlalchemy.Column(sqlalchemy.String)
-    empowerOR = sqlalchemy.Column(sqlalchemy.Integer)
+    empowerOR = sqlalchemy.Column(sqlalchemy.String)
     renewal_date = sqlalchemy.Column(sqlalchemy.String)
     gender_head_of_household = sqlalchemy.Column(sqlalchemy.String)
-    head_of_household_date_of_birth = sqlalchemy.Column(sqlalchemy.String)
+    head_of_household_date_of_birth = sqlalchemy.Column(sqlalchemy.Date)
     household_number_of_adults = sqlalchemy.Column(sqlalchemy.Integer)
     household_number_of_children = sqlalchemy.Column(sqlalchemy.Integer)
     household_number_of_children_under_18 = sqlalchemy.Column(sqlalchemy.Integer)
@@ -186,15 +186,6 @@ def get_client (client_id: str, first_name: str, last_name: str, phone: str, mon
         query_fname = "%" + first_name + "%"
         query_lname = "%" + last_name + "%"
         query_phone = "%" + phone + "%"
-        q_month = month
-        q_day = day
-        q_year = year
-        if month == "":
-            q_month = "%"
-        if day == "":
-            q_day = "%%"
-        if year == "":
-            q_year = "%%"
         if client_id != "":
             query  = session.query(t_client).filter(t_client.client_id.ilike(query_id),t_client.first_name.ilike(query_fname), t_client.last_name.ilike(query_lname), 
                                                     t_client.phone.like(query_phone))  
@@ -202,11 +193,11 @@ def get_client (client_id: str, first_name: str, last_name: str, phone: str, mon
             query  = session.query(t_client).filter(t_client.first_name.ilike(query_fname), t_client.last_name.ilike(query_lname)
                                                    , t_client.phone.like(query_phone))  
         if month != "":
-            query = query.filter(extract('month', t_client.dob) == q_month)
+            query = query.filter(extract('month', t_client.dob) == month)
         if day != "":
-            query = query.filter(extract('day', t_client.dob) == q_day)
+            query = query.filter(extract('day', t_client.dob) == day)
         if year != "":
-            query = query.filter(extract('year', t_client.dob) == q_year)
+            query = query.filter(extract('year', t_client.dob) == year)
         query = query.order_by(t_client.client_id, t_client.first_name, t_client.last_name)      
         res = []
         for u in query.all():
@@ -216,19 +207,24 @@ def get_client (client_id: str, first_name: str, last_name: str, phone: str, mon
             res.append(u)
         return res
 
-def query_masterdb_client (client_id: str, first_name: str, last_name: str, phone: str, dob: str):
+def query_masterdb_client (client_id: str, first_name: str, last_name: str, phone: str, month: str, day: str,year: str):
     with sqlalchemy.orm.Session(_engine) as session:
         query_id = "%" + client_id + "%"
         query_fname = "%" + first_name + "%"
         query_lname = "%" + last_name + "%"
         query_phone = "%" + phone + "%"
-        query_dob = "%" + dob + "%"
         query = session.query(t_master_db).filter(
             t_master_db.client_id.ilike(query_id),
             t_master_db.first_name.ilike(query_fname),
             t_master_db.last_name.ilike(query_lname),
-            t_master_db.head_of_household_date_of_birth.like(query_dob),
             t_master_db.phone_number.like(query_phone))
+        print(day)
+        if month != "":
+            query = query.filter(extract('month', t_master_db.head_of_household_date_of_birth) == month)
+        if day != "":
+            query = query.filter(extract('day', t_master_db.head_of_household_date_of_birth) == day)
+        if year != "":
+            query = query.filter(extract('year', t_master_db.head_of_household_date_of_birth) == year)
         query = query.order_by(t_master_db.client_id, t_master_db.first_name, t_master_db.last_name)
 
         # Process results: convert SQLAlchemy objects to dictionaries
@@ -236,6 +232,7 @@ def query_masterdb_client (client_id: str, first_name: str, last_name: str, phon
         for item in query.all():
             # Using OrderedDict to maintain order of columns as defined in the class
             item_data = OrderedDict((col.name, getattr(item, col.name)) for col in item.__table__.columns)
+            item_data['head_of_household_date_of_birth'] = item_data['head_of_household_date_of_birth'].strftime("%Y-%m-%d")
             res.append(item_data)
         return res
 
