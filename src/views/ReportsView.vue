@@ -153,8 +153,8 @@
               </p>
             </div>
             
-
-            <div v-if="this.basic_report_sum !== null">
+            <!-- Fix: changed this.basic_report_sum to basic_report_list -->
+            <div v-if="this.basic_report_list !== null">
             <CanvasJSChart :options="options" :style="styleOptions" @chart-ref="chartInstance"/>
           </div>
         </div>
