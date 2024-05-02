@@ -23,7 +23,7 @@
                   <i class="fas fa-user-plus mr-1"></i>
                   Add Walk In Client
                 </a>
-                <a class="dropdown-item" href="/registernewclient">
+                <a v-if = "this.$store.state.viewing_status === 'admin'" class="dropdown-item" href="/registernewclient">
                   <i class="fas fa-user-edit mr-1"></i>
                   Register Client
                 </a>

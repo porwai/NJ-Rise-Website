@@ -178,6 +178,14 @@
         },
         methods: {
           submitForm: function () {
+            if (this.$store.state.login_status === "not_authorized") {
+              console.log("FALSE LOGIN")
+              this.$router.push({ path: '/login'})
+            }
+            if (this.$store.state.viewing_status !== "admin") {
+              alert("You must be an admin to query the master database.");
+              return;
+            }
             this.formSubmitted = true
             const payload = {};
             for (const key in this.formData) {

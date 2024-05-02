@@ -22,9 +22,6 @@
 		padding: 12px 15px;
 		vertical-align: middle;
     }
-	table.table tr th:first-child {
-        width: auto
-	}
 	table.table tr th:last-child {
 		width: 100px;
 	}
@@ -173,7 +170,7 @@
                             <span>Search</span>
                         </button>
 
-                        <button class="btn btn-warning" @click="toggleDBView(); handleQueryEvent(); $emit('close-details');">
+                        <button class="btn btn-warning" @click="toggleDBView(); handleQueryEvent(); $emit('close-details');" v-if="adminStatus">
                             <span>MasterDB Toggle</span>
                         </button>
 
@@ -189,7 +186,6 @@
         <table class="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
-                    <th></th>
                     <template v-if="key !== 'transactional_id'">
                         <th 
                         v-for="(value, key) in clients[0]" :key="key" 
@@ -203,7 +199,6 @@
             <tbody>
                 <tr v-for="client in clients" :key="client.transactional_id"
                 :class="{ 'highlighted': client.transactional_id === activeRowId }">
-                    <td><input type="checkbox" class="checkbox" v-model="client.selected"/></td>
                     <template v-if="key !== 'transactional_id'">
                         <td 
                         v-for="(value, key) in client" :key="key" 
@@ -265,6 +260,11 @@
                     console.log("FALSE LOGIN")
                     this.$router.push({ path: '/login'})
                 }
+                if (this.$store.state.viewing_status !== "admin") {
+                    alert("You must be an admin to query the master database.");
+                    this.toggleDBView();
+                    return;
+                }
                 axios.post('/api/query_masterdatabase', payload)
                 .then((response) => {
                     this.clients = response.data;
@@ -304,6 +304,11 @@
                     this.$router.push({ path: '/login'})
                     return;
                 }
+                if (this.$store.state.viewing_status !== "admin") {
+                    alert("You must be an admin to delete the database.");
+                    this.toggleDBView();
+                    return;
+                }
                 axios.post('/api/delete_t_client', payload)
                 .then((response) => {
                     console.log("Deletion successful:", response.data);
@@ -330,9 +335,12 @@
             }
         },
         computed: { 
-        masterDBView() {
-            return this.$store.state.master_db_view; // Accessing the state
-        }
+            masterDBView() {
+                return this.$store.state.master_db_view; // Accessing the state
+            }, 
+            adminStatus() {
+                return (this.$store.state.viewing_status === "admin");
+            }
         }, 
         props: {
             showDetails: {
