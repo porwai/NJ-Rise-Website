@@ -47,14 +47,15 @@
         </div>
         <div v-if="formSubmitted" class="card-footer">
             <h3 class="card-title">Form Submitted</h3>
-            <p>First Name: {{ firstname }}</p>
-            <p>Last Name: {{ lastname }}</p>
-            <p>DOB: {{ dob }}</p>
-            <p>Phone Number: {{ phonenumber }}</p>
-            <p>Email: {{ email }}</p>
-            <p>Date: {{ date }}</p>
-            <p>Foodbags: {{ foodbags }}</p>
-            <small>Click on run to launch the app again.</small>
+            <p>First Name: {{ formData.first_name.value }}</p>
+            <p>Last Name: {{ formData.last_name.value }}</p>
+            <p>DOB: {{ formData.head_of_household_date_of_birth.value }}</p>
+            <p>Phone Number: {{ formData.phone_number.value }}</p>
+            <p>Client ID: {{ formData.client_id.value }}</p>
+            <!-- <p>Email: {{ email }}</p> -->
+            <!-- <p>Date: {{ date }}</p> -->
+            <!-- <p>Foodbags: {{ foodbags }}</p> -->
+            <small><router-link to="/search">Click here to go back to Client Search.</router-link></small>
         </div>
     </div>
   </template>
