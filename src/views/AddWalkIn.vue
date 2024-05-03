@@ -85,7 +85,7 @@
           <p>Email: {{ email }}</p>
           <p>Date: {{ date }}</p>
           <p>Foodbags: {{ foodbags }}</p>
-          <small>Click on run to launch the app again.</small>
+          <small><router-link to="/search">Click here to go back to Client Search.</router-link></small>
       </div>
   </div>
 </template>
