@@ -3,9 +3,9 @@
     <div class="card">
         <div class="card-body d-flex flex-column" style="overflow-y: auto;">
             <h1 class="card-title">Register New Client</h1>
-            <form @submit.prevent="submitForm">
+            <form v-if="!formSubmitted" @submit.prevent="submitForm">
                 <div v-for="(field, key) in formData" :key="key" class="form-group">
-                    <label :for="key">{{ formatLabel(key) }}</label>
+                    <label :for="key">{{ formatLabel(key) }}<span v-if="field.required" class="required-asterisk">*</span></label>
                     
                     <input v-if="field.type === 'string'"
                         :id="key"
@@ -216,4 +216,9 @@
         },
       };
     </script>
-  
+
+    <style>
+    .required-asterisk {
+    color: red;
+  }
+  </style>
