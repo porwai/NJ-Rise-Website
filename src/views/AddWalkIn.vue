@@ -5,7 +5,7 @@
           <h1 class="card-title">Add Client Information and First Visit Information</h1>
           <form @submit.prevent="submitForm" v-if="!formSubmitted">
               <div class="mb-3">
-                  <label for="firstname" class="form-label">First Name</label>
+                  <label for="firstname" class="form-label">First Name<span class="required-asterisk">*</span></label>
                   <input 
                     v-model="firstname"
                     type="text"
@@ -16,7 +16,7 @@
                   />
               </div>
               <div class="mb-3">
-                  <label for="lastname" class="form-label">Last Name</label>
+                  <label for="lastname" class="form-label">Last Name<span class="required-asterisk">*</span></label>
                   <input 
                     v-model="lastname"
                     type="text"
@@ -63,7 +63,7 @@
                   />
               </div>
               <div class="mb-3">
-                  <label for="foodbags" class="form-label">Food Bags</label>
+                  <label for="foodbags" class="form-label">Food Bags<span class="required-asterisk">*</span></label>
                   <input 
                     type="number" 
                     v-model="foodbags" 
@@ -131,3 +131,9 @@
       },
     };
   </script>
+
+  <style>
+  .required-asterisk {
+  color: red;
+}
+</style>
