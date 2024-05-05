@@ -313,7 +313,14 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
       axios.post('/api/newdate', payload)
       .then(response => {
         // Updates to show new visit
-        this.$emit('get-history')
+        const output = response.data
+        if (output[0] !== true){
+          alert(output[1]);
+        }
+        else {
+          this.$emit('get-history');
+        }
+        
         // Optionally close the modal if everything is fine
       }).catch(error => {
         console.error(error);

@@ -27,7 +27,7 @@ class t_master_db(Base):
     middle_initial = sqlalchemy.Column(sqlalchemy.String)
     total_family_members = sqlalchemy.Column(sqlalchemy.Integer)
     case_manager_initials = sqlalchemy.Column(sqlalchemy.String)
-    empowerOR = sqlalchemy.Column(sqlalchemy.String)
+    client_type = sqlalchemy.Column(sqlalchemy.String)
     renewal_date = sqlalchemy.Column(sqlalchemy.String)
     gender_head_of_household = sqlalchemy.Column(sqlalchemy.String)
     head_of_household_date_of_birth = sqlalchemy.Column(sqlalchemy.Date)
@@ -193,11 +193,18 @@ def get_client (client_id: str, first_name: str, last_name: str, phone: str, mon
             query  = session.query(t_client).filter(t_client.first_name.ilike(query_fname), t_client.last_name.ilike(query_lname)
                                                    , t_client.phone.like(query_phone))  
         if month != "":
+            if not month.isnumeric():
+                return []
             query = query.filter(extract('month', t_client.dob) == month)
         if day != "":
+            if not day.isnumeric():
+                return []
             query = query.filter(extract('day', t_client.dob) == day)
         if year != "":
+            if not year.isnumeric():
+                return []
             query = query.filter(extract('year', t_client.dob) == year)
+
         query = query.order_by(t_client.client_id, t_client.first_name, t_client.last_name)      
         res = []
         for u in query.all():
@@ -218,12 +225,17 @@ def query_masterdb_client (client_id: str, first_name: str, last_name: str, phon
             t_master_db.first_name.ilike(query_fname),
             t_master_db.last_name.ilike(query_lname),
             t_master_db.phone_number.like(query_phone))
-        print(day)
         if month != "":
+            if not month.isnumeric():
+                return []
             query = query.filter(extract('month', t_master_db.head_of_household_date_of_birth) == month)
         if day != "":
+            if not day.isnumeric():
+                return []
             query = query.filter(extract('day', t_master_db.head_of_household_date_of_birth) == day)
         if year != "":
+            if not year.isnumeric():
+                return []
             query = query.filter(extract('year', t_master_db.head_of_household_date_of_birth) == year)
         query = query.order_by(t_master_db.client_id, t_master_db.first_name, t_master_db.last_name)
 
@@ -243,7 +255,8 @@ def edit_masterdb_client (client_id: str, updates: dict):
                 "first_name": updates.get("first_name"),
                 "last_name": updates.get("last_name"),
                 "phone": updates.get("phone_number"),
-                "dob": updates.get("head_of_household_date_of_birth")
+                "dob": updates.get("head_of_household_date_of_birth"),
+                "client_type": updates.get("client_type")
             }
         except Exception as e:
             raise RuntimeError(f"Missing fields")
@@ -298,13 +311,23 @@ def update_client (transactional_id: int, new_visit_date: str, f_bags=0, b_suppl
     with sqlalchemy.orm.Session(_engine) as session:
 
         # Select current visit_date_list
+        if not isinstance(f_bags, int) or not isinstance(b_supplies, int) or not isinstance(p_food, int) or not isinstance(g_items, int):
+            raise Exception("Please enter integer values")
+        if not isinstance(c, int) or not isinstance(p_care, int) or not isinstance(sf, int) or not isinstance(p, int):
+            raise Exception("Please enter integer values")
+        if not isinstance(cloth, int) or not isinstance(w, int) or not isinstance(o, int):
+            raise Exception("Please enter integer values")
         date_format = '%Y-%m-%d'
         c_type = session.query(t_client).filter(t_client.transactional_id==transactional_id).one().client_type
         date_obj = datetime.strptime(new_visit_date, date_format)
         new_visit = t_history(t_id=transactional_id, visit_date=date_obj, food_bags=f_bags, baby_supplies=b_supplies,pet_food=p_food,
                               gift_items=g_items, cleaning=c, personal_care=p_care, summer_feeding = sf, pj=p, clothing = cloth, winter=w, other = o, client_type=c_type)
         session.add(new_visit)
-        session.commit()
+        try:
+            session.commit()
+        except sqlalchemy.exc.SQLAlchemyError as e:
+            session.rollback()  # Roll back the transaction if any database errors occurred
+            raise RuntimeError("A server error occured")
         return get_history(transactional_id)
 
         # # Add new visit date
@@ -328,7 +351,8 @@ def add_master_db_client(data: dict):
         "last_name": "Last Name is required",
         "phone_number": "Phone Number is required",
         "head_of_household_date_of_birth": "Date of Birth for Head of Household is required",
-        "client_id": "Client ID is missing"
+        "client_id": "Client ID is missing",
+        "client_type": "Client type is missing"
     }
 
     # Check for missing required fields
@@ -344,7 +368,8 @@ def add_master_db_client(data: dict):
                 last_name=data["last_name"],
                 phone=data["phone_number"],
                 dob=data["head_of_household_date_of_birth"],
-                client_id=data["client_id"]
+                client_id=data["client_id"],
+                client_type=data["client_type"]
             )
 
             # Add the new client to the session and flush to generate the transactional_id
@@ -523,9 +548,13 @@ def add_client (f_name: str, l_name:str, p: str, dob_date: str, date:str, foodba
         # Select relevant row
         new_client = t_client(first_name=f_name, last_name=l_name, phone=p, dob=dob_date, client_type="not eligible")
         session.add(new_client)
-        session.commit()
+        try:
+            session.commit()
+        except sqlalchemy.exc.SQLAlchemyError as e:
+            raise RuntimeError(f"Failed to add new client due to: {str(e)}")
         id = new_client.transactional_id
-    update_client(transactional_id=id, new_visit_date=date, f_bags=foodbags)
+    if date is not None and foodbags is not None:
+        update_client(transactional_id=id, new_visit_date=date, f_bags=foodbags)
 
 def get_history (id: int):
     with sqlalchemy.orm.Session(_engine) as session:
@@ -543,8 +572,7 @@ def monthEmpower(month: int, year: int):
     with sqlalchemy.orm.Session(_engine) as session:
         res = "Client,Distribution Day,Food Bags,Baby Supplies,Pet Food,Gift Items, Cleaning Supplies,"
         res += "Personal Care,Summer Feeding,Kids Pajamas,Clothing,Winter Coats,Other Items,Date\n"
-        visits=session.query(t_history).filter(extract('month', t_history.visit_date) == month).filter(extract('year', t_history.visit_date) == year).filter(t_history.client_type=="empower").all()
-        print('reached')
+        visits=session.query(t_history).filter(extract('month', t_history.visit_date) == month).filter(extract('year', t_history.visit_date) == year).filter(t_history.client_type=="Empower").all()
         for visit in visits:
             name = session.query(t_client).filter(t_client.transactional_id==visit.t_id).one()
             fullname = name.first_name + " " + name.last_name

@@ -237,8 +237,8 @@ def add_date():
             response_object = db.update_client(transactional_id, new_visit_date, f_bags, b_supplies, p_food, g_items, c, 
                    p_care, sf, p, cloth, w, o )
         except Exception as ex:
-            raise Exception (ex)
-    return flask.jsonify(response_object)
+            return flask.jsonify([False, str(ex)])
+    return flask.jsonify([True, response_object])
 
 
 # Delete entry for the user
