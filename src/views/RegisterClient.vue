@@ -36,7 +36,8 @@
                     <select v-if="field.type === 'dropdown'"
                             :id="key"
                             class="custom-select mr-sm-2"
-                            v-model="field.value">
+                            v-model="field.value"
+                            :required="field.required">
                     <option v-for="option in field.options" :key="option">{{ option }}</option>
               
                     </select>
@@ -74,7 +75,7 @@
               "middle_initial": {"value": "", "type": "string"},
               "total_family_members": {"value": 0, "type": "number"},
               "case_manager_initials": {"value": "", "type": "string"},
-              "empowerOR": {"value": 0, "type": "number"},
+              "client_type": {"value": "", "type": "dropdown", "options": ["not eligible", "Empower", "TEFAP", "Neighbor"], "required": "true"},
               "renewal_date": {"value": "", "type": "date"},
               "gender_head_of_household": {"value": "", "type": "string"},
               "head_of_household_date_of_birth": {"value": "", "type": "date", "required": "true"},

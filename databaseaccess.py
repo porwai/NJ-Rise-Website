@@ -27,7 +27,7 @@ class t_master_db(Base):
     middle_initial = sqlalchemy.Column(sqlalchemy.String)
     total_family_members = sqlalchemy.Column(sqlalchemy.Integer)
     case_manager_initials = sqlalchemy.Column(sqlalchemy.String)
-    empowerOR = sqlalchemy.Column(sqlalchemy.String)
+    client_type = sqlalchemy.Column(sqlalchemy.String)
     renewal_date = sqlalchemy.Column(sqlalchemy.String)
     gender_head_of_household = sqlalchemy.Column(sqlalchemy.String)
     head_of_household_date_of_birth = sqlalchemy.Column(sqlalchemy.Date)
@@ -225,7 +225,6 @@ def query_masterdb_client (client_id: str, first_name: str, last_name: str, phon
             t_master_db.first_name.ilike(query_fname),
             t_master_db.last_name.ilike(query_lname),
             t_master_db.phone_number.like(query_phone))
-        print(day)
         if month != "":
             if not month.isnumeric():
                 return []
@@ -256,7 +255,8 @@ def edit_masterdb_client (client_id: str, updates: dict):
                 "first_name": updates.get("first_name"),
                 "last_name": updates.get("last_name"),
                 "phone": updates.get("phone_number"),
-                "dob": updates.get("head_of_household_date_of_birth")
+                "dob": updates.get("head_of_household_date_of_birth"),
+                "client_type": updates.get("client_type")
             }
         except Exception as e:
             raise RuntimeError(f"Missing fields")
@@ -351,7 +351,8 @@ def add_master_db_client(data: dict):
         "last_name": "Last Name is required",
         "phone_number": "Phone Number is required",
         "head_of_household_date_of_birth": "Date of Birth for Head of Household is required",
-        "client_id": "Client ID is missing"
+        "client_id": "Client ID is missing",
+        "client_type": "Client type is missing"
     }
 
     # Check for missing required fields
@@ -367,7 +368,8 @@ def add_master_db_client(data: dict):
                 last_name=data["last_name"],
                 phone=data["phone_number"],
                 dob=data["head_of_household_date_of_birth"],
-                client_id=data["client_id"]
+                client_id=data["client_id"],
+                client_type=data["client_type"]
             )
 
             # Add the new client to the session and flush to generate the transactional_id
@@ -570,8 +572,7 @@ def monthEmpower(month: int, year: int):
     with sqlalchemy.orm.Session(_engine) as session:
         res = "Client,Distribution Day,Food Bags,Baby Supplies,Pet Food,Gift Items, Cleaning Supplies,"
         res += "Personal Care,Summer Feeding,Kids Pajamas,Clothing,Winter Coats,Other Items,Date\n"
-        visits=session.query(t_history).filter(extract('month', t_history.visit_date) == month).filter(extract('year', t_history.visit_date) == year).filter(t_history.client_type=="empower").all()
-        print('reached')
+        visits=session.query(t_history).filter(extract('month', t_history.visit_date) == month).filter(extract('year', t_history.visit_date) == year).filter(t_history.client_type=="Empower").all()
         for visit in visits:
             name = session.query(t_client).filter(t_client.transactional_id==visit.t_id).one()
             fullname = name.first_name + " " + name.last_name
