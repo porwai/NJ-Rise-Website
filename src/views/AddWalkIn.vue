@@ -27,30 +27,23 @@
                   />
               </div>
               <div class="mb-3">
-                  <label for="dob" class="form-label">DOB</label>
+                  <label for="dob" class="form-label">Date of Birth<span class="required-asterisk">*</span></label>
                   <input 
                     type="date" 
                     v-model="dob" 
                     class="form-control"
                     id="dob"
+                    required
                   />
               </div>
               <div class="mb-3">
-                  <label for="phonenumber" class="form-label">Phone Number</label>
+                  <label for="phonenumber" class="form-label">Phone Number<span class="required-asterisk">*</span></label>
                   <input 
                     v-model="phonenumber" 
                     type="tel" 
                     class="form-control"
                     id="phonenumber"
-                  />
-              </div>
-              <div class="mb-3">
-                  <label for="email" class="form-label">Email</label>
-                  <input 
-                    type="email" 
-                    v-model="email" 
-                    class="form-control"
-                    id="email"
+                    required
                   />
               </div>
               <div class="mb-3">
@@ -63,13 +56,12 @@
                   />
               </div>
               <div class="mb-3">
-                  <label for="foodbags" class="form-label">Food Bags<span class="required-asterisk">*</span></label>
+                  <label for="foodbags" class="form-label">Food Bags</label>
                   <input 
                     type="number" 
                     v-model="foodbags" 
                     class="form-control"
                     id="foodbags"
-                    required
                   />
               </div>
               
@@ -82,7 +74,6 @@
           <p>Last Name: {{ lastname }}</p>
           <p>DOB: {{ dob }}</p>
           <p>Phone Number: {{ phonenumber }}</p>
-          <p>Email: {{ email }}</p>
           <p>Date: {{ date }}</p>
           <p>Foodbags: {{ foodbags }}</p>
           <small><router-link to="/search">Click here to go back to Client Search.</router-link></small>
@@ -101,9 +92,8 @@
           lastname: "",
           dob: "",
           phonenumber: "",
-          email: "",
           date: new Date().toISOString().slice(0,10),
-          foodbags: "",
+          foodbags: 0,
           formSubmitted: false
         };
       },
