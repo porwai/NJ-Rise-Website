@@ -112,7 +112,11 @@
         },
         addClients(payload) {
                 axios.post('/api/add', payload)
-                .then(() => {
+                .then((response) => {
+                  const output = response.data;
+                  if (output[0] !== true){
+                    alert(output[1]);
+                  }
                 }).catch((error) => {
                     console.error(error);
                     // Consider adding user-facing error handling here
