@@ -1,4 +1,28 @@
 <template>
+
+<div class="menu-container">
+  <nav class="collapse d-lg-block sidebar collapse bg-white" style="height: 100%;">
+    <div class="position-sticky" style="display: flex; flex-direction: column; align-items: center; height: 100%">
+
+      <div style="padding-top: 20px; justify-content: center">
+        <a class="navbar-brand" href="/">
+          <img src="/src/assets/RiseLogo.png" alt="NJ Rise logo" width="80">
+        </a>
+      </div>
+
+      <div class="list-group list-group-flush mx-3 mt-4" style="">
+        <a href="#" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
+          <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Pantry Dashboard</span>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action py-2 ripple active">
+          <i class="fas fa-chart-area fa-fw me-3"></i><span>Reports</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+</div>
+
+  <!-- Old menu -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
         <!-- Logo on the left -->
@@ -6,9 +30,6 @@
           <img src="/src/assets/RiseLogo.png" alt="NJ Rise logo" width="80">
         </a>
   
-
-  
-
         <!-- Navigation links on the right -->
         <div class="collapse navbar-collapse justify-content-end" id="navbarMain">
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
@@ -129,6 +150,30 @@
   </script>
   
   <style>
+  .menu-container{
+    width: 20%; 
+    float: left;
+    display: flex; 
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .fas{
+    margin-right: 5px;
+  }
+
+  .list-group{
+    padding-top: 20px;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center;
+  }
+  
+  .list-group-item{
+    font-size: 16px;
+  }
+
   .navbar-toggler-toggle {
     display: flex;
     align-items: center;
