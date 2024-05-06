@@ -81,6 +81,15 @@ const router = createRouter({
       meta: {
         requiresAuth: "admin" // Example: Register new client page requires authentication
       }
+    },
+    {
+      path: '/import',
+      name: 'import',
+      component: () => import('../views/ImportView.vue'),
+      meta: {
+        requiresAuth: "admin" // Example: Register new client page requires authentication
+      },
+      
     }
 
   ]

@@ -5,6 +5,7 @@ import json
 from flask_cors import CORS
 import databaseaccess as db
 import user_login as user_db
+import csv
 
 app = Flask(__name__, static_folder="./dist/static", template_folder="./dist", static_url_path="/static")
 app.config.from_object(__name__)
@@ -355,7 +356,8 @@ def add_client():
     try:
         db.add_client(first_name, last_name, phone, dob, date, foodbags)
     except Exception as ex:
-        raise Exception(ex)
+        return flask.jsonify([False, "A server error occured"])
+    return flask.jsonify([True, "Success"])
 
 @app.route('/api/history', methods = ['POST'])
 def get_visit_history():
@@ -428,6 +430,15 @@ def report_basic():
 
     print("check visit list in server: ", visit_list)
     return flask.jsonify(visit_list)
+
+@app.route('/api/importcsv', methods = ['POST'])
+def masterdbimport():
+    file = flask.request.files.get("file") 
+    try:
+        db.importCsv(file)
+    except Exception as ex:
+        return flask.jsonify([False, str(ex)])
+    return flask.jsonify([True, "success"])
 
 # Run flask server
 if __name__ == '__main__':

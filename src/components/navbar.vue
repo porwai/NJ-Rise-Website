@@ -27,6 +27,10 @@
                   <i class="fas fa-user-edit mr-1"></i>
                   Register Client
                 </a>
+                <a v-if = "this.$store.state.viewing_status === 'admin'" class="dropdown-item" href="/import">
+                  <i class="fas fa-user-edit mr-1"></i>
+                  Import CSV File
+                </a>
               </div>
             </li>
   
