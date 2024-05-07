@@ -186,10 +186,8 @@
         <table class="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
-                    <template v-if="key !== 'transactional_id'">
-                        <th 
-                        v-for="(value, key) in clients[0]" :key="key" 
-                        v-if="key !== 'transactional_id'">
+                    <template  v-for="(value, key) in clients[0]" :key="key" >
+                        <th v-if="key !== 'transactional_id'">
                                 {{ formatKey(key) }}
                         </th>
                     </template>
@@ -199,14 +197,14 @@
             <tbody>
                 <tr v-for="client in clients" :key="client.transactional_id"
                 :class="{ 'highlighted': client.transactional_id === activeRowId }">
-                    <template v-if="key !== 'transactional_id'">
-                        <td 
-                        v-for="(value, key) in client" :key="key" 
-                        v-if="key !== 'transactional_id'"
+                    <template 
+                        v-for="(value, key) in client" :key="key">
+                        <td v-if="key !== 'transactional_id'"
                         @click="handleClientDetailsEvent(client)">
                                 {{ value }}
                         </td>
                     </template>
+
                     <td  v-if="adminStatus" class="actions">
                         <a class="delete" title="Delete" data-toggle="tooltip" @click="handleDelete(client.transactional_id)">
                             <i class="fas fa-trash mr-1"></i>
