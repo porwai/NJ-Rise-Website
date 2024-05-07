@@ -59,7 +59,7 @@
               <button class="btn btn-primary" type="submit">Submit</button>
           </form>
           <div v-if="empowerDownload" class="card-footer">
-            <h3 class="card-title">File has been downloaded</h3>
+            <h3 class="card-title">Empower report has been downloaded</h3>
           </div>
         </div>
 
@@ -82,6 +82,9 @@
             </div>
               <button class="btn btn-primary" type="submit">Submit</button>
         </form>
+          <div v-if="yearDownload" class="card-footer">
+            <h3 class="card-title">Yearly report has been downloaded</h3>
+          </div>
       </div>
 
 
@@ -104,6 +107,9 @@
             </div>
               <button class="btn btn-primary" type="submit">Submit</button>
         </form>
+          <div v-if="walkInDownload" class="card-footer">
+            <h3 class="card-title">Walk in report has been downloaded</h3>
+          </div>
       </div>  
 
         
@@ -195,6 +201,8 @@
           basic_report_sum: null,
           basic_report_list: null,
           empowerDownload: false,
+          walkInDownload: false,
+          yearDownload: false,
           // variables for displaying chart-js:
           // /////////////////////////////////////////////////////////
           chart: null,
@@ -277,6 +285,7 @@
         getYearlySummary(payload) {
                 axios.post('/api/monthSummary', payload)
                 .then(response => {
+                  this.yearDownload = true;
                   const csv = response.data;
                   const link = document.createElement("a");
                   link.target = "_blank";
@@ -303,6 +312,7 @@
         getWalkInReport(payload) {
                 axios.post('/api/walkInReport', payload)
                 .then(response => {
+                  this.walkInDownload = true;
                   const csv = response.data;
                   const link = document.createElement("a");
                   link.target = "_blank";
