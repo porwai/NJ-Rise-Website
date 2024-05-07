@@ -233,17 +233,6 @@ def add_date():
     return flask.jsonify([True, response_object])
 
 
-# Delete entry for the user
-@app.route('/api/delete', methods = ['POST'])
-def delete_row():
-    transactional_id = flask.request.args.get("transactional_id")
-
-    try:
-        db.delete_row(transactional_id)
-
-    except Exception as ex:
-        raise Exception(ex)
-
 @app.route('/api/delete_t_client', methods=['POST'])
 def delete_transactional_client():
     data = flask.request.get_json()  # Use 'request' directly if it's imported
