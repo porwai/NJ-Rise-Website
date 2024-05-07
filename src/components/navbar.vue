@@ -10,11 +10,24 @@
         </a>
       </div>
 
-      <div class="list-group list-group-flush mx-3 mt-4" style="">
+      <div class="list-group list-group-flush mx-3 mt-4">
         <a href="#" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
-          <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Pantry Dashboard</span>
+          <i class="fas fa-tachometer-alt fa-fw me-3 mr-1"></i><span>Pantry Dashboard</span>
         </a>
-        <a href="#" class="list-group-item list-group-item-action py-2 ripple active">
+        <a href="#" class="list-group-item list-group-item-action py-2 ripple">
+          <i class="fas fa-chart-area fa-fw me-3 mr-1"></i><span>Add Walk-In Client</span>
+        </a>
+        <a v-if = "this.$store.state.viewing_status === 'admin'" class="list-group-item list-group-item-action py-2 ripple" href="/registernewclient">
+          <i class="fas fa-user-edit fa-fw me-3"></i>
+          Register Client
+        </a>
+        <a href="#" class="list-group-item list-group-item-action py-2 ripple">
+          <i class="fas fa-chart-area fa-fw me-3 mr-1"></i><span>Staff</span>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action py-2 ripple">
+          <i class="fas fa-chart-area fa-fw me-3 mr-1"></i><span>Manage Staff</span>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action py-2 ripple">
           <i class="fas fa-chart-area fa-fw me-3"></i><span>Reports</span>
         </a>
       </div>
@@ -24,13 +37,8 @@
 
   <!-- Old menu -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <div class="container-fluid">
-        <!-- Logo on the left -->
-        <a class="navbar-brand" href="/">
-          <img src="/src/assets/RiseLogo.png" alt="NJ Rise logo" width="80">
-        </a>
-  
-        <!-- Navigation links on the right -->
+      <div class="container-fluid">  
+
         <div class="collapse navbar-collapse justify-content-end" id="navbarMain">
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <!-- Sliding toggle button -->
@@ -44,10 +52,7 @@
                   <i class="fas fa-user-plus mr-1"></i>
                   Add Walk In Client
                 </a>
-                <a v-if = "this.$store.state.viewing_status === 'admin'" class="dropdown-item" href="/registernewclient">
-                  <i class="fas fa-user-edit mr-1"></i>
-                  Register Client
-                </a>
+                
               </div>
             </li>
   
@@ -165,11 +170,10 @@
   .list-group{
     padding-top: 20px;
     display: flex; 
-    flex-direction: column; 
-    align-items: center; 
+    flex-direction: column;  
     justify-content: center;
   }
-  
+
   .list-group-item{
     font-size: 16px;
   }

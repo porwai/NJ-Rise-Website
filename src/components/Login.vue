@@ -21,7 +21,7 @@
 
         <div class="form-group">
           <input type="password" v-model="formData.password" class="form-control" id="InputPwd" placeholder="Password">
-          <a href="#" class="small float-right" for="InputPwd">Forget your password?</a>
+          <!-- <a href="#" class="small float-right" for="InputPwd">Forget your password?</a> -->
         </div>
 
         <div class="text-center">
