@@ -171,7 +171,8 @@
                         </button>
 
                         <button class="btn btn-warning" @click="toggleDBView(); handleQueryEvent(); $emit('close-details');" v-if="adminStatus">
-                            <span>MasterDB Toggle</span>
+                            <span v-if="isFeatureVisible">MasterDB Toggle</span>
+                            <span v-else>TransactionalDB Toggle</span>
                         </button>
 
                         <router-link to="/addwalkin" class="btn btn-success">
@@ -258,6 +259,7 @@
             activeRowId: null,
             userToDelete: {},
             status: '',
+            isFeatureVisible: true,
             clients: []};
         },
         mounted() {
@@ -368,6 +370,7 @@
                         .join(' ');
             },
             toggleDBView() {
+                this.isFeatureVisible = !this.isFeatureVisible;
                 this.$store.commit('toggleMasterDBView'); // Mutating the state
             }
         },
