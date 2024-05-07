@@ -742,7 +742,7 @@ def add_client (f_name: str, l_name:str, p: str, dob_date: str, date:str, foodba
         except sqlalchemy.exc.SQLAlchemyError as e:
             raise RuntimeError(f"Failed to add new client due to: {str(e)}")
         id = new_client.transactional_id
-    if date is not None and foodbags is not None:
+    if date is not None and foodbags != "":
         update_client(transactional_id=id, new_visit_date=date, f_bags=foodbags)
 
 def get_history (id: int):
@@ -910,7 +910,7 @@ def monthSummary(year: int):
         tot = 0
         for i in range(12):
             val = session.query(t_history).filter(extract('month', t_history.visit_date) == (i + 1))\
-                .filter(extract('year', t_history.visit_date) == (year)).filter(t_history.client_type=="not eligible").count()
+                .filter(extract('year', t_history.visit_date) == (year)).filter(t_history.client_type=="walk in").count()
             if val is None:
                 val = 0
             tot += val

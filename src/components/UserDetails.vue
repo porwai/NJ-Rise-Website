@@ -177,7 +177,7 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
                 <!-- Other Items -->
                 <div class="form-group">
                   <label for="otherItems">Other Items</label>
-                  <input type="text" class="form-control" id="otherItems" v-model="o" placeholder="Describe other items">
+                  <input type="number" class="form-control" id="otherItems" v-model="o" placeholder="Describe other items">
                 </div>
               </div>
             </div>
