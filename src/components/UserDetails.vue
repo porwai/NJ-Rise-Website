@@ -109,9 +109,9 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
               <div class="col-md-6">
                 <!-- Date -->
                 <div class="form-group">
-                  <label for="new_visit_date">Date (yyyy-mm-dd)</label>
+                  <label for="new_visit_date">Date</label>
                   <input
-                  type="date" class="form-control" id="new_visit_date" v-model="new_visit_date" placeholder="YYYY-MM-DD">
+                  type="date" class="form-control" id="new_visit_date" v-model="new_visit_date" placeholder="">
                 </div>
 
                 <!-- Food Bags -->
