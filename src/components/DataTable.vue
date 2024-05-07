@@ -206,7 +206,7 @@
                     </template>
 
                     <td  v-if="adminStatus" class="actions">
-                        <a class="delete" title="Delete" data-toggle="tooltip" @click="handleDelete(client.transactional_id)">
+                        <a class="delete" title="Delete" data-toggle="tooltip" @click="handleClickDelete(client.transactional_id)">
                             <i class="fas fa-trash mr-1"></i>
                         </a>
                     </td>
@@ -215,9 +215,33 @@
         </table>
         </div>
     </div>
+
+
+        <!-- Modal for confirmation -->
+    <div class="modal" id="confirmationModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title">Confirmation</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+            Are you sure you would like to delete this Client from the database?
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            <button type="button" class="btn btn-danger" @click="confirmDelete">Yes</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
 </template>
   
 <script>
+    import $ from "jquery"
     import axios from 'axios';
 
     export default {
@@ -233,6 +257,8 @@
             day: '',
             year: '',
             activeRowId: null,
+            userToDelete: {},
+            status: '',
             clients: []};
         },
         mounted() {
@@ -293,9 +319,14 @@
                 }
                 this.$emit('new-client-request', clientData);
             },
-            handleDelete(t_id) {
+            handleClickDelete(t_id) {
+            this.userToDelete = { t_id };
+            $('#confirmationModal').modal('show');
+            },
+            confirmDelete() {
+                $('#confirmationModal').modal('hide');
                 const payload = {
-                    transactional_id: t_id
+                    transactional_id: this.userToDelete.t_id
                 };
                 if (this.$store.state.login_status === "not_authorized") {
                     console.log("FALSE LOGIN")
@@ -309,9 +340,12 @@
                 axios.post('/api/delete_t_client', payload)
                 .then((response) => {
                     console.log("Deletion successful:", response.data);
-                    this.clients = this.clients.filter(client => client.transactional_id !== t_id);
+                    this.clients = this.clients.filter(client => client.transactional_id !== this.userToDelete.t_id);
+                    this.$emit('close-details');
                 }).catch((error) => {
                     console.error("Error deleting client:", error);
+                    alert("An error occurred while deleting the client. " + error);
+                    status.value = 'An error occurred while removing user. Please try again later.';
                     // Consider adding user-facing error handling here
                 });
             }, 
@@ -346,4 +380,5 @@
             }
         }
     }
+
 </script>
