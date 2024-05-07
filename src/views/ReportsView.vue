@@ -58,6 +58,9 @@
             </div>
               <button class="btn btn-primary" type="submit">Submit</button>
           </form>
+          <div v-if="empowerDownload" class="card-footer">
+            <h3 class="card-title">File has been downloaded</h3>
+          </div>
         </div>
 
         <!-- <div v-if="selectedSection === 'option2'"> -->
@@ -176,13 +179,13 @@
         return {
           // selectedSection: null,
           currentButton: null,
-    currentElement: null,
-    buttons: [
-      { id: 'element1', label: 'Monthly Empower Report' },
-      { id: 'element2', label: 'Yearly Summary Report' },
-      { id: 'element3', label: 'Walk In Summary Report' },
-      { id: 'element4', label: 'Visit History Basic Frequency Report' }
-    ],
+          currentElement: null,
+          buttons: [
+            { id: 'element1', label: 'Monthly Empower Report' },
+            { id: 'element2', label: 'Yearly Summary Report' },
+            { id: 'element3', label: 'Walk In Summary Report' },
+            { id: 'element4', label: 'Visit History Basic Frequency Report' }
+          ],
           selected: null,
           year:new Date().getFullYear(),
           year2:new Date().getFullYear(),
@@ -191,7 +194,7 @@
           basic_report_end_date: null,
           basic_report_sum: null,
           basic_report_list: null,
-
+          empowerDownload: false,
           // variables for displaying chart-js:
           // /////////////////////////////////////////////////////////
           chart: null,
@@ -248,6 +251,7 @@
         getMonthlyEmpower(payload) {
                 axios.post('/api/monthEmpower', payload)
                 .then(response => {
+                  this.empowerDownload = true;
                   const csv = response.data;
                   const link = document.createElement("a");
                   link.target = "_blank";

@@ -353,6 +353,8 @@ def add_client():
         dob = get_data.get("dob")
         date = get_data.get("date")
         foodbags = get_data.get("foodbags")
+        print(foodbags)
+        print(type(foodbags))
     try:
         db.add_client(first_name, last_name, phone, dob, date, foodbags)
     except Exception as ex:
