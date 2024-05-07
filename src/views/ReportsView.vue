@@ -399,18 +399,18 @@
           // this.options.axisX.viewportMaximum = this.basic_report_start_date
           // ///////////////////////////////////////////////////////////
 
-          console.log("in the update:")
-          console.log("selectRange:", this.selectedRange)
-          console.log("chartMaxX:", this.options.axisX.viewportMaximum)
-          console.log("style options:", this.styleOptions);
+          // console.log("in the update:")
+          // console.log("selectRange:", this.selectedRange)
+          // console.log("chartMaxX:", this.options.axisX.viewportMaximum)
+          // console.log("style options:", this.styleOptions);
             // Reset dataPoints array
             this.options.data[0].dataPoints = [];
-            console.log('after reset array');
+            // console.log('after reset array');
 
             if(!this.basic_report_list){
               return true
             }
-            console.log('after return true');
+            // console.log('after return true');
 
             // Iterate over basic_report_list and add data points
             this.basic_report_list.forEach((value, index) => {
@@ -418,20 +418,20 @@
                 const currentDate = new Date(this.basic_report_start_date);
 
                 currentDate.setDate(currentDate.getDate() + index); // Add index days to start date
-                console.log("current date:;", currentDate)
+                // console.log("current date:;", currentDate)
 
                 // Push the data point with the formatted date
                 this.options.data[0].dataPoints.push({ x: currentDate, y: value });
             });
 
-            console.log('after iterate over lists');
+            // console.log('after iterate over lists');
 
             // Render the chart
             if (this.chart) {
               
               this.chart.render();
             }
-            console.log('after render chart');
+            // console.log('after render chart');
             
         },
 

@@ -424,11 +424,11 @@ def report_basic():
     start_date = request.get("start_date")
     end_date = request.get("end_date")
 
-    print("check basic report:", type(start_date), "  END ", type(end_date))
+    # print("check basic report:", type(start_date), "  END ", type(end_date))
 
     visit_list = db.get_visit_history(start= start_date, end= end_date)
 
-    print("check visit list in server: ", visit_list)
+    # print("check visit list in server: ", visit_list)
     return flask.jsonify(visit_list)
 
 @app.route('/api/importcsv', methods = ['POST'])
