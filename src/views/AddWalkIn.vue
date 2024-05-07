@@ -44,6 +44,7 @@
                     class="form-control"
                     id="phonenumber"
                     required
+                    @input="formatPhoneNumber"
                   />
               </div>
               <div class="mb-3">
@@ -123,7 +124,20 @@
                     console.error(error);
                     // Consider adding user-facing error handling here
                 });
-            }
+            },
+        formatPhoneNumber() {
+          let numbers = this.phonenumber.replace(/[^\d]/g, '');
+          if (numbers.length > 3) {
+            numbers = numbers.substring(0, 3) + '-' + numbers.substring(3);
+          }
+          if (numbers.length > 7) {
+            numbers = numbers.substring(0, 7) + '-' + numbers.substring(7);
+          }
+          if (numbers.length > 12) {
+            numbers = numbers.substring(0, 12);
+          }
+          this.phonenumber = numbers;
+        }
       },
     };
   </script>
