@@ -96,7 +96,7 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
         <!-- Modal Header -->
         <div class="modal-header">
           <h4 class="modal-title">Add New Visit</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <button type="button" class="close" data-dismiss="modal" ref="closeModalButton" @click="clearInputForm()">&times;</button>
         </div>
 
             <!-- Modal Body -->
@@ -108,13 +108,15 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
                 <!-- Date -->
                 <div class="form-group">
                   <label for="new_visit_date">Date (yyyy-mm-dd)</label>
-                  <input type="date" class="form-control" id="new_visit_date" v-model="new_visit_date" placeholder="YYYY-MM-DD">
+                  <input
+                  type="date" class="form-control" id="new_visit_date" v-model="new_visit_date" placeholder="YYYY-MM-DD">
                 </div>
 
                 <!-- Food Bags -->
                 <div class="form-group">
                   <label for="foodBags">Food Bags</label>
-                  <input type="number" class="form-control" id="foodBags" v-model="f_bags" placeholder="Enter quantity">
+                  <input
+                  type="number" class="form-control" id="foodBags" v-model="f_bags" placeholder="Enter quantity">
                 </div>
 
                 <!-- Baby Supplies -->
@@ -191,9 +193,6 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
 
       </div>
     </div>
-
-
-
     </div>
 
     </div>
@@ -308,8 +307,6 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
         o: this.o
       };
 
-      console.log(payload);
-
       axios.post('/api/newdate', payload)
       .then(response => {
         // Updates to show new visit
@@ -319,12 +316,15 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
         }
         else {
           this.$emit('get-history');
+          alert("Added New Client Success");  // User-facing error message
         }
-        
-        // Optionally close the modal if everything is fine
+        this.$refs.closeModalButton.click();
+        this.clearInputForm();
       }).catch(error => {
         console.error(error);
         alert("Failed to add new visit: " + error.message);  // User-facing error message
+        this.$refs.closeModalButton.click();
+        this.clearInputForm();
       });
     }, 
     formatKey(key) {
@@ -332,6 +332,20 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
                 .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
                 .join(' ');
     }, 
+    clearInputForm() {
+      this.f_bags = 0;
+      this.b_supplies = 0;
+      this.p_food = 0;
+      this.g_items = 0;
+      this.c = 0;
+      this.sf = 0;
+      this.p_care = 0;
+      this.pj = 0;
+      this.cloth= 0;
+      this.w = 0;
+      this.o = 0;
+    }
+    , 
     handleVisitHistoryDelete(transactional_id, visit_id) {
       const payload = {
         transactional_id: transactional_id, 
@@ -346,8 +360,10 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
       .then((response) => {
         console.log("Deletion successful:", response.data);
         this.$emit('get-history')
+        alert("Client Visit History Successfully Deleted!");
       }).catch((error) => {
         console.error("Error deleting client:", error);
+        alert("Error Deleting Visit History!");
       });
     },
     handleUpdateClientDetails(payload) {
