@@ -118,31 +118,31 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
                 <div class="form-group">
                   <label for="foodBags">Food Bags</label>
                   <input
-                  type="number" class="form-control" id="foodBags" v-model="f_bags" placeholder="Enter quantity">
+                  type="number" class="form-control" min = "0" oninput="validity.valid||(value='');" id="foodBags" v-model="f_bags" placeholder="Enter quantity">
                 </div>
 
                 <!-- Baby Supplies -->
                 <div class="form-group">
                   <label for="babySupplies">Baby Supplies</label>
-                  <input type="number" class="form-control" id="babySupplies" v-model="b_supplies" placeholder="Enter quantity">
+                  <input type="number" class="form-control" min = "0" oninput="validity.valid||(value='');" id="babySupplies" v-model="b_supplies" placeholder="Enter quantity">
                 </div>
 
                 <!-- Pet Food -->
                 <div class="form-group">
                   <label for="petFood">Pet Food</label>
-                  <input type="number" class="form-control" id="petFood" v-model="p_food" placeholder="Enter quantity">
+                  <input type="number" class="form-control" min = "0" oninput="validity.valid||(value='');" id="petFood" v-model="p_food" placeholder="Enter quantity">
                 </div>
 
                 <!-- Gift Items -->
                 <div class="form-group">
                   <label for="giftItems">Gift Items</label>
-                  <input type="number" class="form-control" id="giftItems" v-model="g_items" placeholder="Enter quantity">
+                  <input type="number" class="form-control" min = "0" oninput="validity.valid||(value='');" id="giftItems" v-model="g_items" placeholder="Enter quantity">
                 </div>
 
                 <!-- Cleaning Supplies -->
                 <div class="form-group">
                   <label for="cleaningSupplies">Cleaning Supplies</label>
-                  <input type="number" class="form-control" id="cleaningSupplies" v-model="c" placeholder="Enter quantity">
+                  <input type="number" class="form-control" min = "0" oninput="validity.valid||(value='');" id="cleaningSupplies" v-model="c" placeholder="Enter quantity">
                 </div>
               </div>
 
@@ -151,37 +151,37 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
                 <!-- Personal Care -->
                 <div class="form-group">
                   <label for="personalCare">Personal Care</label>
-                  <input type="number" class="form-control" id="personalCare" v-model="p_care" placeholder="Enter quantity">
+                  <input type="number" class="form-control" min = "0" oninput="validity.valid||(value='');" id="personalCare" v-model="p_care" placeholder="Enter quantity">
                 </div>
 
                 <!-- Summer Feeding -->
                 <div class="form-group">
                   <label for="summerFeeding">Summer Feeding</label>
-                  <input type="number" class="form-control" id="summerFeeding" v-model="sf" placeholder="Enter quantity">
+                  <input type="number" class="form-control" min = "0" oninput="validity.valid||(value='');" id="summerFeeding" v-model="sf" placeholder="Enter quantity">
                 </div>
 
                 <!-- Kids Pajamas -->
                 <div class="form-group">
                   <label for="kidsPajamas">Kids Pajamas</label>
-                  <input type="number" class="form-control" id="kidsPajamas" v-model="pj" placeholder="Enter quantity">
+                  <input type="number" class="form-control" min = "0" oninput="validity.valid||(value='');" id="kidsPajamas" v-model="pj" placeholder="Enter quantity">
                 </div>
 
                 <!-- Clothing -->
                 <div class="form-group">
                   <label for="clothing">Clothing</label>
-                  <input type="number" class="form-control" id="clothing" v-model="cloth" placeholder="Enter quantity">
+                  <input type="number" class="form-control" min = "0" oninput="validity.valid||(value='');" id="clothing" v-model="cloth" placeholder="Enter quantity">
                 </div>
 
                 <!-- Winter Coats -->
                 <div class="form-group">
                   <label for="winterCoats">Winter Coats</label>
-                  <input type="number" class="form-control" id="winterCoats" v-model="w" placeholder="Enter quantity">
+                  <input type="number" class="form-control" min = "0" oninput="validity.valid||(value='');" id="winterCoats" v-model="w" placeholder="Enter quantity">
                 </div>
 
                 <!-- Other Items -->
                 <div class="form-group">
                   <label for="otherItems">Other Items</label>
-                  <input type="number" class="form-control" id="otherItems" v-model="o" placeholder="Describe other items">
+                  <input type="number" class="form-control" min = "0" oninput="validity.valid||(value='');" id="otherItems" v-model="o" placeholder="Describe other items">
                 </div>
               </div>
             </div>

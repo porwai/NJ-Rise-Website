@@ -59,6 +59,8 @@
                   <label for="foodbags" class="form-label">Food Bags</label>
                   <input 
                     type="number" 
+                    min = "0" 
+                    oninput="validity.valid||(value='');"
                     v-model="foodbags" 
                     class="form-control"
                     id="foodbags"

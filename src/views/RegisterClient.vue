@@ -18,6 +18,8 @@
                         :id="key"
                         class="form-control"
                         type="number"
+                        min = "0" 
+                        oninput="validity.valid||(value='');"
                         v-model="field.value"
                         :required="field.required" />
                         
