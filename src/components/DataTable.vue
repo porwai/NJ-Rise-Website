@@ -192,23 +192,23 @@
                         </th>
                     </template>
                     <th v-if="adminStatus" class="actions"></th>
+                    <th><input type="checkbox" class="checkbox" :checked="allSelected" @click="selectAllClients"/></th>
+                    <th v-for="(value, key) in clients[0]" :key="key">{{ formatKey(key) }}</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="client in clients" :key="client.transactional_id"
                 :class="{ 'highlighted': client.transactional_id === activeRowId }">
-                    <template 
-                        v-for="(value, key) in client" :key="key">
-                        <td v-if="key !== 'transactional_id'"
-                        @click="handleClientDetailsEvent(client)">
-                                {{ value }}
-                        </td>
-                    </template>
-
-                    <td  v-if="adminStatus" class="actions">
-                        <a class="delete" title="Delete" data-toggle="tooltip" @click="handleClickDelete(client.transactional_id)">
-                            <i class="fas fa-trash mr-1"></i>
-                        </a>
+                    <td><input type="checkbox" class="checkbox" v-model="client.selected"/></td>
+                    <td v-for="(value, key) in client" :key="key" @click="handleClientDetailsEvent(client)">
+                        <template v-if="key !== 'transactional_id'">
+                            {{ value }}
+                        </template>
+                    </td>
+                    <td>
+                        <a class="edit" title="Edit" data-toggle="tooltip"><i class="fas fa-edit mr-1"></i></a> 
+                        <a class="delete" title="Delete" data-toggle="tooltip"><i class="fas fa-trash mr-1"></i></a>
                     </td>
                 </tr>
             </tbody>
