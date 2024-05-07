@@ -142,11 +142,11 @@
 
              <!-- Display sum and list of visit frequencies -->
           <div v-if="this.basic_report_sum !== null">
-            <p>Sum of Visit Frequencies: {{ this.basic_report_sum }}</p>
+            <p>{{ this.basic_report_sum }} visits from {{ this.basic_report_start_date }} to {{ this.basic_report_end_date }} </p>
           
           
           
-              <!-- Slider to adjust the range -->
+              <!-- Slider to adjust the range
               <label for="range">Select Range:</label>
             <input 
                 type="range"
@@ -159,7 +159,7 @@
             />
             <p>
               Min: 1 ; Current: {{ this.selectedRange}}; max: {{ this.basic_report_list ? this.basic_report_list.length : 0 }}
-            </p>
+            </p> -->
           </div>
           
           <!-- Fix: changed this.basic_report_sum to basic_report_list -->
@@ -211,7 +211,7 @@
           newDataCount: 10,
           timeout: null,
           options: {
-            theme: "light2",
+            theme: "dark1",
             title:{
               text: "Live Data"
             },
@@ -220,11 +220,14 @@
               dataPoints: []
             }],
             axisX: {
-                title: "Days",
-                // maximum: this.basic_report_list ? this.basic_report_list.length : 0,
-                // interval: this.selectedRange,
-                viewportMaximum: 0
+                title: "Date",
+                valueFormatString: "MM/DD/YYYY", // Format for displaying dates on the x-axis
+                viewportMinimum: new Date(this.basic_report_start_date),
+                viewportMaximum: new Date(this.basic_report_start_date) // Convert to Date object and get time value
             },
+            axisY: {
+                title: "Value"
+            }
           },
           styleOptions: {
             width: "100%",
@@ -390,8 +393,12 @@
 
 
           // update the viewportMax based on slider selectRange val
-          this.options.axisX.viewportMaximum = this.selectedRange
-          
+          // Set the maximum date as the viewport maximum for the x-axis
+          // const maxDate = new Date(this.basic_report_start_date);
+          // maxDate.setDate(maxDate.getDate() + this.selectedRange);
+          // this.options.axisX.viewportMaximum = this.basic_report_start_date
+          // ///////////////////////////////////////////////////////////
+
           console.log("in the update:")
           console.log("selectRange:", this.selectedRange)
           console.log("chartMaxX:", this.options.axisX.viewportMaximum)
@@ -407,8 +414,16 @@
 
             // Iterate over basic_report_list and add data points
             this.basic_report_list.forEach((value, index) => {
-                this.options.data[0].dataPoints.push({ x: index, y: value });
+                // Calculate the date for the current index
+                const currentDate = new Date(this.basic_report_start_date);
+
+                currentDate.setDate(currentDate.getDate() + index); // Add index days to start date
+                console.log("current date:;", currentDate)
+
+                // Push the data point with the formatted date
+                this.options.data[0].dataPoints.push({ x: currentDate, y: value });
             });
+
             console.log('after iterate over lists');
 
             // Render the chart
