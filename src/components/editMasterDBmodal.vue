@@ -26,6 +26,13 @@ Edit Client Data
             type="text"
             v-model="field.value" />
 
+        <!-- <input v-if="field.type === 'phone'"
+            :id="key"
+            class="form-control"
+            type="text"
+            v-model="field.value"
+            @input="formatPhoneNumber" /> -->
+
         <input v-if="field.type === 'number'"
             :id="key"
             class="form-control"
@@ -194,6 +201,7 @@ export default {
         }
       });
     }, 
+    
     formatLabel(label) {
       return label
       .replace(/_/g, ' ')    // Replace all underscores with spaces
