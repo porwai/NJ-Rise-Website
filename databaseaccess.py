@@ -726,24 +726,30 @@ def delete_client (transactional_id: int):
 def add_client (f_name: str, l_name:str, p: str, dob_date: str, date:str, foodbags: int):
     id = 0
     with sqlalchemy.orm.Session(_engine) as session:
-        if f_name is None:
-            f_name = ''
-        if l_name is None:
-            l_name = ''
-        if p is None:
-            p = ''
-        if dob_date is None:
-            dob_date = ''
-        # Select relevant row
-        new_client = t_client(first_name=f_name, last_name=l_name, phone=p, dob=dob_date, client_type="walk in")
-        session.add(new_client)
         try:
+            if f_name is None:
+                f_name = ''
+            if l_name is None:
+                l_name = ''
+            if p is None:
+                p = ''
+            if dob_date is None:
+                dob_date = ''
+            # Select relevant row
+            new_client = t_client(first_name=f_name, last_name=l_name, phone=p, dob=dob_date, client_type="walk in")
+            session.add(new_client)
+            session.flush()
+            id = new_client.transactional_id
+            if date != "" and foodbags != "":
+                date_format = '%Y-%m-%d'
+                date_obj = datetime.strptime(date, date_format)
+                new_visit = t_history(t_id=id, visit_date=date_obj, food_bags=foodbags, baby_supplies=0,pet_food=0,
+                                    gift_items=0, cleaning=0, personal_care=0, summer_feeding = 0, pj=0, clothing = 0, winter=0, other = 0, client_type="walk in")
+                session.add(new_visit)
             session.commit()
         except sqlalchemy.exc.SQLAlchemyError as e:
+            session.rollback()
             raise RuntimeError(f"Failed to add new client due to: {str(e)}")
-        id = new_client.transactional_id
-    if date is not None and foodbags != "":
-        update_client(transactional_id=id, new_visit_date=date, f_bags=foodbags)
 
 def get_history (id: int):
     with sqlalchemy.orm.Session(_engine) as session:
