@@ -32,7 +32,6 @@
 				this.file = event.target.files[0];
 			},
 			submitFile(){
-				this.fileUploaded = true
 				let formData = new FormData();
 				formData.append('file', this.file);
 				axios.post( '/api/importcsv', formData,
@@ -45,6 +44,9 @@
 					const output = response.data;
 					if (output[0] !== true){
 						alert(output[1]);
+					}
+					else {
+						this.fileUploaded = true
 					}
 				})
 				.catch((error) => {

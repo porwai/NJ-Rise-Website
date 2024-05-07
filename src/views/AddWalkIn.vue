@@ -93,13 +93,12 @@
           dob: "",
           phonenumber: "",
           date: new Date().toISOString().slice(0,10),
-          foodbags: 0,
+          foodbags: "",
           formSubmitted: false
         };
       },
       methods: {
         submitForm: function () {
-          this.formSubmitted = true
           const payload = {
                     first_name: this.firstname,
                     last_name: this.lastname,
@@ -116,6 +115,9 @@
                   const output = response.data;
                   if (output[0] !== true){
                     alert(output[1]);
+                  }
+                  else {
+                    this.formSubmitted = true
                   }
                 }).catch((error) => {
                     console.error(error);
