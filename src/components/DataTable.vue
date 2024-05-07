@@ -216,7 +216,6 @@
         </div>
     </div>
 
-
         <!-- Modal for confirmation -->
     <div class="modal" id="confirmationModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
@@ -380,5 +379,4 @@
             }
         }
     }
-
 </script>
