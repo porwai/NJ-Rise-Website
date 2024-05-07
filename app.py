@@ -201,20 +201,11 @@ def search():
         month = get_data.get('month')
         day = get_data.get('day')
         year = get_data.get('year')
-    # dummy = {
-    #     "client_id" : "1234",
-    #     "first_name" : "John",
-    #     "last_name" : "Smith",
-    #     "phone_number" : "6307700880"
-    # }
-    #response_object = db.get_client(dummy['client_id'], dummy['first_name'], dummy['last_name'], dummy['phone_number'], "11052003")
-        response_object = db.get_client(client_id, first_name, last_name, phone, month, day, year)
-    # else:
-        # transactional_id = get_data.get('transactional_id')
-        # new_visit_date = get_data.get('new_visit_date')
-        # special_item_list = get_data.get('special_item_list')
-        # response_object = db.update_client(transactional_id, new_visit_date, special_item_list)
-    return flask.jsonify(response_object)
+        try:
+            response_object = db.get_client(client_id, first_name, last_name, phone, month, day, year)
+        except Exception as ex:
+            return flask.jsonify(False, "A server error occured")
+    return flask.jsonify([True, response_object])
 
 # add row for the user
 @app.route('/api/newdate', methods = ['POST'])

@@ -272,7 +272,14 @@
                 }
                 axios.post('/api/search', payload)
                 .then((response) => {
-                    this.clients = response.data;
+                    const output = response.data;
+                    if (output[0] !== true){
+                        alert(output[1]);
+                    }
+                    else {
+                        this.clients = output[1];
+                    }
+                    
                 }).catch((error) => {
                     console.error(error);
                     // Consider adding user-facing error handling here

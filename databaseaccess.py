@@ -277,20 +277,6 @@ import_list = [
     (" total_family_receiving_unemployment","int")
 ]
 def get_client (client_id: str, first_name: str, last_name: str, phone: str, month: str, day: str,year: str):
-    # SQL QUERY SCHEMA
-    '''
-    SELECT * 
-    From t_client
-    WHERE t_client.client_id = {client_id}
-    AND
-    t_client.first_name = {first_name}
-    AND
-    t_client.last_name = {last_name}
-    AND
-    t_client.phone = {phone}
-    AND 
-    t_client.dob = {dob}
-    '''
     
     with sqlalchemy.orm.Session(_engine) as session:
         query_id = "%" + client_id + "%"
