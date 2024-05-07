@@ -2,7 +2,7 @@
   <br>
   <div class="card">
       <div class="card-body d-flex flex-column" style="overflow-y: auto;">
-          <h1 class="card-title">Add Client Information and First Visit Information</h1>
+          <h1 class="card-title">Add Walk-In Client and First Visit Information</h1>
           <form @submit.prevent="submitForm" v-if="!formSubmitted">
               <div class="mb-3">
                   <label for="firstname" class="form-label">First Name<span class="required-asterisk">*</span></label>
