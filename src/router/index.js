@@ -41,6 +41,9 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginView,
+      meta: {
+        requiresAuth: "not_authorized" // Example: User details page requires authentication
+      }
     },
     {
       path: '/addnewuser',
@@ -97,7 +100,6 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.meta.requiresAuth;
-  const isAuthenticated = store.state.login_status !== 'not_authorized';
 
   console.log("in router:")
   console.log("login status", store.state.login_status)
@@ -126,14 +128,27 @@ router.beforeEach((to, from, next) => {
       status = true
     }
   }
+  else if (requiresAuth === "not_authorized"){
+    if(store.state.login_status !== "not_authorized"){
+      status = true
+    }
+  }
 
   // Bounce to existing route if not authorized to visit page
   console.log("check from:", from)
   if (status) {
-    console.log("mid gate")
-    // Redirect to login page
-    next(from.fullPath);
+
+    // if logged in, redirect to search page when navigating to login
+    if (requiresAuth === "not_authorized"){
+      next("/search")
+    }
+    else{
+      console.log("mid gate")
+      // Redirect to login page
+      next(from.fullPath);
+    }
   } else {
+
     // Proceed to the next middleware or route
     next();
   }
