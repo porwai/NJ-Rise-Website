@@ -30,10 +30,12 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
         <div class="table-responsive" style="max-height: 35vh; overflow-y: auto;">
               <table class="table table-striped table-bordered">
                   <tbody>
-                      <tr v-for="(value, key) in curr_details" :key="key" v-if="key !== 'transactional_id'">
+                    <template v-for="(value, key) in curr_details" :key="key">
+                      <tr v-if="key !== 'transactional_id'">
                           <th style="white-space: nowrap;">{{ formatKey(key) }}</th>
                           <td>{{ value }}</td>
                       </tr>
+                    </template>
                   </tbody>
               </table>
         </div>
