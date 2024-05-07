@@ -5,6 +5,7 @@ import json
 from flask_cors import CORS
 import databaseaccess as db
 import user_login as user_db
+import csv
 
 app = Flask(__name__, static_folder="./dist/static", template_folder="./dist", static_url_path="/static")
 app.config.from_object(__name__)
@@ -200,20 +201,11 @@ def search():
         month = get_data.get('month')
         day = get_data.get('day')
         year = get_data.get('year')
-    # dummy = {
-    #     "client_id" : "1234",
-    #     "first_name" : "John",
-    #     "last_name" : "Smith",
-    #     "phone_number" : "6307700880"
-    # }
-    #response_object = db.get_client(dummy['client_id'], dummy['first_name'], dummy['last_name'], dummy['phone_number'], "11052003")
-        response_object = db.get_client(client_id, first_name, last_name, phone, month, day, year)
-    # else:
-        # transactional_id = get_data.get('transactional_id')
-        # new_visit_date = get_data.get('new_visit_date')
-        # special_item_list = get_data.get('special_item_list')
-        # response_object = db.update_client(transactional_id, new_visit_date, special_item_list)
-    return flask.jsonify(response_object)
+        try:
+            response_object = db.get_client(client_id, first_name, last_name, phone, month, day, year)
+        except Exception as ex:
+            return flask.jsonify(False, "A server error occured")
+    return flask.jsonify([True, response_object])
 
 # add row for the user
 @app.route('/api/newdate', methods = ['POST'])
@@ -240,17 +232,6 @@ def add_date():
             return flask.jsonify([False, str(ex)])
     return flask.jsonify([True, response_object])
 
-
-# Delete entry for the user
-@app.route('/api/delete', methods = ['POST'])
-def delete_row():
-    transactional_id = flask.request.args.get("transactional_id")
-
-    try:
-        db.delete_row(transactional_id)
-
-    except Exception as ex:
-        raise Exception(ex)
 
 @app.route('/api/delete_t_client', methods=['POST'])
 def delete_transactional_client():
@@ -355,7 +336,8 @@ def add_client():
     try:
         db.add_client(first_name, last_name, phone, dob, date, foodbags)
     except Exception as ex:
-        raise Exception(ex)
+        return flask.jsonify([False, "A server error occured"])
+    return flask.jsonify([True, "Success"])
 
 @app.route('/api/history', methods = ['POST'])
 def get_visit_history():
@@ -422,12 +404,21 @@ def report_basic():
     start_date = request.get("start_date")
     end_date = request.get("end_date")
 
-    print("check basic report:", type(start_date), "  END ", type(end_date))
+    # print("check basic report:", type(start_date), "  END ", type(end_date))
 
     visit_list = db.get_visit_history(start= start_date, end= end_date)
 
-    print("check visit list in server: ", visit_list)
+    # print("check visit list in server: ", visit_list)
     return flask.jsonify(visit_list)
+
+@app.route('/api/importcsv', methods = ['POST'])
+def masterdbimport():
+    file = flask.request.files.get("file") 
+    try:
+        db.importCsv(file)
+    except Exception as ex:
+        return flask.jsonify([False, str(ex)])
+    return flask.jsonify([True, "success"])
 
 # Run flask server
 if __name__ == '__main__':

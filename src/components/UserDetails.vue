@@ -30,10 +30,12 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
         <div class="table-responsive" style="max-height: 35vh; overflow-y: auto;">
               <table class="table table-striped table-bordered">
                   <tbody>
-                      <tr v-for="(value, key) in curr_details" :key="key" v-if="key !== 'transactional_id'">
+                    <template v-for="(value, key) in curr_details" :key="key">
+                      <tr v-if="key !== 'transactional_id'">
                           <th style="white-space: nowrap;">{{ formatKey(key) }}</th>
                           <td>{{ value }}</td>
                       </tr>
+                    </template>
                   </tbody>
               </table>
         </div>
@@ -96,7 +98,7 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
         <!-- Modal Header -->
         <div class="modal-header">
           <h4 class="modal-title">Add New Visit</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <button type="button" class="close" data-dismiss="modal" ref="closeModalButton" @click="clearInputForm()">&times;</button>
         </div>
 
             <!-- Modal Body -->
@@ -107,38 +109,40 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
               <div class="col-md-6">
                 <!-- Date -->
                 <div class="form-group">
-                  <label for="new_visit_date">Date (yyyy-mm-dd)</label>
-                  <input type="date" class="form-control" id="new_visit_date" v-model="new_visit_date" placeholder="YYYY-MM-DD">
+                  <label for="new_visit_date">Date</label>
+                  <input
+                  type="date" class="form-control" id="new_visit_date" v-model="new_visit_date" placeholder="">
                 </div>
 
                 <!-- Food Bags -->
                 <div class="form-group">
                   <label for="foodBags">Food Bags</label>
-                  <input type="number" class="form-control" id="foodBags" v-model="f_bags" placeholder="Enter quantity">
+                  <input
+                  type="number" class="form-control" min = "0" oninput="validity.valid||(value='');" id="foodBags" v-model="f_bags" placeholder="Enter quantity">
                 </div>
 
                 <!-- Baby Supplies -->
                 <div class="form-group">
                   <label for="babySupplies">Baby Supplies</label>
-                  <input type="number" class="form-control" id="babySupplies" v-model="b_supplies" placeholder="Enter quantity">
+                  <input type="number" class="form-control" min = "0" oninput="validity.valid||(value='');" id="babySupplies" v-model="b_supplies" placeholder="Enter quantity">
                 </div>
 
                 <!-- Pet Food -->
                 <div class="form-group">
                   <label for="petFood">Pet Food</label>
-                  <input type="number" class="form-control" id="petFood" v-model="p_food" placeholder="Enter quantity">
+                  <input type="number" class="form-control" min = "0" oninput="validity.valid||(value='');" id="petFood" v-model="p_food" placeholder="Enter quantity">
                 </div>
 
                 <!-- Gift Items -->
                 <div class="form-group">
                   <label for="giftItems">Gift Items</label>
-                  <input type="number" class="form-control" id="giftItems" v-model="g_items" placeholder="Enter quantity">
+                  <input type="number" class="form-control" min = "0" oninput="validity.valid||(value='');" id="giftItems" v-model="g_items" placeholder="Enter quantity">
                 </div>
 
                 <!-- Cleaning Supplies -->
                 <div class="form-group">
                   <label for="cleaningSupplies">Cleaning Supplies</label>
-                  <input type="number" class="form-control" id="cleaningSupplies" v-model="c" placeholder="Enter quantity">
+                  <input type="number" class="form-control" min = "0" oninput="validity.valid||(value='');" id="cleaningSupplies" v-model="c" placeholder="Enter quantity">
                 </div>
               </div>
 
@@ -147,37 +151,37 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
                 <!-- Personal Care -->
                 <div class="form-group">
                   <label for="personalCare">Personal Care</label>
-                  <input type="number" class="form-control" id="personalCare" v-model="p_care" placeholder="Enter quantity">
+                  <input type="number" class="form-control" min = "0" oninput="validity.valid||(value='');" id="personalCare" v-model="p_care" placeholder="Enter quantity">
                 </div>
 
                 <!-- Summer Feeding -->
                 <div class="form-group">
                   <label for="summerFeeding">Summer Feeding</label>
-                  <input type="number" class="form-control" id="summerFeeding" v-model="sf" placeholder="Enter quantity">
+                  <input type="number" class="form-control" min = "0" oninput="validity.valid||(value='');" id="summerFeeding" v-model="sf" placeholder="Enter quantity">
                 </div>
 
                 <!-- Kids Pajamas -->
                 <div class="form-group">
                   <label for="kidsPajamas">Kids Pajamas</label>
-                  <input type="number" class="form-control" id="kidsPajamas" v-model="pj" placeholder="Enter quantity">
+                  <input type="number" class="form-control" min = "0" oninput="validity.valid||(value='');" id="kidsPajamas" v-model="pj" placeholder="Enter quantity">
                 </div>
 
                 <!-- Clothing -->
                 <div class="form-group">
                   <label for="clothing">Clothing</label>
-                  <input type="number" class="form-control" id="clothing" v-model="cloth" placeholder="Enter quantity">
+                  <input type="number" class="form-control" min = "0" oninput="validity.valid||(value='');" id="clothing" v-model="cloth" placeholder="Enter quantity">
                 </div>
 
                 <!-- Winter Coats -->
                 <div class="form-group">
                   <label for="winterCoats">Winter Coats</label>
-                  <input type="number" class="form-control" id="winterCoats" v-model="w" placeholder="Enter quantity">
+                  <input type="number" class="form-control" min = "0" oninput="validity.valid||(value='');" id="winterCoats" v-model="w" placeholder="Enter quantity">
                 </div>
 
                 <!-- Other Items -->
                 <div class="form-group">
                   <label for="otherItems">Other Items</label>
-                  <input type="text" class="form-control" id="otherItems" v-model="o" placeholder="Describe other items">
+                  <input type="number" class="form-control" min = "0" oninput="validity.valid||(value='');" id="otherItems" v-model="o" placeholder="Describe other items">
                 </div>
               </div>
             </div>
@@ -191,9 +195,6 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
 
       </div>
     </div>
-
-
-
     </div>
 
     </div>
@@ -308,8 +309,6 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
         o: this.o
       };
 
-      console.log(payload);
-
       axios.post('/api/newdate', payload)
       .then(response => {
         // Updates to show new visit
@@ -319,12 +318,15 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
         }
         else {
           this.$emit('get-history');
+          alert("Added New Client Success");  // User-facing error message
         }
-        
-        // Optionally close the modal if everything is fine
+        this.$refs.closeModalButton.click();
+        this.clearInputForm();
       }).catch(error => {
         console.error(error);
         alert("Failed to add new visit: " + error.message);  // User-facing error message
+        this.$refs.closeModalButton.click();
+        this.clearInputForm();
       });
     }, 
     formatKey(key) {
@@ -332,6 +334,20 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
                 .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
                 .join(' ');
     }, 
+    clearInputForm() {
+      this.f_bags = 0;
+      this.b_supplies = 0;
+      this.p_food = 0;
+      this.g_items = 0;
+      this.c = 0;
+      this.sf = 0;
+      this.p_care = 0;
+      this.pj = 0;
+      this.cloth= 0;
+      this.w = 0;
+      this.o = 0;
+    }
+    , 
     handleVisitHistoryDelete(transactional_id, visit_id) {
       const payload = {
         transactional_id: transactional_id, 
@@ -346,8 +362,10 @@ import EditMasterDBmodal from './editMasterDBmodal.vue';
       .then((response) => {
         console.log("Deletion successful:", response.data);
         this.$emit('get-history')
+        alert("Client Visit History Successfully Deleted!");
       }).catch((error) => {
         console.error("Error deleting client:", error);
+        alert("Error Deleting Visit History!");
       });
     },
     handleUpdateClientDetails(payload) {

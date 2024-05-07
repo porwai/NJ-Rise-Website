@@ -6,8 +6,12 @@
           <img src="/src/assets/RiseLogo.png" alt="NJ Rise logo" width="80">
         </a>
   
+                <!-- Toggler button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-  
+        
 
         <!-- Navigation links on the right -->
         <div class="collapse navbar-collapse justify-content-end" id="navbarMain">
@@ -26,6 +30,10 @@
                 <a v-if = "this.$store.state.viewing_status === 'admin'" class="dropdown-item" href="/registernewclient">
                   <i class="fas fa-user-edit mr-1"></i>
                   Register Client
+                </a>
+                <a v-if = "this.$store.state.viewing_status === 'admin'" class="dropdown-item" href="/import">
+                  <i class="fas fa-user-edit mr-1"></i>
+                  Import CSV File
                 </a>
               </div>
             </li>
@@ -49,6 +57,13 @@
             <li v-if = "this.$store.state.viewing_status === 'admin'" class="nav-item">
               <router-link class="nav-link" to="/addnewuser"> Add New Staff </router-link>
             </li>
+
+            <!-- Text next to toggle button -->
+              <li v-if = "this.$store.state.login_status !== 'not_authorized'" class="nav-item">
+                <a  v-if="this.$store.state.viewing_status === 'volunteer'" class="nav-link">View: Volunteer</a>
+                <a  v-else class="nav-link">View: Administrator</a>
+              </li>
+
             <div v-if = "this.$store.state.login_status === 'admin'" class="nav-item navbar-toggler-toggle" @click="toggleClick">
               <transition name="toggle-transition">
                 <span v-if="this.$store.state.viewing_status === 'volunteer'" class="toggle-off">
@@ -69,12 +84,6 @@
               </transition>
             </div>
   
-              <!-- Text next to toggle button -->
-              <li v-if = "this.$store.state.login_status !== 'not_authorized'" class="nav-item">
-                <a  v-if="this.$store.state.viewing_status === 'volunteer'" class="nav-link">View: Volunteer</a>
-                <a  v-else class="nav-link">View: Administrator</a>
-              </li>
-
           </ul>
         </div>
       </div>
@@ -128,16 +137,7 @@
   }
   </script>
   
-  <style>
-  .navbar-toggler-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 60px; /* Increased width */
-    cursor: pointer;
-    margin-left: 300px; /* Shift to the right */
-  }
-  
+  <style>  
   .toggle-on svg, .toggle-off svg {
     width: 80px; /* Larger size */
     height: 50px; /* Larger size */

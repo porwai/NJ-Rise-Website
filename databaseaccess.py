@@ -3,6 +3,8 @@ from dotenv import load_dotenv
 import sqlalchemy
 from collections import OrderedDict
 from typing import List
+import codecs
+import csv
 from sqlalchemy import update, MetaData, func
 from sqlalchemy.sql import extract
 from datetime import datetime
@@ -21,7 +23,6 @@ class t_master_db(Base):
     __tablename__ = "master_db"
 
     client_id = sqlalchemy.Column(sqlalchemy.String, primary_key=True)
-
     last_name = sqlalchemy.Column(sqlalchemy.String)
     first_name = sqlalchemy.Column(sqlalchemy.String)
     middle_initial = sqlalchemy.Column(sqlalchemy.String)
@@ -100,7 +101,7 @@ class t_master_db(Base):
     education_2_4_year_college_graduate = sqlalchemy.Column(sqlalchemy.Integer)
     education_graduate_and_post_secondary_school = sqlalchemy.Column(sqlalchemy.Integer)
     education_graduate_and_post_secondary_school_over_25_years_old = sqlalchemy.Column(sqlalchemy.Integer)
-    annual_income = sqlalchemy.Column(sqlalchemy.Integer)
+    annual_income = sqlalchemy.Column(sqlalchemy.String)
     full_time_employment = sqlalchemy.Column(sqlalchemy.Integer)
     part_time_employment = sqlalchemy.Column(sqlalchemy.Integer)
     migrant_or_seasonal_worker = sqlalchemy.Column(sqlalchemy.Integer)
@@ -164,22 +165,118 @@ class t_history(Base):
     
     # PRIMARY KEY to identify instances in transactional_history table
     visit_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key= True, autoincrement=True)
-    
+
+import_list = [
+    ("client_id","string"),
+    ("last_name","string"),
+    ("first_name","string"),
+    ("middle_initial","string"),
+    ("total_family_members","int"),
+    ("case_manager_initials","string"),
+    ("client_type","string"),
+    ("renewal_date","string"),
+    ("gender_head_of_household","string"),
+    ("head_of_household_date_of_birth","string"),
+    ("household_number_of_adults","int"),
+    ("household_number_of_children","int"),
+    ("household_number_of_children_under_18","int"),
+    ("additional_family_members_first_name","string"),
+    ("additional_family_members_last_name","string"),
+    ("additional_family_member_middle_initial","string"),
+    ("additional_family_members_date_of_birth","string"),
+    ("city","string"),
+    ("state","string"),
+    ("zip_code","string"),
+    ("country_of_origin","string"),
+    ("residence_hightstown","int"),
+    ("residence_east_windsor","int"),
+    ("residence_cranbury","int"),
+    ("residence_other","int"),
+    ("housing_own","int"),
+    ("housing_rent","int"),
+    ("housing_other_permanent","int"),
+    ("homeless","int"),
+    ("date_file_opened","string"),
+    ("renewal_return_date","string"),
+    ("return_client","int"),
+    ("new_client","int"),
+    ("new_client_intake_date","string"),
+    ("phone_number","string"),
+    ("affected_by_covid","int"),
+    ("household_single","int"),
+    ("household_two_adults_no_children","int"),
+    ("household_single_parent_female","int"),
+    ("household_single_parent_male","int"),
+    ("household_two_parent","int"),
+    ("household_non_related_adults_no_children","int"),
+    ("household_multi_generational","int"),
+    ("household_other","int"),
+    ("household_not_reported","int"),
+    ("ethnicity_hispanic_latino","int"),
+    ("ethnicity_non_hispanic_latino","int"),
+    ("ethnicity_unknown","int"),
+    ("ethnicity_american_indian","int"),
+    ("ethnicity_alaska_native","int"),
+    ("ethnicity_asian","int"),
+    ("ethnicity_black_african","int"),
+    ("ethnicity_white","int"),
+    ("ethnicity_other","int"),
+    ("ethnicity_multi_race","int"),
+    ("ethnicity_unknown_not_reported","int"),
+    ("adults_in_household_female","int"),
+    ("adults_in_household_pregnant_female","int"),
+    ("adults_in_household_pregnant_due_date","string"),
+    ("adults_in_household_male","int"),
+    ("adults_in_household_other","int"),
+    ("adults_in_household_unknown_not_reported","int"),
+    ("adults_in_household_disabled","int"),
+    ("adults_in_household_aged","int"),
+    ("adults_in_household_veteran","int"),
+    ("adults_in_household_veteran_active","int"),
+    ("household_total_number_of_children","int"),
+    ("household_total_number_of_female_children","int"),
+    ("household_total_number_of_male_children","int"),
+    ("household_total_number_of_disabled_children","int"),
+    ("household_children_0_5_years_old","int"),
+    ("household_children_6_13_years_old","int"),
+    ("household_children_14_17_years_old","int"),
+    ("education_9_12_grade_non_graduate","int"),
+    ("education_graduate_or_equivalent_diploma","int"),
+    ("education_12th_grade_and_some_post_secondary_school","int"),
+    ("education_2_4_year_college_graduate","int"),
+    ("education_graduate_and_post_secondary_school","int"),
+    ("education_graduate_and_post_secondary_school_over_25_years_old","int"),
+    ("annual_income","string"),
+    ("full_time_employment","int"),
+    ("part_time_employment","int"),
+    ("migrant_or_seasonal_worker","int"),
+    ("unemployed_short_term_6_months_or_less","int"),
+    ("unemployed_long_term_over_6_months","int"),
+    ("not_in_labor_force","int"),
+    ("retired","int"),
+    ("unknown_or_not_reported_employment","int"),
+    ("obtained_job_through_rise","int"),
+    ("poverty_guidelines_125","int"),
+    ("poverty_guidelines_185","int"),
+    ("poverty_guidelines_200","int"),
+    ("poverty_guidelines_over_200","int"),
+    ("total_family_receiving_fs_snap","int"),
+    ("total_family_receiving_tanf","int"),
+    ("total_family_receiving_alimony","int"),
+    ("total_family_receiving_lheap","int"),
+    ("total_family_receiving_ga","int"),
+    ("total_family_receiving_medicaid_njfc","int"),
+    ("total_family_receiving_child_support","int"),
+    ("total_family_receiving_pension","int"),
+    ("total_family_receiving_ssa","int"),
+    ("total_family_receiving_ssi","int"),
+    ("total_family_receiving_ssdi","int"),
+    ("total_family_receiving_wic","int"),
+    ("total_family_receiving_workers_comp","int"),
+    ("total_family_receiving_temporary_disability","int"),
+    (" total_family_receiving_unemployment","int")
+]
 def get_client (client_id: str, first_name: str, last_name: str, phone: str, month: str, day: str,year: str):
-    # SQL QUERY SCHEMA
-    '''
-    SELECT * 
-    From t_client
-    WHERE t_client.client_id = {client_id}
-    AND
-    t_client.first_name = {first_name}
-    AND
-    t_client.last_name = {last_name}
-    AND
-    t_client.phone = {phone}
-    AND 
-    t_client.dob = {dob}
-    '''
     
     with sqlalchemy.orm.Session(_engine) as session:
         query_id = "%" + client_id + "%"
@@ -296,6 +393,84 @@ def edit_masterdb_client (client_id: str, updates: dict):
         except sqlalchemy.exc.SQLAlchemyError as e:
             session.rollback()  # Roll back the transaction if any database errors occurred
             raise RuntimeError(f"Failed to update client due to: {str(e)}")
+def importCsv(file: str):
+    stream = codecs.iterdecode(file.stream, 'utf-8')
+    format = "%m/%d/%Y"
+    count = 0
+    with sqlalchemy.orm.Session(_engine) as session:
+        for fields in csv.reader(stream, dialect=csv.excel):
+            if count == 0:
+                count = count + 1
+                continue
+            data = {}
+            if len(fields) != 108:
+                raise Exception("number of columns does not match up")
+            for i in range(len(fields)):
+                key = import_list[i][0].strip()
+                data_value = import_list[i][1]
+                value = fields[i]
+                if (data_value == "int" and value == ""):
+                    value = 0        
+                elif (data_value == "int" and not value.strip().isnumeric()):
+                    raise Exception("Column " + key + " is not an integer.")
+
+                if (key == "head_of_household_date_of_birth"):
+                    try:
+                        value = datetime.strptime(value, format)
+                    except ValueError:
+                        raise Exception("Date column " + key + " is not in MM/DD/YYYY format")
+                if (key == "client_type" and (value != "Empower" and value != "not eligible" and value != "TEFAP" and value != "Neighbor")):
+                    raise Exception ("Client type is not valid")
+                data[key] = value
+            required_fields = {
+                "first_name": "First Name is required",
+                "last_name": "Last Name is required",
+                "phone_number": "Phone Number is required",
+                "head_of_household_date_of_birth": "Date of Birth for Head of Household is required",
+                "client_id": "Client ID is missing",
+                "client_type": "Client type is missing"
+            }
+
+            # Check for missing required fields
+            for field, error_message in required_fields.items():
+                if not data.get(field):
+                    raise ValueError(error_message)
+            try:
+                # Create a new client object
+                new_client = t_client(
+                    first_name=data["first_name"],
+                    last_name=data["last_name"],
+                    phone=data["phone_number"],
+                    dob=data["head_of_household_date_of_birth"],
+                    client_id=data["client_id"],
+                    client_type=data["client_type"]
+                )
+
+                # Add the new client to the session and flush to generate the transactional_id
+                session.add(new_client)
+                session.flush()  # This flushes the session to the database and populates new_client.transactional_id
+
+                # Check if client_id already exists in the database
+                existing_client = session.query(t_client).filter(t_client.client_id == data["client_id"]).first()
+                if existing_client and existing_client != new_client:
+                    raise ValueError("Client with this ID already exists")
+
+                # Prepare and add master_db client object using the transactional_id from new_client
+                data['transactional_id'] = new_client.transactional_id  # Set the transactional_id in the data dictionary
+                new_masterdb_client = t_master_db(**data)
+                session.add(new_masterdb_client)
+
+            except Exception as e:
+                session.rollback()  
+                raise  
+        try:
+            session.commit()
+        except Exception as e:
+            session.rollback()
+            raise
+
+    
+
 
 # Update Special items or visit_date_list
 def update_client (transactional_id: int, new_visit_date: str, f_bags=0, b_supplies=0, p_food=0, g_items=0, c=0, 
@@ -537,24 +712,30 @@ def delete_client (transactional_id: int):
 def add_client (f_name: str, l_name:str, p: str, dob_date: str, date:str, foodbags: int):
     id = 0
     with sqlalchemy.orm.Session(_engine) as session:
-        if f_name is None:
-            f_name = ''
-        if l_name is None:
-            l_name = ''
-        if p is None:
-            p = ''
-        if dob_date is None:
-            dob_date = ''
-        # Select relevant row
-        new_client = t_client(first_name=f_name, last_name=l_name, phone=p, dob=dob_date, client_type="not eligible")
-        session.add(new_client)
         try:
+            if f_name is None:
+                f_name = ''
+            if l_name is None:
+                l_name = ''
+            if p is None:
+                p = ''
+            if dob_date is None:
+                dob_date = ''
+            # Select relevant row
+            new_client = t_client(first_name=f_name, last_name=l_name, phone=p, dob=dob_date, client_type="walk in")
+            session.add(new_client)
+            session.flush()
+            id = new_client.transactional_id
+            if date != "" and foodbags != "":
+                date_format = '%Y-%m-%d'
+                date_obj = datetime.strptime(date, date_format)
+                new_visit = t_history(t_id=id, visit_date=date_obj, food_bags=foodbags, baby_supplies=0,pet_food=0,
+                                    gift_items=0, cleaning=0, personal_care=0, summer_feeding = 0, pj=0, clothing = 0, winter=0, other = 0, client_type="walk in")
+                session.add(new_visit)
             session.commit()
         except sqlalchemy.exc.SQLAlchemyError as e:
+            session.rollback()
             raise RuntimeError(f"Failed to add new client due to: {str(e)}")
-        id = new_client.transactional_id
-    if date is not None and foodbags is not None:
-        update_client(transactional_id=id, new_visit_date=date, f_bags=foodbags)
 
 def get_history (id: int):
     with sqlalchemy.orm.Session(_engine) as session:
@@ -721,7 +902,7 @@ def monthSummary(year: int):
         tot = 0
         for i in range(12):
             val = session.query(t_history).filter(extract('month', t_history.visit_date) == (i + 1))\
-                .filter(extract('year', t_history.visit_date) == (year)).filter(t_history.client_type=="not eligible").count()
+                .filter(extract('year', t_history.visit_date) == (year)).filter(t_history.client_type=="walk in").count()
             if val is None:
                 val = 0
             tot += val
@@ -752,7 +933,7 @@ def monthSummary(year: int):
 def walkInReport(year: int):
     with sqlalchemy.orm.Session(_engine) as session:
         res = "Full Name,Phone Number,Date,Distribution Day\n"
-        visits=session.query(t_history).filter(t_history.client_type == "not eligible").filter(extract('year', t_history.visit_date) == (year)).all()
+        visits=session.query(t_history).filter(t_history.client_type == "walk in").filter(extract('year', t_history.visit_date) == (year)).all()
         for visit in visits:
             client = session.query(t_client).filter(t_client.transactional_id==visit.t_id).one()
             fullname = client.first_name + " " + client.last_name

@@ -58,6 +58,9 @@
             </div>
               <button class="btn btn-primary" type="submit">Submit</button>
           </form>
+          <div v-if="empowerDownload" class="card-footer">
+            <h3 class="card-title">Empower report has been downloaded</h3>
+          </div>
         </div>
 
         <!-- <div v-if="selectedSection === 'option2'"> -->
@@ -79,6 +82,9 @@
             </div>
               <button class="btn btn-primary" type="submit">Submit</button>
         </form>
+          <div v-if="yearDownload" class="card-footer">
+            <h3 class="card-title">Yearly report has been downloaded</h3>
+          </div>
       </div>
 
 
@@ -101,6 +107,9 @@
             </div>
               <button class="btn btn-primary" type="submit">Submit</button>
         </form>
+          <div v-if="walkInDownload" class="card-footer">
+            <h3 class="card-title">Walk in report has been downloaded</h3>
+          </div>
       </div>  
 
         
@@ -133,11 +142,11 @@
 
              <!-- Display sum and list of visit frequencies -->
           <div v-if="this.basic_report_sum !== null">
-            <p>Sum of Visit Frequencies: {{ this.basic_report_sum }}</p>
+            <p>{{ this.basic_report_sum }} visits from {{ this.basic_report_start_date }} to {{ this.basic_report_end_date }} </p>
           
           
           
-              <!-- Slider to adjust the range -->
+              <!-- Slider to adjust the range
               <label for="range">Select Range:</label>
             <input 
                 type="range"
@@ -150,7 +159,7 @@
             />
             <p>
               Min: 1 ; Current: {{ this.selectedRange}}; max: {{ this.basic_report_list ? this.basic_report_list.length : 0 }}
-            </p>
+            </p> -->
           </div>
           
           <!-- Fix: changed this.basic_report_sum to basic_report_list -->
@@ -176,13 +185,13 @@
         return {
           // selectedSection: null,
           currentButton: null,
-    currentElement: null,
-    buttons: [
-      { id: 'element1', label: 'Monthly Empower Report' },
-      { id: 'element2', label: 'Yearly Summary Report' },
-      { id: 'element3', label: 'Walk In Summary Report' },
-      { id: 'element4', label: 'Visit History Basic Frequency Report' }
-    ],
+          currentElement: null,
+          buttons: [
+            { id: 'element1', label: 'Monthly Empower Report' },
+            { id: 'element2', label: 'Yearly Summary Report' },
+            { id: 'element3', label: 'Walk In Summary Report' },
+            { id: 'element4', label: 'Visit History Basic Frequency Report' }
+          ],
           selected: null,
           year:new Date().getFullYear(),
           year2:new Date().getFullYear(),
@@ -191,7 +200,9 @@
           basic_report_end_date: null,
           basic_report_sum: null,
           basic_report_list: null,
-
+          empowerDownload: false,
+          walkInDownload: false,
+          yearDownload: false,
           // variables for displaying chart-js:
           // /////////////////////////////////////////////////////////
           chart: null,
@@ -200,7 +211,7 @@
           newDataCount: 10,
           timeout: null,
           options: {
-            theme: "light2",
+            theme: "dark1",
             title:{
               text: "Live Data"
             },
@@ -209,11 +220,14 @@
               dataPoints: []
             }],
             axisX: {
-                title: "Days",
-                // maximum: this.basic_report_list ? this.basic_report_list.length : 0,
-                // interval: this.selectedRange,
-                viewportMaximum: 0
+                title: "Date",
+                valueFormatString: "MM/DD/YYYY", // Format for displaying dates on the x-axis
+                viewportMinimum: new Date(this.basic_report_start_date),
+                viewportMaximum: new Date(this.basic_report_start_date) // Convert to Date object and get time value
             },
+            axisY: {
+                title: "Value"
+            }
           },
           styleOptions: {
             width: "100%",
@@ -248,6 +262,7 @@
         getMonthlyEmpower(payload) {
                 axios.post('/api/monthEmpower', payload)
                 .then(response => {
+                  this.empowerDownload = true;
                   const csv = response.data;
                   const link = document.createElement("a");
                   link.target = "_blank";
@@ -273,6 +288,7 @@
         getYearlySummary(payload) {
                 axios.post('/api/monthSummary', payload)
                 .then(response => {
+                  this.yearDownload = true;
                   const csv = response.data;
                   const link = document.createElement("a");
                   link.target = "_blank";
@@ -299,6 +315,7 @@
         getWalkInReport(payload) {
                 axios.post('/api/walkInReport', payload)
                 .then(response => {
+                  this.walkInDownload = true;
                   const csv = response.data;
                   const link = document.createElement("a");
                   link.target = "_blank";
@@ -376,33 +393,45 @@
 
 
           // update the viewportMax based on slider selectRange val
-          this.options.axisX.viewportMaximum = this.selectedRange
-          
-          console.log("in the update:")
-          console.log("selectRange:", this.selectedRange)
-          console.log("chartMaxX:", this.options.axisX.viewportMaximum)
-          console.log("style options:", this.styleOptions);
+          // Set the maximum date as the viewport maximum for the x-axis
+          // const maxDate = new Date(this.basic_report_start_date);
+          // maxDate.setDate(maxDate.getDate() + this.selectedRange);
+          // this.options.axisX.viewportMaximum = this.basic_report_start_date
+          // ///////////////////////////////////////////////////////////
+
+          // console.log("in the update:")
+          // console.log("selectRange:", this.selectedRange)
+          // console.log("chartMaxX:", this.options.axisX.viewportMaximum)
+          // console.log("style options:", this.styleOptions);
             // Reset dataPoints array
             this.options.data[0].dataPoints = [];
-            console.log('after reset array');
+            // console.log('after reset array');
 
             if(!this.basic_report_list){
               return true
             }
-            console.log('after return true');
+            // console.log('after return true');
 
             // Iterate over basic_report_list and add data points
             this.basic_report_list.forEach((value, index) => {
-                this.options.data[0].dataPoints.push({ x: index, y: value });
+                // Calculate the date for the current index
+                const currentDate = new Date(this.basic_report_start_date);
+
+                currentDate.setDate(currentDate.getDate() + index); // Add index days to start date
+                // console.log("current date:;", currentDate)
+
+                // Push the data point with the formatted date
+                this.options.data[0].dataPoints.push({ x: currentDate, y: value });
             });
-            console.log('after iterate over lists');
+
+            // console.log('after iterate over lists');
 
             // Render the chart
             if (this.chart) {
               
               this.chart.render();
             }
-            console.log('after render chart');
+            // console.log('after render chart');
             
         },
 

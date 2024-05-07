@@ -18,6 +18,8 @@
                         :id="key"
                         class="form-control"
                         type="number"
+                        min = "0" 
+                        oninput="validity.valid||(value='');"
                         v-model="field.value"
                         :required="field.required" />
                         
@@ -148,7 +150,7 @@
               "education_2_4_year_college_graduate": {"value": 0, "type": "number"},
               "education_graduate_and_post_secondary_school": {"value": 0, "type": "number"},
               "education_graduate_and_post_secondary_school_over_25_years_old": {"value": 0, "type": "number"},
-              "annual_income": {"value": 0, "type": "number"},
+              "annual_income": {"value": '0', "type": "string"},
               "full_time_employment": {"value": 0, "type": "number"},
               "part_time_employment": {"value": 0, "type": "number"},
               "migrant_or_seasonal_worker": {"value": 0, "type": "number"},
