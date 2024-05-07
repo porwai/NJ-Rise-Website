@@ -26,12 +26,12 @@ Edit Client Data
             type="text"
             v-model="field.value" />
 
-        <!-- <input v-if="field.type === 'phone'"
+        <input v-if="field.type === 'phone'"
             :id="key"
             class="form-control"
             type="text"
             v-model="field.value"
-            @input="formatPhoneNumber" /> -->
+            @input="formatPhoneNumber" />
 
         <input v-if="field.type === 'number'"
             :id="key"
@@ -109,7 +109,7 @@ export default {
         "return_client": {"value": 0, "type": "number"},
         "new_client": {"value": 0, "type": "number"},
         "new_client_intake_date": {"value": "", "type": "date"},
-        "phone_number": {"value": "", "type": "string"},
+        "phone_number": {"value": "", "type": "phone"},
         "affected_by_covid": {"value": 0, "type": "number"},
         "household_single": {"value": 0, "type": "number"},
         "household_two_adults_no_children": {"value": 0, "type": "number"},
@@ -207,6 +207,19 @@ export default {
       .replace(/_/g, ' ')    // Replace all underscores with spaces
       .replace(/\b\w/g, c => c.toUpperCase()); // Capitalize the first letter of each word
     }, 
+    formatPhoneNumber() {
+          let numbers = this.formData["phone_number"].value.replace(/[^\d]/g, '');
+          if (numbers.length > 3) {
+            numbers = numbers.substring(0, 3) + '-' + numbers.substring(3);
+          }
+          if (numbers.length > 7) {
+            numbers = numbers.substring(0, 7) + '-' + numbers.substring(7);
+          }
+          if (numbers.length > 12) {
+            numbers = numbers.substring(0, 12);
+          }
+          this.formData["phone_number"].value = numbers;
+        },
     submitForm: function () {
       const update_payload = {};
       for (const key in this.formData) {
