@@ -60,7 +60,7 @@
                   <!-- <td>{{ user.password }}</td> -->
                   <td>{{ user.user_role }}</td>
                   <td>
-                    <button @click="deleteUser(user.username, user.password)" class="btn btn-danger">Delete</button>
+                    <button @click="deleteUserConfirmation(user.username, user.password)" class="btn btn-danger">Delete</button>
                   </td>
                 </tr>
               </tbody>
@@ -70,8 +70,27 @@
       </div>
       <!-- Right column: Display all current users -->
 
-      
+    </div>
+  </div>
 
+    <!-- Modal for confirmation -->
+    <div class="modal" id="confirmationModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirmation</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Are you sure you would like to delete this user from the database?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+          <button type="button" class="btn btn-danger" @click="confirmDelete">Yes</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -79,7 +98,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import store from '../main'
-
+import $ from "jquery"
 import {sha256} from 'crypto-hash';
 
 
@@ -91,6 +110,7 @@ const formData = ref({
 
 const users = ref([]);
 const status = ref('');
+let userToDelete = {}; // Variable to hold the user to delete
 
 // Hashing password with SHA 256
 async function submitData() {
@@ -143,7 +163,13 @@ async function fetchUsers() {
   }
 }
 
-async function deleteUser(username, password) {
+async function deleteUserConfirmation(username, password) {
+  userToDelete = { username, password };
+  $('#confirmationModal').modal('show');
+}
+
+async function confirmDelete() {
+  $('#confirmationModal').modal('hide'); // Hide the modal
   try {
     const response = await fetch('/api/remove_user', {
       method: 'POST',
@@ -152,8 +178,8 @@ async function deleteUser(username, password) {
       },
       body: JSON.stringify({
         sender_role: store.state.viewing_status,
-        username: username,
-        password: password
+        username: userToDelete.username,
+        password: userToDelete.password
       })
     });
     const data = await response.json();
