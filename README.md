@@ -5,9 +5,6 @@ Spring 2024
 
 Advised by Haichen Dong
 
-## Live Website
-https://cos333-nj-rise.onrender.com/
-
 ## Recommended IDE Setup
 
 Developed with Vue 3 in Vite.
